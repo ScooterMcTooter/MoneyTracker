@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MoneyTracker.LoginPage"
+             xmlns:viewmodel="clr-namespace:MoneyTracker.ViewModels"
+             xmlns:DataType="viewmodel:UserViewModel">
+
+    <Grid RowDefinitions="100, Auto, Auto, Auto"
+          ColumnDefinitions=".25*,.50*,.25*"
+          Padding="10"
+          RowSpacing="10"
+          ColumnSpacing="10"
+          HorizontalOptions="CenterAndExpand">
+
+        <Label Text="Welcome to {AppName}!" 
+               Grid.ColumnSpan="3"
+               HorizontalOptions="Center"
+               FontSize="Large"
+               FontAttributes="Bold"
+               TextColor="Black"
+               />
+
+        <Button Text="Create Account"
+                Grid.Row="0"
+                Grid.ColumnSpan="3"
+                HorizontalOptions="CenterAndExpand"
+                VerticalOptions="EndAndExpand"
+                Command="{Binding CreateCommand}"
+                />
+
+        <Label Text="Username:" 
+               Grid.Row="1"
+               Grid.Column="0"
+               VerticalTextAlignment="Center"
+               />
+
+        <Entry Placeholder="Username" 
+               Keyboard="Text"
+               Grid.Row="1" 
+               Grid.Column="1"
+               Grid.ColumnSpan="2"
+               Text="{Binding Username}"
+               />
+
+        <Label Text="Password:" 
+               Grid.Row="2"
+               Grid.Column="0"
+               VerticalTextAlignment="Center"/>
+
+        <Entry IsPassword="True"
+               Placeholder="Password" 
+               Keyboard="Text"
+               Grid.Row="2" 
+               Grid.Column="1"
+               Grid.ColumnSpan="2"
+               Text="{Binding Password}"
+               />
+
+        <Button Text="Login" 
+                Grid.Row="3" 
+                Grid.Column="0"
+                Command="{Binding LoginCommand}"
+                />
+
+        <Button Text="Forgot username or password?" 
+                Grid.Row="3"
+                Grid.RowSpan="1"
+                Grid.Column="1"
+                Grid.ColumnSpan="2"
+                HorizontalOptions="StartAndExpand"
+                VerticalOptions="EndAndExpand"
+                Command="{Binding ForgotCommand}"
+                />
+
+    </Grid>
+
+</ContentPage>

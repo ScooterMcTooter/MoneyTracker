@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-public class TransactionTypeModel
+public class TransactionTypeViewModel
 {
     [Key]
     public int Id { get; set; }
