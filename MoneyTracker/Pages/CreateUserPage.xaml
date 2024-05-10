@@ -2,11 +2,160 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MoneyTracker.Pages.CreateUserPage"
-             Title="CreateUserPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Create an account"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="Create Account"
+             xmlns:viewmodel="clr-namespace:MoneyTracker.ViewModels"
+             xmlns:DataType="viewmodel:UserViewModel">
+    <StackLayout>
+        <Frame x:Name="NewAccountFrame"
+                HasShadow="True"
+                CornerRadius="10"
+                Padding="20"
+                Margin="20"
+                VerticalOptions="StartAndExpand">
+
+            <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto"
+                  ColumnDefinitions=".25*,.75*"
+                  RowSpacing="10"
+                  ColumnSpacing="10"
+                  Padding="10">
+
+                <StackLayout
+                    Grid.ColumnSpan="2">
+                    <Label Text="Username" 
+                       FontSize="16"
+                       Grid.Column="1"
+                       Grid.ColumnSpan="1"/>
+
+                    <Entry Placeholder="Username"  
+                       FontSize="16"
+                       Grid.Column="1"
+                       Text="{Binding Username}"/>
+                </StackLayout>
+                <StackLayout
+                    Grid.ColumnSpan="2"
+                    Grid.Row="1">
+                    <Label Text="Password" 
+                       VerticalOptions="Center"
+                       FontSize="16"/>
+
+                    <Entry IsPassword="True" 
+                       Placeholder="Password" 
+                       VerticalOptions="Center" 
+                       FontSize="16"
+                       Grid.Column="1"
+                       Grid.Row="1"
+                       Text="{Binding Password}"/>
+                </StackLayout>
+                <StackLayout
+                    Grid.ColumnSpan="2"
+                    Grid.Row="2">
+                    <Label Text="PhoneNumber" 
+                       VerticalOptions="Center"
+                       FontSize="16"/>
+
+                    <Entry Placeholder="(555)-555-5555"  
+                       FontSize="16"
+                       Keyboard="Telephone"
+                       Text="{Binding PhoneNumber, StringFormat='{0:(###)-###-####}'}"/>
+                </StackLayout>
+                <StackLayout
+                    Grid.ColumnSpan="2"
+                    Grid.Row="3">
+                    <Label Text="Email" 
+                        VerticalOptions="Center"
+                        FontSize="16"/>
+
+                    <Entry Placeholder="username@gmail.com" 
+                        VerticalOptions="Center" 
+                        FontSize="16"
+                        Keyboard="Email"
+                        Text="{Binding UserEmail}"/>
+                </StackLayout>
+                <Grid
+                    Grid.Row="4"
+                    Grid.ColumnSpan="2"
+                    ColumnDefinitions="*,Auto,20,Auto,*"
+                    RowSpacing="10">
+                    <Button Text="Create Account"
+                            Grid.Column="1"
+                            Command="{Binding CreateUserCommand}"/>
+
+                    <Button Text="Change Password"
+                            Grid.Column="3"
+                            Command="{Binding ChangeVisablityCommand}"/>
+                </Grid>
+            </Grid>
+        </Frame>
+
+        <Frame x:Name="ChangePasswordFrame"
+               HasShadow="True"
+               CornerRadius="10"
+               Padding="20"
+               Margin="20"
+               VerticalOptions="StartAndExpand"
+               IsVisible="Collapse">
+
+            <Grid RowDefinitions="Auto, Auto, Auto"
+                  ColumnDefinitions=".25*,.75*"
+                  RowSpacing="10"
+                  ColumnSpacing="10"
+                  Padding="10">
+
+                <StackLayout
+                        Grid.ColumnSpan="2">
+                    <Button Text="Create Account" 
+                        FontSize="16"
+                        Command="{Binding ChangeVisablityCommand}"/>
+                </StackLayout>
+                <StackLayout
+                    Grid.ColumnSpan="2"
+                    Grid.Row="1">
+
+                    <Label Text="Current Password" 
+                       VerticalOptions="Center"
+                       FontSize="16"/>
+
+                    <Entry Placeholder="Current Password" 
+                        IsPassword="True"
+                        VerticalOptions="Center" 
+                        FontSize="16"
+                        Grid.Column="1"
+                        Grid.Row="1"
+                        Text="{Binding CurrentPassword}"/>
+                </StackLayout>
+                <StackLayout
+                        Grid.ColumnSpan="2"
+                        Grid.Row="1">
+
+                    <Label Text="New Password" 
+                           VerticalOptions="Center"
+                           FontSize="16"/>
+
+                    <Entry Placeholder="New Password" 
+                           IsPassword="True"
+                           VerticalOptions="Center" 
+                           FontSize="16"
+                           Grid.Column="1"
+                           Grid.Row="1"
+                           Text="{Binding NewPassword}"/>
+                </StackLayout>
+                <StackLayout
+                        Grid.ColumnSpan="2"
+                        Grid.Row="1">
+
+                    <Label Text="Repeate New Password" 
+                           VerticalOptions="Center"
+                           FontSize="16"/>
+
+                    <Entry Placeholder="Repeate New Password" 
+                           IsPassword="True"
+                           VerticalOptions="Center" 
+                           FontSize="16"
+                           Grid.Column="1"
+                           Grid.Row="1"
+                           Text="{Binding Password}"/>
+                </StackLayout>
+            </Grid>
+        </Frame>
+    </StackLayout>
 </ContentPage>

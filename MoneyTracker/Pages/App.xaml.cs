@@ -6,6 +6,12 @@
         {
             InitializeComponent();
 
+            using (ApplicationDbContext db = new ApplicationDbContext())
+            {
+                db.Database.EnsureDeleted();
+                db.Database.EnsureCreated();
+            }
+
             MainPage = new AppShell();
         }
     }
