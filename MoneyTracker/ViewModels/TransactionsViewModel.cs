@@ -5,6 +5,7 @@ namespace MoneyTracker.ViewModels
 {
     public partial class TransactionsViewModel : ObservableObject
     {
+        [Key]
         public int Id { get; set; }
         [ObservableProperty]
         double amount;

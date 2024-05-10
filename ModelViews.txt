@@ -1,0 +1,68 @@
+UserViewModel.cs
+1.	Id (Type: int, Attributes: [Key])
+2.	PhoneNumber (Type: string?)
+3.	UserEmail (Type: string?)
+4.	FirstName (Type: string?, Attributes: [Required])
+5.	LastName (Type: string?, Attributes: [Required])
+6.	Suffix (Type: string?)
+7.	Password (Type: string?, Attributes: [Required], [PasswordPropertyText], [RegularExpression])
+8.	Username (Type: string?, Attributes: [Required])
+9.	Dob (Type: DateTime?)
+10.	CurrentPassword (Type: string?, Attributes: [ObservableProperty])
+11.	NewPassword (Type: string?, Attributes: [ObservableProperty])
+12.	RepeatNewPassword (Type: string?, Attributes: [ObservableProperty])
+13.	IsChangePasswordVisible (Type: bool, Attributes: [ObservableProperty])
+14.	IsCreateUserVisible (Type: bool, Attributes: [ObservableProperty])
+
+
+TransactionTypeViewModel.cs
+1.	Id (Type: int, Attributes: [Key])
+2.	Type (Type: string?)
+
+
+TransactionsViewModel.cs
+1.	Id (Type: int, Attributes: [Key])
+2.	Amount (Type: double, Attributes: [ObservableProperty])
+3.	User (Type: UserViewModel?)
+4.	TransactionType (Type: TransactionTypeViewModel?, Attributes: [Required])
+5.	Account (Type: AccountViewModel, Attributes: [Required])
+6.	Location (Type: string?)
+7.	TransactionDate (Type: DateTime, Attributes: [Required])
+
+
+SavingsBucketsViewModel.cs
+1.	Id (Type: int, Attributes: [Key])
+2.	Name (Type: string, Attributes: [ObservableProperty])
+3.	TargetAmount (Type: double, Attributes: [ObservableProperty])
+4.	CurrentAmount (Type: double, Attributes: [ObservableProperty])
+5.	UpdateDate (Type: DateTime)
+6.	PlannedUse (Type: string, Attributes: [ObservableProperty])
+
+
+LoansViewModel.cs
+1.	Id (Type: int, Attributes: [Key])
+2.	User (Type: UserViewModel?)
+3.	LinkedAccount (Type: AccountViewModel?)
+4.	LoanAmount (Type: double, Attributes: [ObservableProperty])
+5.	TotalInterest (Type: double, Attributes: [ObservableProperty])
+6.	InterestRate (Type: double, Attributes: [ObservableProperty])
+7.	MonthlyPayment (Type: double, Attributes: [ObservableProperty])
+8.	AutoPay (Type: AutoPayViewModel?)
+9.	TotalPayment (Type: double, Attributes: [ObservableProperty])
+10.	LoanTerm (Type: int?, Attributes: [ObservableProperty])
+11.	LoanType (Type: string?, Attributes: [ObservableProperty])
+
+
+AutoPayViewModel.cs
+1.	Id (Type: int, Attributes: [Key])
+2.	User (Type: UserViewModel?, Attributes: [Required])
+3.	AutoPayActive (Type: bool, Attributes: [ObservableProperty])
+4.	AutopayDay (Type: int, Attributes: [ObservableProperty])
+5.	LastAutopayDate (Type: DateTime?)
+6.	NextAutoPayDate (Type: DateTime?)
+7.	TransactionType (Type: TransactionTypeViewModel?)
+
+
+AccountViewModel.cs
+1.	Id (Type: int, Attributes: [Key])
+2.	AccountName (Type: string, Attributes: [ObservableProperty])
