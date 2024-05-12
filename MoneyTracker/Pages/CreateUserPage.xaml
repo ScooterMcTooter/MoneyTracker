@@ -2,8 +2,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MoneyTracker.Pages.CreateUserPage"
-             Title="Create Account"
              xmlns:viewmodel="clr-namespace:MoneyTracker.ViewModels"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:DataType="viewmodel:UserViewModel">
     <StackLayout>
         <Frame x:Name="NewAccountFrame"
@@ -13,7 +13,7 @@
                 Margin="20"
                 VerticalOptions="StartAndExpand">
 
-            <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto"
+            <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto"
                   ColumnDefinitions=".25*,.75*"
                   RowSpacing="10"
                   ColumnSpacing="10"
@@ -46,18 +46,29 @@
                        Grid.Row="1"
                        Text="{Binding Password}"/>
                 </StackLayout>
-                <StackLayout
-                    Grid.ColumnSpan="2"
-                    Grid.Row="2">
-                    <Label Text="PhoneNumber" 
+                <Grid Grid.ColumnSpan="2"
+                    Grid.Row="2"
+                      ColumnDefinitions=".5*,.5*">
+                    <StackLayout>
+                        <Label Text="Phone Number" 
                        VerticalOptions="Center"
                        FontSize="16"/>
 
-                    <Entry Placeholder="(555)-555-5555"  
+                        <Entry Placeholder="5555555555"  
                        FontSize="16"
                        Keyboard="Telephone"
-                       Text="{Binding PhoneNumber, StringFormat='{0:(###)-###-####}'}"/>
-                </StackLayout>
+                       Text="{Binding PhoneNumber}"/>
+                    </StackLayout>
+                    <StackLayout Grid.Column="1">
+                        <Label Text="Date of Birth" 
+                            VerticalOptions="Center"
+                            FontSize="16"/>
+
+                        <DatePicker 
+                            FontSize="16"
+                            Date="{Binding Dob}"/>
+                    </StackLayout>
+                </Grid>
                 <StackLayout
                     Grid.ColumnSpan="2"
                     Grid.Row="3">
@@ -69,20 +80,62 @@
                         VerticalOptions="Center" 
                         FontSize="16"
                         Keyboard="Email"
-                        Text="{Binding UserEmail}"/>
+                        Text="{Binding Email}"/>
                 </StackLayout>
+                <Grid 
+                        Grid.Row="4"
+                        Grid.ColumnSpan="2"
+                        ColumnDefinitions=".4*,.4*,.2*"
+                        RowSpacing="10">
+                    <StackLayout>
+                        <Label Text="First" 
+                        VerticalOptions="Center"
+                           Grid.Column="2"
+                        FontSize="16"/>
+
+                        <Entry Placeholder="Scott" 
+                        VerticalOptions="Center" 
+                        FontSize="16"
+                        Keyboard="Text"
+                        Text="{Binding FirstName}"/>
+                    </StackLayout>
+                    <StackLayout
+                        Grid.Column="1">
+                        <Label Text="Last" 
+                            VerticalOptions="Center"
+                            Grid.Column="2"
+                            FontSize="16"/>
+
+                        <Entry Placeholder="Miller" 
+                            VerticalOptions="Center" 
+                            FontSize="16"
+                            Keyboard="Text"
+                            Text="{Binding LastName}"/>
+                    </StackLayout>
+                    <StackLayout 
+                        Grid.Column="2">
+                        <Label Text="Suffix" 
+                            VerticalOptions="Center"
+                            Grid.Column="2"
+                            FontSize="16"/>
+
+                        <Entry Placeholder="Jr" 
+                            VerticalOptions="Center" 
+                            FontSize="16"
+                            Keyboard="Text"
+                            Text="{Binding Suffix}"/>
+                    </StackLayout>
+                </Grid>
                 <Grid
-                    Grid.Row="4"
+                    Grid.Row="5"
                     Grid.ColumnSpan="2"
-                    ColumnDefinitions="*,Auto,20,Auto,*"
+                    ColumnDefinitions="Auto,*"
                     RowSpacing="10">
                     <Button Text="Create Account"
-                            Grid.Column="1"
-                            Command="{Binding CreateUserCommand}"/>
+                        Grid.Column="1"
+                        Command="{Binding CreateUserCommand}"/>
 
-                    <Button Text="Change Password"
-                            Grid.Column="3"
-                            Command="{Binding ChangeVisablityCommand}"/>
+
                 </Grid>
             </Grid>
         </Frame>

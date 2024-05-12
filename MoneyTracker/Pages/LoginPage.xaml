@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MoneyTracker.LoginPage"
+             x:Class="MoneyTracker.Pages.LoginPage"
              xmlns:viewmodel="clr-namespace:MoneyTracker.ViewModels"
-             xmlns:DataType="viewmodel:UserViewModel">
+             xmlns:DataType="viewmodel:LoginViewModel">
 
     <Grid RowDefinitions="100, Auto, Auto, Auto"
           ColumnDefinitions=".25*,.50*,.25*"
@@ -12,7 +12,7 @@
           ColumnSpacing="10"
           HorizontalOptions="CenterAndExpand">
 
-        <Label Text="Welcome to {AppName}!" 
+        <Label Text="Welcome to Money Tracker!" 
                Grid.ColumnSpan="3"
                HorizontalOptions="Center"
                FontSize="Large"
@@ -59,7 +59,7 @@
         <Button Text="Login" 
                 Grid.Row="3" 
                 Grid.Column="0"
-                Command="{Binding LoginCommand}"
+                Command="{Binding LoginCommand}" 
                 />
 
         <Button Text="Forgot username or password?" 
@@ -70,6 +70,7 @@
                 HorizontalOptions="StartAndExpand"
                 VerticalOptions="EndAndExpand"
                 Command="{Binding ForgotCommand}"
+                CommandParameter="{Binding Username}"
                 />
 
     </Grid>

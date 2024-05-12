@@ -25,11 +25,14 @@ public static class MauiProgram
         builder.Services.AddTransient<UserPage>();
         builder.Services.AddTransient<AccountPage>();
         builder.Services.AddTransient<TransactionsPage>();
-        builder.Services.AddTransient<ForgotUsernameOrPasswordPage>();
+        builder.Services.AddTransient<PasswordResetPage>();
         builder.Services.AddTransient<CreateUserPage>();
 
         builder.Services.AddTransient<AccountViewModel>();
         builder.Services.AddTransient<AutoPayViewModel>();
+        builder.Services.AddTransient<CreateUserViewModel>();
+        builder.Services.AddTransient<HomeViewModel>();
+        builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<LoansViewModel>();
         builder.Services.AddTransient<SavingsBucketsViewModel>();
         builder.Services.AddTransient<TransactionsViewModel>();

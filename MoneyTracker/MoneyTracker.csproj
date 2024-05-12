@@ -78,6 +78,9 @@
 	  <Compile Update="Pages\CreateUserPage.xaml.cs">
 	    <DependentUpon>CreateUserPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Pages\PasswordResetPage.xaml.cs">
+	    <DependentUpon>PasswordResetPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Pages\LoginPage.xaml.cs">
 	    <DependentUpon>LoginPage.xaml</DependentUpon>
 	  </Compile>
@@ -90,7 +93,7 @@
 	  <MauiXaml Update="Pages\CreateUserPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Pages\ForgotUsernameOrPasswordPage.xaml">
+	  <MauiXaml Update="Pages\PasswordResetPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\HomePage.xaml">
@@ -102,12 +105,6 @@
 	  <MauiXaml Update="Pages\UserPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Update="Databases\MoneyTracker.db">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
 	</ItemGroup>
 
 	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadUnhandledDeviceExceptionMoneyTrackerHideInfoBar="True" /></VisualStudio></ProjectExtensions>
