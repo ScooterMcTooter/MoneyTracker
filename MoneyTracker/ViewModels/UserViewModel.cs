@@ -5,18 +5,32 @@ using MoneyTracker.Pages;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
 namespace MoneyTracker.ViewModels;
 
+/// <summary>
+/// ViewModel for handling user-related operations.
+/// </summary>
 public partial class UserViewModel : ObservableValidator
 {
-
+    /// <summary>
+    /// Gets or sets the user's ID.
+    /// </summary>
+    private int _id;
     [Key]
-    public int Id { get; set; }
+    public int Id
+    {
+        get => _id;
+        set => SetProperty(ref _id, value);
+    }
 
+    /// <summary>
+    /// Gets or sets the user's phone number.
+    /// </summary>
     private string? _phoneNumber;
     public string? PhoneNumber
     {
@@ -37,8 +51,10 @@ public partial class UserViewModel : ObservableValidator
         }
     }
 
+    /// <summary>
+    /// Gets or sets the user's email.
+    /// </summary>
     private string? _userEmail;
-
     public string? UserEmail
     {
         get => _userEmail;
@@ -49,22 +65,31 @@ public partial class UserViewModel : ObservableValidator
         }
     }
 
+    /// <summary>
+    /// Validates the phone number format.
+    /// </summary>
+    /// <param name="phoneNumber">The phone number to validate.</param>
+    /// <returns>True if the phone number is valid, false otherwise.</returns>
     private bool IsValidPhoneNumber(string phoneNumber)
     {
-        // Use regular expression to validate phone number format
-        // This regular expression pattern checks for a basic phone number format
-        // You can modify it to fit your specific requirements
         string pattern = @"^\(\d{3}\) \d{3}-\d{4}$";
         return Regex.IsMatch(phoneNumber, pattern);
     }
 
+    /// <summary>
+    /// Validates the password format.
+    /// </summary>
+    /// <param name="password">The password to validate.</param>
+    /// <returns>True if the password is valid, false otherwise.</returns>
     private bool IsValidPassword(string password)
     {
         string pattern = @"^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{10,20}$";
         return Regex.IsMatch(password, pattern);
     }
 
-
+    /// <summary>
+    /// Gets or sets the user's first name.
+    /// </summary>
     private string? _firstName = Environment.UserName ?? string.Empty;
     [Required]
     public string? FirstName
@@ -77,6 +102,9 @@ public partial class UserViewModel : ObservableValidator
         }
     }
 
+    /// <summary>
+    /// Gets or sets the user's last name.
+    /// </summary>
     private string? _lastName;
     [Required]
     public string? LastName
@@ -89,6 +117,9 @@ public partial class UserViewModel : ObservableValidator
         }
     }
 
+    /// <summary>
+    /// Gets or sets the user's suffix.
+    /// </summary>
     private string? _suffix;
     public string? Suffix
     {
@@ -96,6 +127,9 @@ public partial class UserViewModel : ObservableValidator
         set => SetProperty(ref _suffix, value);
     }
 
+    /// <summary>
+    /// Gets or sets the user's password.
+    /// </summary>
     private string? _password;
     [Required]
     [PasswordPropertyText]
@@ -105,11 +139,18 @@ public partial class UserViewModel : ObservableValidator
         get => _password;
         set
         {
+            if (value != null)
+            {
+                value = value.Trim().Replace(" ", string.Empty);
+            }
             SetProperty(ref _password, value);
             ValidateProperty(value);
         }
     }
 
+    /// <summary>
+    /// Gets or sets the user's username.
+    /// </summary>
     private string? _username;
     [Required]
     public string? Username
@@ -117,231 +158,168 @@ public partial class UserViewModel : ObservableValidator
         get => _username;
         set
         {
+            if (value != null)
+            {
+                value = value.Trim().Replace(" ", string.Empty);
+            }
             SetProperty(ref _username, value);
             ValidateProperty(value);
         }
     }
 
+    /// <summary>
+    /// Gets or sets the user's date of birth.
+    /// </summary>
     private DateTime? _dob;
     public DateTime? Dob
     {
         get => _dob;
         set
         {
-            if (value.HasValue && value.Value > DateTime.Now)
+            if (value.HasValue)
             {
-                // notify the user that it cannot be a future date
-                Shell.Current.DisplayAlert("Invalid Date", "Date of birth cannot be in the future", "OK");
-            }
-            else
-            {
+                if (value.Value > DateTime.Now)
+                {
+                    Shell.Current.DisplayAlert("Invalid Date", "Date of birth cannot be in the future", "OK");
+                }
+
+                if ((DateTime.Now.Year - value.Value.Year) < 18)
+                {
+                    Shell.Current.DisplayAlert("Invalid Date", "You have to be at least 18 to use this app.", "OK");
+                }
+
                 SetProperty(ref _dob, value);
             }
         }
     }
 
+    /// <summary>
+    /// Gets or sets the user's loans.
+    /// </summary>
     public List<LoansViewModel>? Loans { get; set; }
 
+    /// <summary>
+    /// Gets or sets the user's auto pays.
+    /// </summary>
     [ForeignKey("AutoPayViewModel")]
     public virtual List<AutoPayViewModel>? AutoPays { get; set; }
 
+    /// <summary>
+    /// Gets or sets the user's accounts.
+    /// </summary>
     [ForeignKey("AccountViewModel")]
     public virtual List<AccountViewModel>? Accounts { get; set; }
 
+    /// <summary>
+    /// Gets or sets the user's savings buckets.
+    /// </summary>
     [ForeignKey("SavingsBucketsViewModel")]
     public virtual List<SavingsBucketsViewModel>? SavingsBuckets { get; set; }
 
+    /// <summary>
+    /// Gets or sets the current password.
+    /// </summary>
     [ObservableProperty]
     string? currentPassword;
+
+    /// <summary>
+    /// Gets or sets the new password.
+    /// </summary>
     [ObservableProperty]
     string? newPassword;
+
+    /// <summary>
+    /// Gets or sets the repeated new password.
+    /// </summary>
     [ObservableProperty]
     string? repeatNewPassword;
+
+    /// <summary>
+    /// Gets or sets the visibility of the change password.
+    /// </summary>
     [ObservableProperty]
     bool isChangePasswordVisible;
+
+    /// <summary>
+    /// Gets or sets the visibility of the create user.
+    /// </summary>
     [ObservableProperty]
     bool isCreateUserVisible;
 
+    /// <summary>
+    /// The database context.
+    /// </summary>
     private readonly ApplicationDbContext _db;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UserViewModel"/> class.
+    /// </summary>
+    /// <param name="db">The database context.</param>
     public UserViewModel(ApplicationDbContext db)
     {
         _db = db;
     }
 
-    private string HashPassword(string? p)
-    {
-        using (SHA256 sha256Hash = SHA256.Create())
-        {
-            byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(p));
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                builder.Append(bytes[i].ToString("x2"));
-            }
-            return builder.ToString();
-        }
-    }
-
+    /// <summary>
+    /// Changes the password.
+    /// </summary>
     [RelayCommand]
     async Task ChangePassword()
     {
-        if (HashPassword(CurrentPassword) != _password)
-        {
-            // The current password is incorrect
-            // Display an error message
-            await Shell.Current.DisplayAlert("Invalid Password", "The current password was incorrect", "OK");
-            return;
-        }
-
-        if (NewPassword != RepeatNewPassword)
-        {
-            // Display an error message or perform any other necessary action
-            await Shell.Current.DisplayAlert("Passwords Do Not Match", "The new passwords do not match", "OK");
-            return;
-        }
-
-        _password = HashPassword(NewPassword);
-    }
-
-    [RelayCommand]
-    async Task Create()
-    {
-        await Shell.Current.GoToAsync(nameof(CreateUserPage));
-    }
-
-    [RelayCommand]
-    async Task CreateUser()
-    {
         try
         {
-            if (string.IsNullOrEmpty(PhoneNumber) || !IsValidPhoneNumber(PhoneNumber))
+            if (CurrentPassword != _password)
             {
-                // Display an error message or perform any other necessary action
-                await Shell.Current.DisplayAlert("Invalid Phone Number", "Please enter a valid phone number", "OK");
+                // The current password is incorrect
+                // Display an error message
+                await Shell.Current.DisplayAlert("Invalid Password", "The current password was incorrect", "OK");
                 return;
             }
 
-            // Validate the email address before proceeding with the creation process
-            if (string.IsNullOrEmpty(UserEmail) || !new EmailAddressAttribute().IsValid(UserEmail))
+            if (NewPassword != RepeatNewPassword)
             {
                 // Display an error message or perform any other necessary action
-                await Shell.Current.DisplayAlert("Invalid Email", "Please enter a valid email address", "OK");
+                await Shell.Current.DisplayAlert("Passwords Do Not Match", "The new passwords do not match", "OK");
                 return;
             }
 
-            // Validate the password before proceeding with the creation process
-            if (string.IsNullOrEmpty(Password) || !IsValidPassword(Password))
+            _password = new Helper().HashPassword(NewPassword);
+            var user = await _db.userModels.FirstOrDefaultAsync(u => u.Id == Id);
+            if (user != null)
             {
-                // Display an error message or perform any other necessary action
-                await Shell.Current.DisplayAlert("Invalid Password", Constants.PasswordReq, "OK");
-                return;
+                user.Password = _password;
+                await _db.SaveChangesAsync();
             }
-
-            // Check if the username already exists
-            if (await _db.userViewModels.AnyAsync(u => u.Username == Username))
-            {
-                // Display an error message or perform any other necessary action
-                await Shell.Current.DisplayAlert("Username Exists", "The username already exists", "OK");
-                return;
-            }
-
-            // Check if the email already exists
-            if (await _db.userViewModels.AnyAsync(u => u.UserEmail == UserEmail))
-            {
-                // Display an error message or perform any other necessary action
-                await Shell.Current.DisplayAlert("Email Exists", "The email already exists", "OK");
-                return;
-            }
-
-            // Check if the phone number already exists
-            if (await _db.userViewModels.AnyAsync(u => u.PhoneNumber == PhoneNumber))
-            {
-                // Display an error message or perform any other necessary action
-                await Shell.Current.DisplayAlert("Phone Number Exists", "The phone number already exists", "OK");
-                return;
-            }
-
-            // Hash the password before saving it to the database
-            string hashedPassword = HashPassword(Password ?? "changeme123");
-
-            // Create a new user
-            var user = new UserViewModel(_db)
-            {
-                FirstName = FirstName,
-                LastName = LastName,
-                Suffix = Suffix,
-                Username = Username,
-                Password = hashedPassword,
-                UserEmail = UserEmail,
-                PhoneNumber = PhoneNumber,
-                Dob = Dob
-            };
-
-            // Save the new user to the database
-            _db.userViewModels.Add(user);
-            await _db.SaveChangesAsync();
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Unknown Exception Occured", $"StackTrace:{Environment.NewLine}{ex.StackTrace}", "Ok");
-            throw;
+            await Shell.Current.DisplayAlert("Error", $"Failed to update password: {ex}", "OK");
         }
 
-        // Proceed to the home page
-        await Shell.Current.GoToAsync(nameof(HomePage));
     }
 
-    [RelayCommand]
-    async Task Login()
-    {
-        if (_password == "changeme123")
-        {
-            // The password does not meet the requirements
-            await ChangeVisablity();
-            return;
-        }
-
-        string hashedPassword = HashPassword(_password);
-        var user = await _db.userViewModels.FirstOrDefaultAsync(u => u.Username == Username && u.Password == hashedPassword);
-
-        if (user != null)
-        {
-            Constants.IsAuthenticated = true;
-            await Shell.Current.GoToAsync(nameof(HomePage));
-        }
-        else
-        {
-            // The login failed
-            // Create a notification that the login failed   
-        }
-    }
-
-    //take me to the Account page
+    /// <summary>
+    /// Navigates to the account page.
+    /// </summary>
     [RelayCommand]
     async Task Account()
     {
         await Shell.Current.GoToAsync(nameof(AccountPage));
     }
 
-    //take me to the forgot username or password page
+    /// <summary>
+    /// Navigates to the password reset page.
+    /// </summary>
     [RelayCommand]
-    async Task Forget(string user)
+    async Task Forgot(string username)
     {
-        await Shell.Current.GoToAsync(nameof(ForgotUsernameOrPasswordPage), new Dictionary<string, object>
-        {
-            { nameof(ForgotUsernameOrPasswordPage), user }
-        });
+        await Shell.Current.GoToAsync($"{nameof(PasswordResetPage)}?username={username}");
     }
 
+    /// <summary>
+    /// Logs out the user.
+    /// </summary>
     [RelayCommand]
-    async Task ChangeVisablity()
-    {
-        IsChangePasswordVisible = !IsChangePasswordVisible;
-        IsCreateUserVisible = !IsCreateUserVisible;
-        await Shell.Current.GoToAsync(nameof(CreateUserPage));
-    }
-
     async Task Logout()
     {
         Constants.IsAuthenticated = false;

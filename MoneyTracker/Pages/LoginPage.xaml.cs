@@ -1,14 +1,12 @@
 ﻿using MoneyTracker.ViewModels;
 
-namespace MoneyTracker
-{
-    public partial class LoginPage : ContentPage
-    {
-        public LoginPage(UserViewModel vm)
-        {
-            InitializeComponent();
-            BindingContext = vm;
-        }
-    }
+namespace MoneyTracker.Pages;
 
+public partial class LoginPage : ContentPage
+{
+    public LoginPage(LoginViewModel vm)
+    {
+        InitializeComponent();
+        BindingContext = vm;
+    }
 }

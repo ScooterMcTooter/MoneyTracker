@@ -4,7 +4,7 @@ namespace MoneyTracker.Pages;
 
 public partial class AccountPage : ContentPage
 {
-	public AccountPage(UserViewModel vm)
+	public AccountPage(AccountViewModel vm)
 	{
 		InitializeComponent();
 		BindingContext = vm;
