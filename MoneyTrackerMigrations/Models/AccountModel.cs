@@ -1,9 +1,8 @@
-﻿using MoneyTracker.ViewModels;
+﻿using MoneyTrackerMigrations.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 
-namespace MoneyTracker.Models
+namespace MoneyTrackerMigrations.Models
 {
     public class AccountModel
     {

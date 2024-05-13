@@ -18,7 +18,14 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        builder.Services.AddDbContext<ApplicationDbContext>();
+        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        {
+#if DEBUG
+            options.UseSqlite("Data Source=MoneyTracker_dev.db");
+#else
+            options.UseSqlite("Data Source=MoneyTracker.db");
+#endif
+        });
 
         builder.Services.AddTransient<HomePage>();
         builder.Services.AddTransient<LoginPage>();

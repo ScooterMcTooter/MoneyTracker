@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MoneyTracker.Models;
+using MoneyTrackerMigrations.Models;
 using MoneyTracker.Pages;
 
 namespace MoneyTracker.ViewModels;
@@ -53,9 +53,7 @@ public partial class LoginViewModel : ObservableObject
     {
         try
         {
-            List<UserModel> test = _db.userModels.ToList();
             string pass;
-            var a = _db.userModels.FirstOrDefault(u => u.UserName != null && u.Password != null && u.UserName.Equals(_username));
             if (_password == "changeme123")
             {
                 return;

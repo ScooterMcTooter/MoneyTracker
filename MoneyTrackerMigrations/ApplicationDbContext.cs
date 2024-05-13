@@ -1,10 +1,13 @@
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using MoneyTracker.Models;
-using MoneyTracker.ViewModels;
+using MoneyTrackerMigrations.Models;
+using Microsoft.EntityFrameworkCore.Sqlite;
 
 public class ApplicationDbContext : DbContext
 {
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+    {
+    }
+
     public DbSet<AccountModel> accountModels { get; set; }
     public DbSet<AutoPayModel> autoPayModels { get; set; }
     public DbSet<LoanModel> loanModels { get; set; }
@@ -15,33 +18,13 @@ public class ApplicationDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
 #if DEBUG
-        string dbPath = "MoneyTracker_dev.db";
+        string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MoneyTracker_dev.db");
 #else
-        string dbPath = "MoneyTracker.db";
+        string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "MoneyTracker.db");
 #endif
 
-        string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        string myAppDataPath = Path.Combine(appDataPath, "MoneyTracker");
-
-        // Create the directory if it doesn't exist
-        if (!Directory.Exists(myAppDataPath))
-        {
-            Directory.CreateDirectory(myAppDataPath);
-        }
-
-        // Specify the path to the database file
-        dbPath = Path.Combine(myAppDataPath, dbPath);
-
-        // Create the SQLite database if it doesn't exist
-        if (!File.Exists(dbPath))
-        {
-            using (var connection = new SqliteConnection($"Data Source={dbPath}"))
-            {
-                optionsBuilder.UseSqlite(connection.ConnectionString);
-            }
-        }
-        else
-            optionsBuilder.UseSqlite($"Data Source={dbPath}");
+        optionsBuilder.UseSqlite($"Filename={dbPath}");
+        //optionsBuilder.UseSqlite($"Data Source={dbPath}");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -127,7 +110,7 @@ public class ApplicationDbContext : DbContext
             .HasOne(l => l.Account)
             .WithMany(u => u.Buckets)
             .HasForeignKey(l => l.AccountId);
-        
+
         //TransactionModel to AutoPayModel
         modelBuilder.Entity<TransactionModel>()
             .HasOne(l => l.AutoPay)

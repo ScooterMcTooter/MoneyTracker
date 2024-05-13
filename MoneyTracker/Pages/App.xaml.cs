@@ -1,18 +1,21 @@
-﻿namespace MoneyTracker
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace MoneyTracker
 {
     public partial class App : Application
     {
-        public App()
+        private readonly ApplicationDbContext _db;
+
+        public App(ApplicationDbContext db)
         {
-            InitializeComponent();
-
-            using (ApplicationDbContext db = new ApplicationDbContext())
+            using (_db = db)
             {
-                db.Database.EnsureDeleted();
-                db.Database.EnsureCreated();
-            }
+                InitializeComponent();
 
-            MainPage = new AppShell();
+                _db.Database.Migrate();
+
+                MainPage = new AppShell();
+            }
         }
     }
 }

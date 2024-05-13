@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MoneyTracker.Models;
+namespace MoneyTrackerMigrations.Models;
 
 public class BucketModel
 {

@@ -7,7 +7,7 @@
              Title="Home">
 
     <Grid RowSpacing="10"
-          RowDefinitions=".15*,*,.15*">
+          ColumnDefinitions=".15*,*,.15*">
         <Button Text="Add Transaction"
                 Command="{Binding AddTransactionCommand}"
                 Grid.Row="0"
@@ -22,11 +22,10 @@
         
         <Button Text="Logout"
                 Command="{Binding LogoutCommand}"
-                Grid.Row="2"
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                HorizontalOptions="FillAndExpand"
-                VerticalOptions="FillAndExpand"
+                Grid.Row="0"
+                Grid.Column="2"
+                HorizontalOptions="End"
+                VerticalOptions="Start"
                 BackgroundColor="LightBlue"
                 TextColor="White"
                 FontSize="Large"
