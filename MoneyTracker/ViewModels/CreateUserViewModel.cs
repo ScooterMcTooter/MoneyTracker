@@ -2,9 +2,9 @@
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Text.RegularExpressions;
-using System.Data.Entity.Infrastructure;
-using MoneyTracker.Models;
+using MoneyTrackerMigrations.Models;
 using MoneyTracker.Pages;
+using Microsoft.EntityFrameworkCore;
 
 namespace MoneyTracker.ViewModels;
 
