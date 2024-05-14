@@ -1,0 +1,36 @@
+name: Create Pull Request
+
+on:
+  push:
+    branches:
+      - '**'
+      - '!master'
+
+jobs:
+  create_pull_request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git fetch origin master
+          ahead=`git rev-list --count origin/master..HEAD`
+          if [ "$ahead" -eq "0" ]; then
+            echo "No changes to push, skipping..."
+            echo "::set-output name=skip::true"
+          fi
+
+      - name: Create Pull Request
+        if: ${{ !steps.changes.outputs.skip }}
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: 'master'
+          title: 'New changes from ${GITHUB_REF#refs/heads/}'
+          body: 'This pull request includes the latest changes from the ${GITHUB_REF#refs/heads/} branch.'
+          draft: false
