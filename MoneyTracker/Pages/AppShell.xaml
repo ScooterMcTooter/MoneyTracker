@@ -4,12 +4,32 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:MoneyTracker.Pages"
-    Shell.FlyoutBehavior="Disabled"
-    Title="MoneyTracker">
+    Shell.FlyoutBehavior="Flyout"
+    Title="Home">
+
+    <Shell.FlyoutHeader>
+        <Label Text="Home" />
+    </Shell.FlyoutHeader>
 
     <ShellContent
-        Title="Login"
-        ContentTemplate="{DataTemplate local:LoginPage}"
-        Route="LoginPage" />
+        Title="Home"
+        ContentTemplate="{DataTemplate local:HomePage}"
+        Route="HomePage" />
 
+    <ShellContent
+        Title="Accounts"
+        ContentTemplate="{DataTemplate local:AccountPage}"
+        Route="AccountPage" />
+
+    <ShellContent
+        Title="Transactions"
+        ContentTemplate="{DataTemplate local:TransactionsPage}"
+        Route="TransactionsPage" />
+
+    <!--<Shell.FlyoutFooter>
+        <ShellContent
+        Title="Settings"
+        ContentTemplate="{DataTemplate local:SettingsPage}"
+        Route="SettingsPage" />
+    </Shell.FlyoutFooter>-->
 </Shell>
