@@ -5,7 +5,14 @@
              xmlns:viewmodel="clr-namespace:MoneyTracker.ViewModels"
              xmlns:DataType="viewmodel:SettingsViewModel"
              Title="Settings">
-    <Grid>
-        
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto"
+          ColumnDefinitions=".2*,.35*,Auto,*"
+          RowSpacing="10">
+        <Frame Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Padding="10" CornerRadius="10">
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Currency" Grid.Column="1"/>
+                <Entry IsReadOnly="True" Text="{Binding Currency}" Grid.Column="2"/>
+            </StackLayout>
+        </Frame>
     </Grid>
 </ContentPage>
