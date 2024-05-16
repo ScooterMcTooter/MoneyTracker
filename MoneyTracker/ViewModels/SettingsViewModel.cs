@@ -1,16 +1,59 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using MoneyTrackerMigrations.Models;
 
 namespace MoneyTracker.ViewModels;
 
 public partial class SettingsViewModel : ObservableObject
 {
-    public string? Username { get; set; }
-    public string? Password { get; set; }
-    public string? Email { get; set; }
-    public string? Currency { get; set; } = "USD";
-    public string? Language { get; set; } = "ENG";
-    public bool IsDarkMode { get; set; }
-    public bool IsNotificationsEnabled { get; set; }
-    public bool IsBiometricEnabled { get; set; }
-    public bool IsLocationEnabled { get; set; }
+    #region ObservableProperties
+    [ObservableProperty]
+    UserModel? user;
+    [ObservableProperty]
+    string? currency = "USD";
+    [ObservableProperty]
+    string? language = "ENG";
+    [ObservableProperty]
+    bool isDarkMode = true;
+    [ObservableProperty]
+    bool isNotificationsEnabled = false;
+    [ObservableProperty]
+    bool isBiometricEnabled = false;
+    [ObservableProperty]
+    bool isLocationEnabled = false;
+    [ObservableProperty]
+    bool isDisplayed = false;
+    #endregion
+    #region RelayCommands
+    //[RelayCommand]
+    //async Task Save()
+    //{
+    //    // Save settings
+
+    //}
+
+    //[RelayCommand]
+    //async Task Cancel()
+    //{
+    //    // Cancel changes
+    //}
+
+    //[RelayCommand]
+    //async Task Reset()
+    //{
+    //    // Reset settings
+    //}
+
+    //[RelayCommand]
+    //async Task Logout()
+    //{
+    //    // Logout user
+    //}
+
+    [RelayCommand]
+    void SetVisibility()
+    {
+        IsDisplayed = !IsDisplayed;
+    }
+    #endregion
 }

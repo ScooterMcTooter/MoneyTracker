@@ -4,12 +4,78 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:MoneyTracker.Pages"
+    xmlns:viewmodels="clr-namespace:MoneyTracker.ViewModels"
+    xmlns:DataTypes="viewmodel:SettingsViewModel"
     Shell.FlyoutBehavior="Flyout"
     Title="Home">
 
     <Shell.FlyoutHeader>
-        <Label Text="Home" />
+        <Label Text="Home" HorizontalTextAlignment="Center" FontSize="20"/>
     </Shell.FlyoutHeader>
+
+    <Shell.FlyoutFooter>
+        <StackLayout>
+            <Button BackgroundColor="Transparent" TextColor="White" Text="Settings" FontSize="16" Command="{Binding SetVisibilityCommand}"/>
+            <Grid IsVisible="{Binding IsDisplayed}"
+                  RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                  ColumnDefinitions=".3*,Auto,.2*">
+                <!--<ImageButton Source="settings.png" Command="{Binding SettingsCommand}" />-->
+                <Frame BackgroundColor="Transparent" Grid.ColumnSpan="3" Grid.Row="1">
+                    <Grid Grid.ColumnSpan="2"
+                        ColumnDefinitions=".2*,Auto,.2*"
+                        RowDefinitions="Auto"
+                        HorizontalOptions="CenterAndExpand"
+                        VerticalOptions="CenterAndExpand">
+                        <Label Grid.Column="1" Text="Dark Mode" VerticalOptions="Center" FontSize="12"/>
+                        <CheckBox Grid.Column="2" Grid.Row="0" IsChecked="{Binding IsDarkMode}" />
+                    </Grid>
+                </Frame>
+                <Frame BackgroundColor="Transparent" Grid.ColumnSpan="3" Grid.Row="2">
+                    <Grid Grid.ColumnSpan="2"
+                        ColumnDefinitions=".2*,Auto,.2*"
+                        RowDefinitions="Auto"
+                        RowSpacing="5"
+                        HorizontalOptions="CenterAndExpand"
+                        VerticalOptions="Center">
+                        <Label Grid.Column="1" Text="Enable Notifications" VerticalOptions="Center" FontSize="12"/>
+                        <CheckBox Grid.Column="2" Grid.Row="0" IsChecked="{Binding IsNotificationsEnabled}" />
+                    </Grid>
+                </Frame>
+                <Frame BackgroundColor="Transparent" Grid.ColumnSpan="3" Grid.Row="3">
+                    <Grid Grid.ColumnSpan="2"
+                        ColumnDefinitions=".2*,Auto,.2*"
+                        RowDefinitions="Auto"
+                        RowSpacing="5"
+                        HorizontalOptions="CenterAndExpand"
+                        VerticalOptions="Center">
+                        <Label Grid.Column="1" Text="Enable Location" VerticalOptions="Center" FontSize="12"/>
+                        <CheckBox Grid.Column="2" Grid.Row="0" IsChecked="{Binding IsLocationEnabled}" />
+                    </Grid>
+                </Frame>
+                <Frame BackgroundColor="Transparent" Grid.ColumnSpan="3" Grid.Row="4">
+                    <Grid Grid.ColumnSpan="2"
+                        ColumnDefinitions=".2*,Auto,.2*"
+                        RowDefinitions="Auto"
+                        RowSpacing="5"
+                        HorizontalOptions="CenterAndExpand"
+                        VerticalOptions="Center">
+                        <Label Grid.Column="1" Text="Enable Biometrics" VerticalOptions="Center" FontSize="12"/>
+                        <CheckBox Grid.Column="2" Grid.Row="0" IsChecked="{Binding IsBiometricEnabled}" />
+                    </Grid>
+                </Frame>
+                <Frame BackgroundColor="Transparent" Grid.ColumnSpan="3" Grid.Row="0">
+                    <Grid Grid.ColumnSpan="2"
+                        ColumnDefinitions=".2*,Auto,.2*"
+                        RowDefinitions="Auto,Auto"
+                        RowSpacing="5"
+                        HorizontalOptions="CenterAndExpand"
+                        VerticalOptions="Center">
+                        <Button BackgroundColor="Transparent" TextColor="White" Grid.Column="1" Grid.Row="1" Text="Reset Password" HorizontalOptions="Start" FontSize="14"/>
+                    </Grid>
+                </Frame>
+            </Grid>
+        </StackLayout>
+    </Shell.FlyoutFooter>
 
     <ShellContent
         Title="Home"
@@ -17,7 +83,7 @@
         Route="HomePage" />
 
     <ShellContent
-        Title="Accounts"
+        Title="Various Money Accounts"
         ContentTemplate="{DataTemplate local:AccountPage}"
         Route="AccountPage" />
 
@@ -26,10 +92,5 @@
         ContentTemplate="{DataTemplate local:TransactionsPage}"
         Route="TransactionsPage" />
 
-    <Shell.FlyoutFooter>
-        <ShellContent
-        Title="Settings"
-        ContentTemplate="{DataTemplate local:SettingsPage}"
-        Route="SettingsPage" />
-    </Shell.FlyoutFooter>
+
 </Shell>

@@ -14,7 +14,7 @@ namespace MoneyTracker
                 db.Database.Migrate();
             }
 
-            MainPage = new AppShell();
+            MainPage = new AppShell(new ViewModels.SettingsViewModel());
         }
 
     }
