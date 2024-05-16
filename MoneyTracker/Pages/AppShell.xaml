@@ -26,10 +26,10 @@
         ContentTemplate="{DataTemplate local:TransactionsPage}"
         Route="TransactionsPage" />
 
-    <!--<Shell.FlyoutFooter>
+    <Shell.FlyoutFooter>
         <ShellContent
         Title="Settings"
         ContentTemplate="{DataTemplate local:SettingsPage}"
         Route="SettingsPage" />
-    </Shell.FlyoutFooter>-->
+    </Shell.FlyoutFooter>
 </Shell>

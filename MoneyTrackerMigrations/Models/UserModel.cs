@@ -25,4 +25,5 @@ public class UserModel
     public virtual ICollection<TransactionModel>? Transactions { get; set; } = null;
     public virtual ICollection<AutoPayModel>? AutoPay { get; set; } = null;
     public virtual ICollection<BucketModel>? Buckets { get; set; } = null;
+    public virtual SettingsModel? Settings { get; set; } = null;
 }
