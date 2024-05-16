@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MoneyTrackerMigrations.Models;
 using Microsoft.EntityFrameworkCore.Sqlite;
+using Microsoft.EntityFrameworkCore.Design;
 
 public class ApplicationDbContext : DbContext
 {
@@ -14,6 +15,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<BucketModel> bucketModels { get; set; }
     public DbSet<TransactionModel> transactionModels { get; set; }
     public DbSet<UserModel> userModels { get; set; }
+    public DbSet<SettingsModel> settingsModels { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -36,6 +38,7 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<BucketModel>().ToTable("SavingsBuckets").HasKey(i => i.Id);
         modelBuilder.Entity<TransactionModel>().ToTable("Transactions").HasKey(i => i.Id);
         modelBuilder.Entity<UserModel>().ToTable("Users").HasKey(i => i.Id);
+        modelBuilder.Entity<SettingsModel>().ToTable("Settings").HasKey(i => i.Id);
         #endregion
 
         #region Relationships
@@ -140,6 +143,24 @@ public class ApplicationDbContext : DbContext
             .HasOne(l => l.Loan)
             .WithMany(u => u.AutoPay)
             .HasForeignKey(l => l.LoanId);
+
+        //SettingsModel to UserModel one to one
+        modelBuilder.Entity<SettingsModel>()
+            .HasOne(l => l.User)
+            .WithOne(u => u.Settings)
+            .HasForeignKey<SettingsModel>(l => l.UserId);
         #endregion
     }
 }
+
+public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
+{
+    public ApplicationDbContext CreateDbContext(string[] args)
+    {
+        var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+        optionsBuilder.UseSqlite("Data Source=MoneyTracker_dev.db");
+
+        return new ApplicationDbContext(optionsBuilder.Options);
+    }
+}
+

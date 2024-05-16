@@ -4,18 +4,18 @@ namespace MoneyTracker
 {
     public partial class App : Application
     {
-        private readonly ApplicationDbContext _db;
-
-        public App(ApplicationDbContext db)
+        public App(IServiceProvider serviceProvider)
         {
-            using (_db = db)
+            InitializeComponent();
+
+            using (var scope = serviceProvider.CreateScope())
             {
-                InitializeComponent();
-
-                _db.Database.Migrate();
-
-                MainPage = new AppShell();
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                db.Database.Migrate();
             }
+
+            MainPage = new AppShell();
         }
+
     }
 }
