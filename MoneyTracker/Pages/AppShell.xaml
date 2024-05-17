@@ -6,8 +6,19 @@
     xmlns:local="clr-namespace:MoneyTracker.Pages"
     xmlns:viewmodels="clr-namespace:MoneyTracker.ViewModels"
     xmlns:DataTypes="viewmodel:SettingsViewModel"
+    xmlns:behaviors="clr-namespace:CommunityToolkit.Maui.Behaviors;assembly=CommunityToolkit.Maui"
     Shell.FlyoutBehavior="Flyout"
+    ic
     Title="Home">
+
+    <Shell.Resources>
+        <ResourceDictionary>
+            <x:String x:Key="DynamicDarkModeText">Dark Mode</x:String>
+            <x:String x:Key="DynamicLightModeText">Light Mode</x:String>
+            <Color x:Key="LightModeTextColor">#000000</Color>
+            <Color x:Key="DarkModeTextColor">#FFFFFF</Color>
+        </ResourceDictionary>
+    </Shell.Resources>
 
     <Shell.FlyoutHeader>
         <Label Text="Home" HorizontalTextAlignment="Center" FontSize="20"/>
@@ -15,7 +26,7 @@
 
     <Shell.FlyoutFooter>
         <StackLayout>
-            <Button BackgroundColor="Transparent" TextColor="White" Text="Settings" FontSize="16" Command="{Binding SetVisibilityCommand}"/>
+            <Button BackgroundColor="Transparent" TextColor="{AppThemeBinding Light={DynamicResource LightModeTextColor}, Dark={DynamicResource DarkModeTextColor}}" Text="Settings" FontSize="16" Command="{Binding SetVisibilityCommand}"/>
             <Grid IsVisible="{Binding IsDisplayed}"
                   RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
                   ColumnDefinitions=".3*,Auto,.2*">
@@ -26,8 +37,10 @@
                         RowDefinitions="Auto"
                         HorizontalOptions="CenterAndExpand"
                         VerticalOptions="CenterAndExpand">
-                        <Label Grid.Column="1" Text="Dark Mode" VerticalOptions="Center" FontSize="12"/>
-                        <CheckBox Grid.Column="2" Grid.Row="0" IsChecked="{Binding IsDarkMode}" />
+                        <Button Grid.Column="1" BackgroundColor="Transparent" 
+                                    TextColor="{AppThemeBinding Light={DynamicResource LightModeTextColor}, Dark={DynamicResource DarkModeTextColor}}" 
+                                    Text="{Binding ThemeButton}" 
+                                    Command="{Binding SetDarkModeCommand}" />
                     </Grid>
                 </Frame>
                 <Frame BackgroundColor="Transparent" Grid.ColumnSpan="3" Grid.Row="2">
@@ -70,7 +83,9 @@
                         RowSpacing="5"
                         HorizontalOptions="CenterAndExpand"
                         VerticalOptions="Center">
-                        <Button BackgroundColor="Transparent" TextColor="White" Grid.Column="1" Grid.Row="1" Text="Reset Password" HorizontalOptions="Start" FontSize="14"/>
+                        <Button BackgroundColor="Transparent" 
+                                TextColor="{AppThemeBinding Light={DynamicResource LightModeTextColor}, Dark={DynamicResource DarkModeTextColor}}" 
+                                Grid.Column="1" Grid.Row="1" Text="Reset Password" HorizontalOptions="Start" FontSize="14"/>
                     </Grid>
                 </Frame>
             </Grid>
@@ -91,6 +106,5 @@
         Title="Transactions"
         ContentTemplate="{DataTemplate local:TransactionsPage}"
         Route="TransactionsPage" />
-
 
 </Shell>
