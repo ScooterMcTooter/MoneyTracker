@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using MoneyTrackerMigrations.Models;
 using MoneyTracker.Pages;
+using MoneyTrackerMigrations;
 
 namespace MoneyTracker.ViewModels;
 

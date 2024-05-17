@@ -10,7 +10,7 @@ namespace MoneyTracker
 
             using (var scope = serviceProvider.CreateScope())
             {
-                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var db = scope.ServiceProvider.GetRequiredService<MoneyTrackerMigrations.ApplicationDbContext>();
                 db.Database.Migrate();
             }
 

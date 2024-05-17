@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using MoneyTrackerMigrations.Models;
 using Microsoft.EntityFrameworkCore.Sqlite;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.VisualBasic;
+
+namespace MoneyTrackerMigrations;
 
 public class ApplicationDbContext : DbContext
 {
@@ -14,6 +17,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<LoanModel> loanModels { get; set; }
     public DbSet<BucketModel> bucketModels { get; set; }
     public DbSet<TransactionModel> transactionModels { get; set; }
+    public DbSet<TransactionTypeModel> transactionTypeModels { get; set; }
     public DbSet<UserModel> userModels { get; set; }
     public DbSet<SettingsModel> settingsModels { get; set; }
 
@@ -37,6 +41,7 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<LoanModel>().ToTable("Loans").HasKey(i => i.Id);
         modelBuilder.Entity<BucketModel>().ToTable("SavingsBuckets").HasKey(i => i.Id);
         modelBuilder.Entity<TransactionModel>().ToTable("Transactions").HasKey(i => i.Id);
+        modelBuilder.Entity<TransactionTypeModel>().ToTable("TransactionTypes").HasKey(i => i.Id);
         modelBuilder.Entity<UserModel>().ToTable("Users").HasKey(i => i.Id);
         modelBuilder.Entity<SettingsModel>().ToTable("Settings").HasKey(i => i.Id);
         #endregion
@@ -149,6 +154,93 @@ public class ApplicationDbContext : DbContext
             .HasOne(l => l.User)
             .WithOne(u => u.Settings)
             .HasForeignKey<SettingsModel>(l => l.UserId);
+
+        #endregion
+
+        #region SeedData
+        modelBuilder.Entity<TransactionTypeModel>().HasData(
+                       new TransactionTypeModel
+                       {
+                           Id = 1,
+                           Type = "Cash"
+                       },
+                       new TransactionTypeModel
+                       {
+                           Id = 2,
+                           Type = "Debit"
+                       },
+                       new TransactionTypeModel
+                       {
+                           Id = 3,
+                           Type = "Cash"
+                       },
+                       new TransactionTypeModel
+                       {
+                           Id = 4,
+                           Type = "Credit (Debit Card)"
+                       },
+                       new TransactionTypeModel
+                       {
+                           Id = 5,
+                           Type = "Credit (Credit Card)"
+                       },
+                       new TransactionTypeModel
+                       {
+                           Id = 6,
+                           Type = "ApplePay"
+                       }, new TransactionTypeModel
+                       {
+                           Id = 7,
+                           Type = "Venmo"
+                       }, new TransactionTypeModel
+                       {
+                           Id = 8,
+                           Type = "PayPal"
+                       }, new TransactionTypeModel
+                       {
+                           Id = 9,
+                           Type = "CashApp"
+                       }, new TransactionTypeModel
+                       {
+                           Id = 10,
+                           Type = "ACHRecurring"
+                       }, new TransactionTypeModel
+                       {
+                           Id = 11,
+                           Type = "ACHOnce"
+                       }, new TransactionTypeModel
+                       {
+                           Id = 12,
+                           Type = "Check"
+                       }, new TransactionTypeModel
+                       {
+                           Id = 13,
+                           Type = "InternalTransfer"
+                       }, new TransactionTypeModel
+                       {
+                           Id = 14,
+                           Type = "ExternalTransfer"
+                       }, new TransactionTypeModel
+                       {
+                           Id = 15,
+                           Type = "ATM Withdrawal"
+                       }, new TransactionTypeModel
+                       {
+                           Id = 16,
+                           Type = "ATM Deposit"
+                       }, new TransactionTypeModel
+                       {
+                           Id = 17,
+                           Type = "Mobile Deposit"
+                       }, new TransactionTypeModel
+                       {
+                           Id = 18,
+                           Type = "Deposit"
+                       }, new TransactionTypeModel
+                       {
+                           Id = 19,
+                           Type = "Other"
+                       });
         #endregion
     }
 }
@@ -158,7 +250,7 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
     public ApplicationDbContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-        optionsBuilder.UseSqlite("Data Source=MoneyTracker_dev.db");
+        optionsBuilder.UseSqlite(Constants.SetConnectionString().ToString());
 
         return new ApplicationDbContext(optionsBuilder.Options);
     }

@@ -39,15 +39,6 @@ public static class MauiProgram
         builder.Services.AddTransient<TransactionsViewModel>();
         builder.Services.AddTransient<UserViewModel>();
 
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        {
-#if DEBUG
-            options.UseSqlite("Data Source=MoneyTracker_dev.db");
-#else
-            options.UseSqlite("Data Source=MoneyTracker.db");
-#endif
-        });
-
 #if DEBUG
         builder.Logging.AddDebug();
 #endif

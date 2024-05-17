@@ -1,3 +1,5 @@
+using System.Security;
+
 namespace MoneyTrackerMigrations
 {
 
@@ -10,5 +12,25 @@ namespace MoneyTrackerMigrations
         public const string UsernameReq = "Username must be between 5 and 20 characters with no numbers or spaces.";
 
         public static DateTime MaxDate = DateTime.Now.AddYears(-18).Date;
+
+        public static SecureString? ConnectionString;
+
+        public static SecureString SetConnectionString()
+        {
+            ConnectionString = new SecureString();
+#if DEBUG
+            foreach (char c in "Data Source=MoneyTracker_dev.db")
+            {
+                ConnectionString.AppendChar(c);
+            }
+            ConnectionString.MakeReadOnly();
+#elif RELEASE
+            foreach (char c in "Data Source=MoneyTracker.db")
+            {
+                ConnectionString.AppendChar(c);
+            }
+#endif
+            return ConnectionString;
+        }
     }
 }
