@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using MoneyTrackerMigrations.Models;
 using MoneyTracker.Pages;
 using Microsoft.EntityFrameworkCore;
+using MoneyTrackerMigrations;
 
 namespace MoneyTracker.ViewModels;
 
