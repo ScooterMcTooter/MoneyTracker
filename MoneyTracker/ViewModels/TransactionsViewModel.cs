@@ -8,6 +8,8 @@ namespace MoneyTracker.ViewModels
         [Key]
         public int Id { get; set; }
         [ObservableProperty]
+        string? name;
+        [ObservableProperty]
         double amount;
         public UserViewModel? User { get; set; }
         [Required]

@@ -7,6 +7,8 @@ public class TransactionModel
     [Key]
     public int Id { get; set; }
     [Required]
+    public string Name { get; set; } = string.Empty;
+    [Required]
     public decimal Amount { get; set; }
     public string? Notes { get; set; }
     [Required]
