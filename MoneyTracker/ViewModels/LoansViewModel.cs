@@ -31,5 +31,7 @@ namespace MoneyTracker.ViewModels
         int? loanTerm = null;
         [ObservableProperty]
         string? loanType;
+        [ObservableProperty]
+        string? loanName;
     }
 }

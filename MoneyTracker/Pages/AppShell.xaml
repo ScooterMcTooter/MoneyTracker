@@ -6,8 +6,7 @@
     xmlns:local="clr-namespace:MoneyTracker.Pages"
     xmlns:viewmodels="clr-namespace:MoneyTracker.ViewModels"
     xmlns:DataTypes="viewmodel:SettingsViewModel"
-    Shell.FlyoutBehavior="Flyout"
-    Title="Home">
+    Shell.FlyoutBehavior="Flyout">
 
     <Shell.FlyoutHeader>
         <Label Text="Home" HorizontalTextAlignment="Center" FontSize="20"/>

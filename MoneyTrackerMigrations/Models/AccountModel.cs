@@ -12,7 +12,7 @@ namespace MoneyTrackerMigrations.Models
         public int UserId { get; set; }
         public virtual UserModel? User { get; set; }
         [Required]
-        public string Name { get; set; } = "Savings Default";
+        public string Name { get; set; } = string.Empty;
         [Required]
         public decimal Balance { get; set; } = 0;
         public string Provider { get; set; } = "Santander";
