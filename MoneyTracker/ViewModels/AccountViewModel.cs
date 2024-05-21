@@ -9,7 +9,7 @@ namespace MoneyTracker.ViewModels
     {
         [ForeignKey("UserViewModel")]
         [Key]
-        public int Id { get; set; } = 0;
+        public int Id { get; set; }
         public virtual UserViewModel? User { get; set; }
         [ObservableProperty]
         string accountName = string.Empty;

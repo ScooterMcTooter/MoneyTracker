@@ -6,7 +6,7 @@ public class LoanModel
 {
     [Key]
     public int Id { get; set; }
-    public string LoanName { get; set; }
+    public string LoanName { get; set; } = string.Empty;
     public double LoanAmount { get; set; }
     public double InterestRate { get; set; }
     public double MonthlyPayment { get; set; }

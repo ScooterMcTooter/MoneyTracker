@@ -9,7 +9,7 @@ public class TransactionModel
     [Required]
     public string Name { get; set; } = string.Empty;
     [Required]
-    public decimal Amount { get; set; }
+    public double Amount { get; set; }
     public string? Notes { get; set; }
     [Required]
     public DateTime Date { get; set; } = DateTime.Now.Date;

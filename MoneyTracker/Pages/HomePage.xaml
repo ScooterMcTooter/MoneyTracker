@@ -10,196 +10,293 @@
             Text="Charts"
             Command="{Binding ChartCommand}"/>
         <ToolbarItem
+            Text="Quick Add"
+            Command="{Binding QuickAddCommand}"/>
+        <ToolbarItem
             Text="Logout"                     
             Command="{Binding LogoutCommand}"/>
     </ContentPage.ToolbarItems>
-
-    <ScrollView HorizontalOptions="CenterAndExpand"
-                VerticalScrollBarVisibility="Never">
-        <Grid RowSpacing="10"
-          RowDefinitions="Auto,Auto"
-          HorizontalOptions="FillAndExpand">
-            <!--This is the basic information regarding all of your quick data-->
-            <Frame 
-            BackgroundColor="{Binding FrameColor}"
-            Grid.Column="1"
-            WidthRequest="{Binding Width}">
-                <ScrollView >
+    <ScrollView x:Name="HomeScroll" VerticalScrollBarVisibility="Never">
+        <Grid RowDefinitions="auto,auto,auto,auto,auto,*,auto">
+            <Grid RowSpacing="10"
+                  Grid.Row="0"
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                HorizontalOptions="FillAndExpand">
+                <!--This is the basic information regarding all of your quick data-->
+                <Frame 
+                    BackgroundColor="{Binding FrameColor}"
+                    WidthRequest="{Binding Width}">
                     <Grid ColumnDefinitions=".75*,.25*"
-                  HorizontalOptions="Start"
-                  RowDefinitions="auto,auto,auto,auto,auto,auto,auto,auto"
-                  RowSpacing="10">
+                            HorizontalOptions="Start"
+                            RowDefinitions="auto,auto,auto,auto,auto,auto,auto,auto"
+                            RowSpacing="10">
                         <Label Text="Total Balance: "
-                       FontSize="Medium"
-                       HorizontalOptions="Start"
-                       VerticalOptions="End"
-                       Grid.Row="7"/>
+                               FontSize="Medium"
+                               HorizontalOptions="Start"
+                               VerticalOptions="End"
+                               Grid.Row="7"/>
                         <Label Text="{Binding TotalBalance, StringFormat='${0}'}"
-                       TextColor="{Binding TotalBalanceColor}"
-                       FontSize="Medium"
-                       Grid.Column="1"
-                       Grid.Row="7"
-                       HorizontalOptions="End"
-                       VerticalOptions="End"/>
+                               TextColor="{Binding TotalBalanceColor}"
+                               FontSize="Medium"
+                               Grid.Column="1"
+                               Grid.Row="7"
+                               HorizontalOptions="End"
+                               VerticalOptions="End"/>
 
                         <Label Text="Income:    "
-                   FontSize="Medium"
-                   HorizontalOptions="Start"
-                   VerticalOptions="End"/>
+                               FontSize="Medium"
+                               HorizontalOptions="Start"
+                               VerticalOptions="End"/>
                         <Label Text="{Binding CurrentIncome, StringFormat='${0}'}"
-                       TextColor="{Binding CurrentIncomeColor}"
-                   FontSize="Medium"
-                   Grid.Column="1"
-                   HorizontalOptions="End"
-                   VerticalOptions="End"/>
+                               TextColor="{Binding CurrentIncomeColor}"
+                               FontSize="Medium"
+                               Grid.Column="1"
+                               HorizontalOptions="End"
+                               VerticalOptions="End"/>
 
                         <Label Text="Expenses:  "
-                   FontSize="Medium"
-                   HorizontalOptions="Start"
-                   VerticalOptions="End"
-                   Grid.Row="1"/>
+                               FontSize="Medium"
+                               HorizontalOptions="Start"
+                               VerticalOptions="End"
+                               Grid.Row="1"/>
                         <Label Text="{Binding CurrentExpenses, StringFormat='${0}'}"
-                   TextColor="{Binding CurrentExpensesColor}"
-                   FontSize="Medium"
-                   Grid.Column="1"
-                   Grid.Row="1"
-                   HorizontalOptions="Start"
-                   VerticalOptions="End"/>
+                               TextColor="{Binding CurrentExpensesColor}"
+                               FontSize="Medium"
+                               Grid.Column="1"
+                               Grid.Row="1"
+                               HorizontalOptions="Start"
+                               VerticalOptions="End"/>
 
                         <Label Text="{Binding BalanceString}    "
-                   FontSize="Medium"
-                   HorizontalOptions="Start"
-                   VerticalOptions="End"
-                   Grid.Row="2"/>
+                               FontSize="Medium"
+                               HorizontalOptions="Start"
+                               VerticalOptions="End"
+                               Grid.Row="2"/>
                         <Label Text="{Binding Balance, StringFormat='${0}'}"
-                   TextColor="{Binding BalanceColor}"
-                   FontSize="Medium"
-                   Grid.Column="1"
-                   Grid.Row="2"
-                   HorizontalOptions="Start"
-                   VerticalOptions="End"/>
+                               TextColor="{Binding BalanceColor}"
+                               FontSize="Medium"
+                               Grid.Column="1"
+                               Grid.Row="2"
+                               HorizontalOptions="Start"
+                               VerticalOptions="End"/>
 
                         <Label Text="Savings:   "
-                   FontSize="Medium"
-                   HorizontalOptions="Start"
-                   VerticalOptions="End"
-                   Grid.Row="3"/>
+                               FontSize="Medium"
+                               HorizontalOptions="Start"
+                               VerticalOptions="End"
+                               Grid.Row="3"/>
                         <Label Text="{Binding CurrentSavings, StringFormat='${0}'}"
-                   TextColor="{Binding CurrentSavingsColor}"
-                   FontSize="Medium"
-                   Grid.Column="1"
-                   Grid.Row="3"
-                   HorizontalOptions="Start"
-                   VerticalOptions="End"/>
+                               TextColor="{Binding CurrentSavingsColor}"
+                               FontSize="Medium"
+                               Grid.Column="1"
+                               Grid.Row="3"
+                               HorizontalOptions="Start"
+                               VerticalOptions="End"/>
 
                         <Label Text="Income:    "
-                   FontSize="Medium"
-                   HorizontalOptions="Start"
-                   VerticalOptions="End"
-                   Grid.Row="4"/>
+                               FontSize="Medium"
+                               HorizontalOptions="Start"
+                               VerticalOptions="End"
+                               Grid.Row="4"/>
                         <Label Text="{Binding CurrentChecking, StringFormat='${0}'}"
-                       TextColor="{Binding CurrentCheckingColor}"
-                   FontSize="Medium"
-                   Grid.Column="1"
-                   Grid.Row="4"
-                   HorizontalOptions="Start"
-                   VerticalOptions="End"/>
+                               TextColor="{Binding CurrentCheckingColor}"
+                               FontSize="Medium"
+                               Grid.Column="1"
+                               Grid.Row="4"
+                               HorizontalOptions="Start"
+                               VerticalOptions="End"/>
 
                         <Label Text="Debt:  "
-                   FontSize="Medium"
-                   HorizontalOptions="Start"
-                   VerticalOptions="End"
-                   Grid.Row="5"/>
+                               FontSize="Medium"
+                               HorizontalOptions="Start"
+                               VerticalOptions="End"
+                               Grid.Row="5"/>
                         <Label Text="{Binding CurrentDebt, StringFormat='${0}'}"
-                   FontSize="Medium"
-                   Grid.Column="1"
-                   Grid.Row="5"
-                   HorizontalOptions="Start"
-                   VerticalOptions="End"/>
+                               FontSize="Medium"
+                               Grid.Column="1"
+                               Grid.Row="5"
+                               HorizontalOptions="Start"
+                               VerticalOptions="End"/>
 
                         <Label Text="Net Worth: "
-                   FontSize="Medium"
-                   HorizontalOptions="Start"
-                   VerticalOptions="End"
-                   Grid.Row="6"/>
+                               FontSize="Medium"
+                               HorizontalOptions="Start"
+                               VerticalOptions="End"
+                               Grid.Row="6"/>
                         <Label Text="{Binding CurrentNetWorth, StringFormat='${0}'}"
-                       TextColor="{Binding CurrentNetWorthColor}"
-                   FontSize="Medium"
-                   Grid.Column="1"
-                   Grid.Row="6"
-                   HorizontalOptions="Start"
-                   VerticalOptions="End"/>
+                               TextColor="{Binding CurrentNetWorthColor}"
+                               FontSize="Medium"
+                               Grid.Column="1"
+                               Grid.Row="6"
+                               HorizontalOptions="Start"
+                               VerticalOptions="End"/>
                     </Grid>
-                </ScrollView>
-            </Frame>
-            <!--This is the quick add frame that I want to be able to hide and show-->
-            <Frame Grid.Row="1" BackgroundColor="{Binding FrameColor}">
-                <Grid RowSpacing="10" RowDefinitions="Auto,Auto,Auto,Auto">
-                    <Frame BackgroundColor="Transparent">
-                        <Grid RowDefinitions="Auto,Auto"
-                        ColumnDefinitions=".6*, .3*"
-                        RowSpacing="10"
-                        ColumnSpacing="25">
-                            <Entry Placeholder="$0.00"
-                           Keyboard="Numeric"
-                           Text="{Binding Transactions.Name}"/>
-                            <Entry Placeholder="Name"
-                           Keyboard="Numeric"
-                           Text="{Binding Transactions.Amount}"
-                           Grid.Row="1"/>
-                            <Label Text="Add Transaction"
-                           Grid.Column="1"
-                           VerticalTextAlignment="Center"/>
-                            <Button Text="Save"
-                           Command="{Binding AddTransactionCommand}" 
-                           Grid.Row="1"
-                           Grid.Column="1"/>
-                        </Grid>
-                    </Frame>
-                    <Frame BackgroundColor="Transparent" Grid.Row="1">
-                        <Grid RowDefinitions="Auto,Auto"
-                          ColumnDefinitions=".6*, .3*"
-                          RowSpacing="10"
-                          ColumnSpacing="25">
-                            <Entry Placeholder="Foo account"
-                            Keyboard="Text"
-                            Text="{Binding Account.AccountName}"/>
-                            <Entry Placeholder="Account Number"
-                            Keyboard="Text"
-                            Text="{Binding Loans.AccountNumber}"
-                            Grid.Row="1"/>
-                            <Label Text="Add Account"
-                            Grid.Column="1"
-                            VerticalTextAlignment="Center"/>
-                            <Button Text="Save"
-                            Command="{Binding AddAccountCommand}" 
-                            Grid.Row="1"
-                            Grid.Column="1"/>
-                        </Grid>
-                    </Frame>
-                    <Frame BackgroundColor="Transparent" Grid.Row="2">
-                        <Grid RowDefinitions="Auto,Auto"
-                        ColumnDefinitions=".6*, .3*"
-                        RowSpacing="10"
-                        ColumnSpacing="25">
-                            <Entry Placeholder="$0.00"
-                            Keyboard="Numeric"
-                            Text="{Binding Loans.LoanName}"/>
-                            <Entry Placeholder="Name"
-                           Keyboard="Text"
-                           Text="{Binding Loans.LoanName}"
-                           Grid.Row="1"/>
-                            <Label Text="Add Loan"
-                           Grid.Column="1"
-                           VerticalTextAlignment="Center"/>
-                            <Button Text="Save"
-                           Command="{Binding AddLoanCommand}" 
-                            Grid.Row="1"
-                           Grid.Column="1"/>
-                        </Grid>
-                    </Frame>
-                </Grid>
-            </Frame>
+                </Frame>
+                <!--The Quick account information-->
+                <Frame BackgroundColor="{Binding FrameColor}"
+                       Grid.Row="1">
+                    <Grid RowDefinitions="auto,auto,auto">
+                        <Label Text="{Binding AccountHeader}"
+                               FontSize="Medium"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+                        <ListView ItemsSource="{Binding Accounts}"
+                                  SelectedItem="{Binding SelectedAccount}"
+                                  SelectionMode="Single"
+                                  RowHeight="50">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="{Binding Account.Name}"
+                                                   FontSize="Medium"/>
+                                            <Label Text="{Binding Account.Balance, StringFormat='${0}'}"
+                                                   FontSize="Medium"/>
+                                        </StackLayout>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                </Frame>
+                <!--The Quick loan information-->
+                <Frame BackgroundColor="{Binding FrameColor}"
+                    Grid.Row="2">
+                    <Grid RowDefinitions="auto,auto,auto,auto">
+                        <Label Text="{Binding LoanHeader}"
+                           FontSize="Medium"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                        <ListView ItemsSource="{Binding Loans}"
+                            SelectedItem="{Binding SelectedLoan}"
+                            SelectionMode="Single"
+                            RowHeight="50">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="{Binding Loan.LoanName}"
+                                                FontSize="Small"/>
+                                            <Label Text="{Binding Loan.MonthlyPayment, StringFormat='${0}'}"
+                                                   FontSize="Small"/>
+                                            <Label Text="{Binding Loan.DueDate}"
+                                                   FontSize="Small"/>
+                                            <Label Text="{Binding Loan.RemainingBalance, StringFormat='${0}'}"
+                                                FontSize="Small"/>
+                                        </StackLayout>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                </Frame>
+                <!--This is the quick add frame-->
+                <Frame x:Name="QuickAddFrame" IsVisible="{Binding QuickAddVis}" Grid.Row="4" BackgroundColor="{Binding FrameColor}">
+                    <Grid RowSpacing="10" RowDefinitions="Auto,Auto,Auto,Auto">
+                        <Frame BackgroundColor="Transparent">
+                            <Grid RowDefinitions="Auto,Auto,Auto"
+                                    ColumnDefinitions=".6*, .3*"
+                                    RowSpacing="10"
+                                    ColumnSpacing="25">
+                                <Entry Placeholder="$0.00"
+                                       Keyboard="Numeric"
+                                       Text="{Binding Transaction.Amount}"/>
+                                <Entry Placeholder="Name"
+                                       Keyboard="Text"
+                                       Text="{Binding Transaction.Name}"
+                                       Grid.Row="1"/>
+                                <DatePicker Date="{Binding Transaction.TransactionDate}" 
+                                            Grid.Row="2"/>
+                                <Label Text="Add Transaction"
+                                       Grid.Column="1"
+                                       VerticalTextAlignment="Center"/>
+                                <Button Text="Save"
+                                       Command="{Binding AddTransactionCommand}" 
+                                       Grid.Row="2"
+                                       Grid.Column="1"/>
+                            </Grid>
+                        </Frame>
+                        <Frame BackgroundColor="Transparent" Grid.Row="1">
+                            <Grid RowDefinitions="Auto,Auto"
+                                    ColumnDefinitions=".6*, .3*"
+                                    RowSpacing="10"
+                                    ColumnSpacing="25">
+                                <Entry Placeholder="Foo account"
+                                        Keyboard="Text"
+                                        Text="{Binding Account.AccountName}"/>
+                                <Entry Placeholder="Account Number"
+                                        Keyboard="Text"
+                                        Text="{Binding Account.AccountNumber}"
+                                        Grid.Row="1"/>
+                                <Label Text="Add Account"
+                                        Grid.Column="1"
+                                        VerticalTextAlignment="Center"/>
+                                <Button Text="Save"
+                                        Command="{Binding AddAccountCommand}" 
+                                        Grid.Row="1"
+                                        Grid.Column="1"/>
+                            </Grid>
+                        </Frame>
+                        <Frame BackgroundColor="Transparent" Grid.Row="2">
+                            <Grid RowDefinitions="Auto,Auto"
+                                    ColumnDefinitions=".6*, .3*"
+                                    RowSpacing="10"
+                                    ColumnSpacing="25">
+                                <Entry Placeholder="$0.00"
+                                        Keyboard="Numeric"
+                                        Text="{Binding Loan.LoanAmount}"/>
+                                <Entry Placeholder="Name"
+                                       Keyboard="Text"
+                                       Text="{Binding Loan.LoanName}"
+                                       Grid.Row="1"/>
+                                <Label Text="Add Loan"
+                                       Grid.Column="1"
+                                       VerticalTextAlignment="Center"/>
+                                <Button Text="Save"
+                                       Command="{Binding AddLoanCommand}" 
+                                       Grid.Row="1"
+                                       Grid.Column="1"/>
+                            </Grid>
+                        </Frame>
+                        <StackLayout Grid.Row="3">
+                            <Button 
+                                Text="{Binding ButtonText}" 
+                                TextColor="{Binding TextColor}"
+                                BackgroundColor="{Binding FrameColor}" 
+                                Command="{Binding QuickAddCommand}"/>
+                        </StackLayout>
+                    </Grid>
+                </Frame>
+                <Frame Grid.Row="3" BackgroundColor="{Binding FrameColor}">
+                    <Grid RowDefinitions="auto,auto,auto,auto">
+                        <Label Text="{Binding AutoHeader}"
+                            FontSize="Medium"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"/>
+                        <ListView ItemsSource="{Binding Autos}"
+                            SelectedItem="{Binding SelectedAutoPay}"
+                            SelectionMode="Single"
+                            RowHeight="50">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="{Binding AutoPay.AutoPayName}"
+                                                FontSize="Small"/>
+                                            <Label Text="{Binding AutoPay.AutoPay, StringFormat='${0}'}"
+                                                FontSize="Small"/>
+                                            <Label Text="{Binding AutoPay.AutoPayDate}"
+                                                FontSize="Small"/>
+                                            <Label Text="{Binding AutoPay.AutoPayActive}"
+                                                FontSize="Small"/>
+                                        </StackLayout>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                </Frame>
+            </Grid>
         </Grid>
     </ScrollView>
 </ContentPage>
