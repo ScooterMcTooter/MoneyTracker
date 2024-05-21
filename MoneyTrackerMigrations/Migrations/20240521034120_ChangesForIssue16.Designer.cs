@@ -2,17 +2,19 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MoneyTrackerMigrations;
 
 #nullable disable
 
 namespace MoneyTrackerMigrations.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240521034120_ChangesForIssue16")]
+    partial class ChangesForIssue16
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -95,9 +97,6 @@ namespace MoneyTrackerMigrations.Migrations
                     b.Property<int>("LoanId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("TransactionTypeId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
 
@@ -106,8 +105,6 @@ namespace MoneyTrackerMigrations.Migrations
                     b.HasIndex("AccountId");
 
                     b.HasIndex("LoanId");
-
-                    b.HasIndex("TransactionTypeId");
 
                     b.HasIndex("UserId");
 
@@ -244,10 +241,7 @@ namespace MoneyTrackerMigrations.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("OtherDescription")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("TransactionTypeId")
+                    b.Property<int>("TransactionType")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("UserId")
@@ -263,123 +257,9 @@ namespace MoneyTrackerMigrations.Migrations
 
                     b.HasIndex("LoanId");
 
-                    b.HasIndex("TransactionTypeId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Transactions", (string)null);
-                });
-
-            modelBuilder.Entity("MoneyTrackerMigrations.Models.TransactionTypeModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TransactionTypes", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Type = "Cash"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Type = "Debit"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Type = "Cash"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Type = "Credit (Debit Card)"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Type = "Credit (Credit Card)"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Type = "ApplePay"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Type = "Venmo"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Type = "PayPal"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Type = "CashApp"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Type = "ACHRecurring"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Type = "ACHOnce"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            Type = "Check"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            Type = "InternalTransfer"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            Type = "ExternalTransfer"
-                        },
-                        new
-                        {
-                            Id = 15,
-                            Type = "ATM Withdrawal"
-                        },
-                        new
-                        {
-                            Id = 16,
-                            Type = "ATM Deposit"
-                        },
-                        new
-                        {
-                            Id = 17,
-                            Type = "Mobile Deposit"
-                        },
-                        new
-                        {
-                            Id = 18,
-                            Type = "Deposit"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            Type = "Other"
-                        });
                 });
 
             modelBuilder.Entity("MoneyTrackerMigrations.Models.UserModel", b =>
@@ -462,12 +342,6 @@ namespace MoneyTrackerMigrations.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MoneyTrackerMigrations.Models.TransactionTypeModel", "TransactionType")
-                        .WithMany()
-                        .HasForeignKey("TransactionTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("MoneyTrackerMigrations.Models.UserModel", "User")
                         .WithMany("AutoPay")
                         .HasForeignKey("UserId")
@@ -477,8 +351,6 @@ namespace MoneyTrackerMigrations.Migrations
                     b.Navigation("Accounts");
 
                     b.Navigation("Loan");
-
-                    b.Navigation("TransactionType");
 
                     b.Navigation("User");
                 });
@@ -542,12 +414,6 @@ namespace MoneyTrackerMigrations.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MoneyTrackerMigrations.Models.TransactionTypeModel", "TransactionType")
-                        .WithMany()
-                        .HasForeignKey("TransactionTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("MoneyTrackerMigrations.Models.UserModel", "User")
                         .WithMany("Transactions")
                         .HasForeignKey("UserId")
@@ -561,8 +427,6 @@ namespace MoneyTrackerMigrations.Migrations
                     b.Navigation("Bucket");
 
                     b.Navigation("Loan");
-
-                    b.Navigation("TransactionType");
 
                     b.Navigation("User");
                 });
