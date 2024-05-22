@@ -1,12 +1,16 @@
 ﻿using MoneyTracker.Pages;
+using MoneyTracker.ViewModels;
 
 namespace MoneyTracker; 
 
 public partial class AppShell : Shell
 {
-    public AppShell(ViewModels.SettingsViewModel settingsViewModel)
+    private readonly SettingsViewModel _vm;
+    public AppShell(SettingsViewModel vm)
     {
         InitializeComponent();
+
+        BindingContext = _vm = vm;
 
         Routing.RegisterRoute(nameof(PasswordResetPage), typeof(PasswordResetPage));
         Routing.RegisterRoute(nameof(LoginPage), typeof(LoginPage));

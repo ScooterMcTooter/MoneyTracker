@@ -24,7 +24,6 @@
                 HorizontalOptions="FillAndExpand">
                 <!--This is the basic information regarding all of your quick data-->
                 <Frame 
-                    BackgroundColor="{Binding FrameColor}"
                     WidthRequest="{Binding Width}">
                     <Grid ColumnDefinitions=".75*,.25*"
                             HorizontalOptions="Start"
@@ -36,7 +35,6 @@
                                VerticalOptions="End"
                                Grid.Row="7"/>
                         <Label Text="{Binding TotalBalance, StringFormat='${0}'}"
-                               TextColor="{Binding TotalBalanceColor}"
                                FontSize="Medium"
                                Grid.Column="1"
                                Grid.Row="7"
@@ -48,7 +46,6 @@
                                HorizontalOptions="Start"
                                VerticalOptions="End"/>
                         <Label Text="{Binding CurrentIncome, StringFormat='${0}'}"
-                               TextColor="{Binding CurrentIncomeColor}"
                                FontSize="Medium"
                                Grid.Column="1"
                                HorizontalOptions="End"
@@ -60,7 +57,6 @@
                                VerticalOptions="End"
                                Grid.Row="1"/>
                         <Label Text="{Binding CurrentExpenses, StringFormat='${0}'}"
-                               TextColor="{Binding CurrentExpensesColor}"
                                FontSize="Medium"
                                Grid.Column="1"
                                Grid.Row="1"
@@ -73,7 +69,6 @@
                                VerticalOptions="End"
                                Grid.Row="2"/>
                         <Label Text="{Binding Balance, StringFormat='${0}'}"
-                               TextColor="{Binding BalanceColor}"
                                FontSize="Medium"
                                Grid.Column="1"
                                Grid.Row="2"
@@ -86,7 +81,6 @@
                                VerticalOptions="End"
                                Grid.Row="3"/>
                         <Label Text="{Binding CurrentSavings, StringFormat='${0}'}"
-                               TextColor="{Binding CurrentSavingsColor}"
                                FontSize="Medium"
                                Grid.Column="1"
                                Grid.Row="3"
@@ -99,7 +93,6 @@
                                VerticalOptions="End"
                                Grid.Row="4"/>
                         <Label Text="{Binding CurrentChecking, StringFormat='${0}'}"
-                               TextColor="{Binding CurrentCheckingColor}"
                                FontSize="Medium"
                                Grid.Column="1"
                                Grid.Row="4"
@@ -124,7 +117,6 @@
                                VerticalOptions="End"
                                Grid.Row="6"/>
                         <Label Text="{Binding CurrentNetWorth, StringFormat='${0}'}"
-                               TextColor="{Binding CurrentNetWorthColor}"
                                FontSize="Medium"
                                Grid.Column="1"
                                Grid.Row="6"
@@ -133,8 +125,7 @@
                     </Grid>
                 </Frame>
                 <!--The Quick account information-->
-                <Frame BackgroundColor="{Binding FrameColor}"
-                       Grid.Row="1">
+                <Frame Grid.Row="1">
                     <Grid RowDefinitions="auto,auto,auto">
                         <Label Text="{Binding AccountHeader}"
                                FontSize="Medium"
@@ -160,8 +151,7 @@
                     </Grid>
                 </Frame>
                 <!--The Quick loan information-->
-                <Frame BackgroundColor="{Binding FrameColor}"
-                    Grid.Row="2">
+                <Frame Grid.Row="2">
                     <Grid RowDefinitions="auto,auto,auto,auto">
                         <Label Text="{Binding LoanHeader}"
                            FontSize="Medium"
@@ -191,7 +181,7 @@
                     </Grid>
                 </Frame>
                 <!--This is the quick add frame-->
-                <Frame x:Name="QuickAddFrame" IsVisible="{Binding QuickAddVis}" Grid.Row="4" BackgroundColor="{Binding FrameColor}">
+                <Frame x:Name="QuickAddFrame" IsVisible="{Binding QuickAddVis}" Grid.Row="4">
                     <Grid RowSpacing="10" RowDefinitions="Auto,Auto,Auto,Auto">
                         <Frame BackgroundColor="Transparent">
                             <Grid RowDefinitions="Auto,Auto,Auto"
@@ -262,12 +252,11 @@
                             <Button 
                                 Text="{Binding ButtonText}" 
                                 TextColor="{Binding TextColor}"
-                                BackgroundColor="{Binding FrameColor}" 
                                 Command="{Binding QuickAddCommand}"/>
                         </StackLayout>
                     </Grid>
                 </Frame>
-                <Frame Grid.Row="3" BackgroundColor="{Binding FrameColor}">
+                <Frame Grid.Row="3">
                     <Grid RowDefinitions="auto,auto,auto,auto">
                         <Label Text="{Binding AutoHeader}"
                             FontSize="Medium"

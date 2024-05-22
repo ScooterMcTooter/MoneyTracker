@@ -8,13 +8,16 @@ namespace MoneyTracker
         {
             InitializeComponent();
 
+            App.Current.UserAppTheme = App.Current.UserAppTheme == AppTheme.Dark || App.Current.UserAppTheme == AppTheme.Unspecified ? AppTheme.Dark : AppTheme.Light;
+
             using (var scope = serviceProvider.CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<MoneyTrackerMigrations.ApplicationDbContext>();
                 db.Database.Migrate();
             }
-
-            MainPage = new AppShell(new ViewModels.SettingsViewModel());
+            DependencyService.Register<ViewModels.SettingsViewModel>();
+            var viewModel = DependencyService.Get<ViewModels.SettingsViewModel>();
+            MainPage = new AppShell(viewModel);
         }
 
     }

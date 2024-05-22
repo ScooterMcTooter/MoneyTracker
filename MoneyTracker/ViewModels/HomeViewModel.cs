@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.EntityFrameworkCore;
 using MoneyTracker.Pages;
+using MoneyTrackerMigrations;
 using MoneyTrackerMigrations.Models;
 using System.Collections.ObjectModel;
 
