@@ -4,7 +4,7 @@
              x:Class="MoneyTracker.Pages.TransactionsPage"
              Title="Transactions">
 
-    <Grid RowDefinitions="auto,*">
+    <Grid RowDefinitions="auto,auto,*">
         <Frame BackgroundColor="Gray">
             <Grid RowDefinitions="auto,auto,auto,auto,auto,auto,auto">
 
@@ -25,6 +25,7 @@
                     Keyboard="Numeric" 
                     Placeholder="0.00" />
                     <DatePicker
+                        TextColor="{AppThemeBinding Dark=white, Light=black, Default=black}"
                     Grid.Column="1"
                     Date="{Binding TransactionDate}" />
                     <Picker
@@ -76,7 +77,13 @@
                     Command="{Binding ClearTransactionCommand}" />
             </Grid>
         </Frame>
-        <Frame Grid.Row="1" Background="Transparent">
+        <Frame Grid.Row="1" BackgroundColor="{AppThemeBinding Dark=darkgrey, Light=lightgray}" BorderColor="{AppThemeBinding Dark=lightblue, Light=lightblue, Default=lightblue}">
+            <Grid RowDefinitions="auto" ColumnDefinitions="*,auto,auto,*">
+                <SearchBar Placeholder="Name of Transaction" SearchCommand="{Binding NameSearchCommand}" Grid.Column="1"/>
+                <SearchBar Placeholder="MM/dd/yy" SearchCommand="{Binding DateSearchCommand}" Grid.Column="2" />
+            </Grid>
+        </Frame>
+        <Frame Grid.Row="2" BackgroundColor="Transparent">
             <ScrollView>
                 <ListView x:Name="TransactionsListView"
                       ItemsSource="{Binding Transactions}"

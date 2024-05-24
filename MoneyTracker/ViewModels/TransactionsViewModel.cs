@@ -17,8 +17,10 @@ namespace MoneyTracker.ViewModels
             _db = db;
             _userViewModel = userViewModel;
             SelectedAccount = new AccountModel();
+            SelectedTransaction = new TransactionModel();
             TransactionType = new TransactionTypeModel();
-            User = _db.userModels.Where(u => u.Id == _userViewModel.Id).First() ?? new UserModel();
+            var vwId = _userViewModel.Id;
+            User = _db.userModels.Where(u => u.Id == vwId).FirstOrDefault() ?? new UserModel();
 
             Accounts = new ObservableCollection<AccountModel>(_db.accountModels.ToList());
             TransactionTypes = new ObservableCollection<TransactionTypeModel>(_db.transactionTypeModels.ToList());
@@ -46,6 +48,12 @@ namespace MoneyTracker.ViewModels
         TransactionModel selectedTransaction;
         [ObservableProperty]
         DateTime? date = null;
+        [ObservableProperty]
+        string searchName = string.Empty;
+        [ObservableProperty]
+        DateTime searchDateStart = DateTime.MinValue;
+        [ObservableProperty]
+        DateTime searchDateEnd = DateTime.MaxValue;
         #endregion
 
         public UserModel User { get; set; }
@@ -81,6 +89,19 @@ namespace MoneyTracker.ViewModels
             Amount = 0;
             Description = string.Empty;
             TransactionType = new TransactionTypeModel();
+        }
+
+        [RelayCommand]
+        public void NameSearch()
+        {
+            Transactions = new ObservableCollection<TransactionModel>(_db.transactionModels.Where(u => u.Name.Contains(SearchName)).ToList());
+        }
+
+        [RelayCommand]
+        public void DateSearch()
+        {
+
+            Transactions = new ObservableCollection<TransactionModel>(_db.transactionModels.Where(u => u.Date >= SearchDateStart && u.Date <= SearchDateEnd).ToList());
         }
         #endregion
     }
