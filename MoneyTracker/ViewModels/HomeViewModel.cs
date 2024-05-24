@@ -31,7 +31,7 @@ public partial class HomeViewModel : ObservableValidator
         _user = User;
         Loan = new LoansViewModel();
         Settings = new SettingsViewModel();
-        Transaction = new TransactionsViewModel();
+        Transaction = new TransactionsViewModel(_db,User);
         Transactions = new ObservableCollection<TransactionModel>();
         Account = new AccountViewModel(); // Initialize Account property
         Accounts = new ObservableCollection<AccountModel>(_db.accountModels.Where(x => x.UserId == Id).ToList()); // Initialize Accounts property
@@ -176,7 +176,7 @@ public partial class HomeViewModel : ObservableValidator
         {
             Name = Transaction.Name,
             Amount = Transaction.Amount,
-            Date = Transaction.TransactionDate
+            Date = Transaction.Date.GetValueOrDefault(),
         };
 
         if (Transactions.Count == 0)

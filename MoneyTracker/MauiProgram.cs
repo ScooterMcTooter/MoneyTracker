@@ -26,7 +26,7 @@ public static class MauiProgram
         builder.Services.AddTransient<PasswordResetPage>();
         builder.Services.AddTransient<SettingsPage>();
         builder.Services.AddTransient<TransactionsPage>();
-        builder.Services.AddTransient<UserPage>();
+        builder.Services.AddSingleton<UserPage>();
 
         builder.Services.AddTransient<AccountViewModel>();
         builder.Services.AddTransient<AutoPayViewModel>();
@@ -38,7 +38,7 @@ public static class MauiProgram
         builder.Services.AddTransient<SettingsViewModel>();
         builder.Services.AddTransient<TransactionTypeViewModel>();
         builder.Services.AddTransient<TransactionsViewModel>();
-        builder.Services.AddTransient<UserViewModel>();
+        builder.Services.AddSingleton<UserViewModel>();
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
         {
 #if DEBUG
