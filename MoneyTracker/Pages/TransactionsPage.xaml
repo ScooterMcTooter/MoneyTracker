@@ -78,9 +78,12 @@
             </Grid>
         </Frame>
         <Frame Grid.Row="1" BackgroundColor="{AppThemeBinding Dark=darkgrey, Light=lightgray}" BorderColor="{AppThemeBinding Dark=lightblue, Light=lightblue, Default=lightblue}">
-            <Grid RowDefinitions="auto" ColumnDefinitions="*,auto,auto,*">
-                <SearchBar Placeholder="Name of Transaction" SearchCommand="{Binding NameSearchCommand}" Grid.Column="1"/>
-                <SearchBar Placeholder="MM/dd/yy" SearchCommand="{Binding DateSearchCommand}" Grid.Column="2" />
+            <Grid RowDefinitions="auto" ColumnDefinitions=".85*,auto,auto">
+                <SearchBar Placeholder="Name of Transaction" SearchCommand="{Binding SearchCommand}" />
+                <Label Text="Start" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Start" Margin="-5" />
+                <DatePicker Date="{Binding SearchDateStart}" Grid.Column="1" MinimumDate="{Binding MinDate}" MaximumDate="{Binding MaxDate}"/>
+                <Label Text="End" Grid.Column="2" HorizontalOptions="Center" VerticalOptions="Start" Margin="-5" />
+                <DatePicker Date="{Binding SearchDateEnd}" Grid.Column="2" MinimumDate="{Binding MinDate}" MaximumDate="{Binding MaxDate}" />
             </Grid>
         </Frame>
         <Frame Grid.Row="2" BackgroundColor="Transparent">

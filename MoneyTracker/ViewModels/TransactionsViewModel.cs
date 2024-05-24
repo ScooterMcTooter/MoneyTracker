@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using MoneyTrackerMigrations;
 using MoneyTrackerMigrations.Models;
 using System.Collections.ObjectModel;
@@ -24,15 +25,18 @@ namespace MoneyTracker.ViewModels
 
             Accounts = new ObservableCollection<AccountModel>(_db.accountModels.ToList());
             TransactionTypes = new ObservableCollection<TransactionTypeModel>(_db.transactionTypeModels.ToList());
-            Transactions = new ObservableCollection<TransactionModel>(_db.transactionModels.Any() ? _db.transactionModels.Where(u => u.UserId == User.Id).ToList(): new List<TransactionModel>());
+            Transactions = new ObservableCollection<TransactionModel>(_db.transactionModels.Any() ? _db.transactionModels.Where(u => u.UserId == User.Id).ToList() : new List<TransactionModel>());
         }
+
+        public DateTime MinDate = DateTime.Now.AddMonths(-1);
+        public DateTime MaxDate = DateTime.Now.AddMonths(1);
 
         #region Observable Properties
         [ObservableProperty]
         string name = string.Empty;
         [ObservableProperty]
         double amount;
-        [ObservableProperty]    
+        [ObservableProperty]
         string? description;
         [ObservableProperty]
         TransactionTypeModel transactionType;
@@ -51,15 +55,15 @@ namespace MoneyTracker.ViewModels
         [ObservableProperty]
         string searchName = string.Empty;
         [ObservableProperty]
-        DateTime searchDateStart = DateTime.MinValue;
+        DateTime searchDateStart = DateTime.Now.AddMonths(-1);
         [ObservableProperty]
-        DateTime searchDateEnd = DateTime.MaxValue;
+        DateTime searchDateEnd = DateTime.Now.AddMonths(1);
         #endregion
 
         public UserModel User { get; set; }
         public string TransactionList
         {
-            get => $"{Name}\t{Date?.ToString("MM/dd/yyyy")}";
+            get => $"{Name}:\t{Amount} - {Date?.ToString("MM/dd/yyyy")}";
         }
 
         #region Commands
@@ -90,6 +94,23 @@ namespace MoneyTracker.ViewModels
             Description = string.Empty;
             TransactionType = new TransactionTypeModel();
         }
+        [RelayCommand]
+        public void Search()
+        {
+            if (SearchName != string.Empty)
+            {
+                NameSearch();
+            }
+            else if (SearchDateStart != DateTime.MinValue && SearchDateEnd != DateTime.MaxValue)
+            {
+                DateSearch();
+            }
+            else
+            {
+                Transactions = new ObservableCollection<TransactionModel>(_db.transactionModels.Where(u => u.UserId == User.Id).ToList());
+            }
+        }
+        #endregion
 
         [RelayCommand]
         public void NameSearch()
@@ -100,9 +121,10 @@ namespace MoneyTracker.ViewModels
         [RelayCommand]
         public void DateSearch()
         {
-
-            Transactions = new ObservableCollection<TransactionModel>(_db.transactionModels.Where(u => u.Date >= SearchDateStart && u.Date <= SearchDateEnd).ToList());
+            if (SearchDateStart.Date == SearchDateEnd.Date)
+                Transactions = new ObservableCollection<TransactionModel>(_db.transactionModels.Where(u => u.Date == SearchDateStart).ToList());
+            else
+                Transactions = new ObservableCollection<TransactionModel>(_db.transactionModels.Where(u => u.Date >= SearchDateStart && u.Date <= SearchDateEnd).ToList());
         }
-        #endregion
     }
 }
