@@ -28,5 +28,6 @@ namespace MoneyTrackerMigrations.Models
         public virtual ICollection<BucketModel> Buckets { get; set; } = new List<BucketModel>();
         public virtual ICollection<TransactionModel> Transactions { get; set; } = new List<TransactionModel>();
         public virtual ICollection<AutoPayModel> AutoPays { get; set; } = new List<AutoPayModel>();
+        public virtual ICollection<JobModel> Jobs { get; set; } = new List<JobModel>();
     }
 }
