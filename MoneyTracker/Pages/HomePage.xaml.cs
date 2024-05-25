@@ -10,6 +10,8 @@ public partial class HomePage : ContentPage
         InitializeComponent();
         BindingContext = vm;
 
+        Shell.Current.FlyoutBehavior = FlyoutBehavior.Flyout;
+
         WeakReferenceMessenger.Default.Register<ScrollToMessage>(this, async (r, m) =>
         {
             await HomeScroll.ScrollToAsync(QuickAddFrame, ScrollToPosition.Start, true);

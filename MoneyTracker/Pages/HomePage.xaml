@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage x:Name="HomePageBind"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MoneyTracker.Pages.HomePage"
              xmlns:viewmodel="clr-namespace:MoneyTracker.ViewModels"
-             xmlns:DataType="viewmodel:HomeViewModel">
+             xmlns:DataType="viewmodel:HomeViewModel"
+             Shell.FlyoutBehavior="Flyout">
+
+    <!--<Shell.BackButtonBehavior>
+        <BackButtonBehavior IsEnabled="False" IsVisible="False"/>
+    </Shell.BackButtonBehavior>-->
 
     <ContentPage.ToolbarItems>
         <ToolbarItem

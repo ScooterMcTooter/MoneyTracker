@@ -138,7 +138,7 @@ public partial class HomeViewModel : ObservableValidator
         // Reset the navigation stack
         // This depends on how you're handling navigation
         // For example, if you're using Shell navigation:
-        await Shell.Current.GoToAsync(nameof(LoginPage));
+        await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
     }
 
     /// <summary>

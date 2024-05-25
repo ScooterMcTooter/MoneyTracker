@@ -22,9 +22,9 @@ public static class MauiProgram
         builder.Services.AddTransient<AccountPage>();
         builder.Services.AddTransient<CreateUserPage>();
         builder.Services.AddTransient<HomePage>();
+        builder.Services.AddTransient<JobPage>();
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<PasswordResetPage>();
-        builder.Services.AddTransient<SettingsPage>();
         builder.Services.AddTransient<TransactionsPage>();
         builder.Services.AddSingleton<UserPage>();
 
@@ -32,6 +32,7 @@ public static class MauiProgram
         builder.Services.AddTransient<AutoPayViewModel>();
         builder.Services.AddTransient<CreateUserViewModel>();
         builder.Services.AddTransient<HomeViewModel>();
+        builder.Services.AddTransient<JobViewModel>();
         builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<LoansViewModel>();
         builder.Services.AddTransient<SavingsBucketsViewModel>();

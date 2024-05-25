@@ -75,6 +75,25 @@
         </StackLayout>
     </Shell.FlyoutFooter>
 
+    <ShellContent 
+        ContentTemplate="{DataTemplate local:LoginPage}"
+        Route="LoginPage" 
+        Shell.NavBarIsVisible="False"
+        Shell.FlyoutBehavior="Disabled"/>
+
+    <!--This will eventually be visible-->
+    <ShellContent 
+        IsVisible="False"
+        Title="User"
+        ContentTemplate="{DataTemplate local:UserPage}"
+        Route="UserPage" />
+
+    <ShellContent
+        IsVisible="False"
+        Title="Password Reset"
+        ContentTemplate="{DataTemplate local:PasswordResetPage}"
+        Route="PasswordResetPage" />
+
     <ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate local:HomePage}"
@@ -89,6 +108,11 @@
         Title="Transactions"
         ContentTemplate="{DataTemplate local:TransactionsPage}"
         Route="TransactionsPage" />
+
+    <ShellContent 
+        Title="Jobs"
+        ContentTemplate="{DataTemplate local:JobPage}"
+        Route="JobPage" />
 
 
 </Shell>

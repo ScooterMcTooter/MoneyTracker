@@ -9,4 +9,13 @@ public partial class LoginPage : ContentPage
         InitializeComponent();
         BindingContext = vm;
     }
+
+    private void Password_Entered(object sender, EventArgs e)
+    {
+        if (LoginButton.Command?.CanExecute(null) == true)
+        {
+            // Execute the LoginCommand
+            LoginButton.Command.Execute(null);
+        }
+    }
 }

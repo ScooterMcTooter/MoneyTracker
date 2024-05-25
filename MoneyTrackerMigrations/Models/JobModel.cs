@@ -9,7 +9,8 @@ public class JobModel
     public int UserId { get; set; }
     public string? Title { get; set; }
     public string? Company { get; set; }
-    public string? Location { get; set; }
+    public int LocationId { get; set; }
+    public LocationModel? Location { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime? EndDate { get; set; } = null;
     public bool? IsActive { get; set; } = true;

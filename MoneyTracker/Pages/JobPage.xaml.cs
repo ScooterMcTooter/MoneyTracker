@@ -2,9 +2,9 @@ using MoneyTracker.ViewModels;
 
 namespace MoneyTracker.Pages;
 
-public partial class SettingsPage : ContentPage
+public partial class JobPage : ContentPage
 {
-	public SettingsPage(SettingsViewModel vm)
+	public JobPage(JobViewModel vm)
 	{
 		InitializeComponent();
 		BindingContext = vm;

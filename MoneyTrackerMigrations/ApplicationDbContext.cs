@@ -16,6 +16,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<AutoPayModel> autoPayModels { get; set; }
     public DbSet<BucketModel> bucketModels { get; set; }
     public DbSet<JobModel> jobModels { get; set; }
+    public DbSet<LocationModel> locationModels { get; set; }
     public DbSet<LoanModel> loanModels { get; set; }
     public DbSet<TransactionModel> transactionModels { get; set; }
     public DbSet<TransactionTypeModel> transactionTypeModels { get; set; }
@@ -46,6 +47,7 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<UserModel>().ToTable("Users").HasKey(i => i.Id);
         modelBuilder.Entity<SettingsModel>().ToTable("Settings").HasKey(i => i.Id);
         modelBuilder.Entity<JobModel>().ToTable("Jobs").HasKey(i => i.Id);
+        modelBuilder.Entity<LocationModel>().ToTable("Locations").HasKey(i => i.Id);
         #endregion
 
         #region Relationships
@@ -168,6 +170,12 @@ public class ApplicationDbContext : DbContext
             .HasOne(l => l.Account)
             .WithMany(u => u.Jobs)
             .HasForeignKey(l => l.AccountId);
+
+        //JobModel to LocationModel
+        modelBuilder.Entity<JobModel>()
+            .HasOne(l => l.Location)
+            .WithOne(u => u.Job)
+            .HasForeignKey<JobModel>(l => l.LocationId);
         #endregion
 
         #region SeedData

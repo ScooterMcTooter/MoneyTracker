@@ -154,6 +154,6 @@ public partial class CreateUserViewModel
             return;
         }
 
-        await Shell.Current.GoToAsync(nameof(HomePage));
+        await Shell.Current.GoToAsync($"\\\\{nameof(HomePage)}");
     }
 }

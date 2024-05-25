@@ -1,9 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage x:Name="LoginPageBind"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MoneyTracker.Pages.LoginPage"
              xmlns:viewmodel="clr-namespace:MoneyTracker.ViewModels"
-             xmlns:DataType="viewmodel:LoginViewModel">
+             xmlns:DataType="viewmodel:LoginViewModel"
+             Shell.FlyoutBehavior="Disabled">
 
     <Grid RowDefinitions="100, Auto, Auto, Auto"
           ColumnDefinitions=".25*,.50*,.25*"
@@ -17,7 +19,7 @@
                HorizontalOptions="Center"
                FontSize="Large"
                FontAttributes="Bold"
-               TextColor="Black"
+               TextColor="{AppThemeBinding Dark=white, Light=black, Default=Grey}"
                />
 
         <Button Text="Create Account"
@@ -26,12 +28,14 @@
                 HorizontalOptions="CenterAndExpand"
                 VerticalOptions="EndAndExpand"
                 Command="{Binding CreateCommand}"
+                TextColor="{AppThemeBinding Dark=white, Light=black, Default=Grey}"
                 />
 
         <Label Text="Username:" 
                Grid.Row="1"
                Grid.Column="0"
                VerticalTextAlignment="Center"
+               TextColor="{AppThemeBinding Dark=white, Light=black, Default=Grey}"
                />
 
         <Entry Placeholder="Username" 
@@ -40,12 +44,14 @@
                Grid.Column="1"
                Grid.ColumnSpan="2"
                Text="{Binding Username}"
+               TextColor="{AppThemeBinding Dark=white, Light=black, Default=Grey}"
                />
 
         <Label Text="Password:" 
                Grid.Row="2"
                Grid.Column="0"
-               VerticalTextAlignment="Center"/>
+               VerticalTextAlignment="Center"
+               TextColor="{AppThemeBinding Dark=white, Light=black, Default=Grey}"/>
 
         <Entry IsPassword="True"
                Placeholder="Password" 
@@ -54,12 +60,16 @@
                Grid.Column="1"
                Grid.ColumnSpan="2"
                Text="{Binding Password}"
+               TextColor="{AppThemeBinding Dark=white, Light=black, Default=Grey}"
+               Completed="Password_Entered"
                />
 
-        <Button Text="Login" 
+        <Button x:Name="LoginButton"
+                Text="Login" 
                 Grid.Row="3" 
                 Grid.Column="0"
                 Command="{Binding LoginCommand}" 
+                TextColor="{AppThemeBinding Dark=white, Light=black, Default=Grey}"
                 />
 
         <Button Text="Forgot username or password?" 
@@ -71,6 +81,7 @@
                 VerticalOptions="EndAndExpand"
                 Command="{Binding ForgotCommand}"
                 CommandParameter="{Binding Username}"
+                TextColor="{AppThemeBinding Dark=white, Light=black, Default=Grey}"
                 />
 
     </Grid>
