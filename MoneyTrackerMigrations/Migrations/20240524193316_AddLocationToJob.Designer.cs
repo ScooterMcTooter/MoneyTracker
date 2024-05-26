@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MoneyTrackerMigrations;
 
@@ -10,9 +11,11 @@ using MoneyTrackerMigrations;
 namespace MoneyTrackerMigrations.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240524193316_AddLocationToJob")]
+    partial class AddLocationToJob
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -149,9 +152,6 @@ namespace MoneyTrackerMigrations.Migrations
                     b.Property<string>("Company")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
                     b.Property<bool>("DirectDeposit")
                         .HasColumnType("INTEGER");
 
@@ -163,9 +163,6 @@ namespace MoneyTrackerMigrations.Migrations
 
                     b.Property<double>("HourlyWage")
                         .HasColumnType("REAL");
-
-                    b.Property<int>("Hours")
-                        .HasColumnType("INTEGER");
 
                     b.Property<bool?>("IsActive")
                         .HasColumnType("INTEGER");
@@ -182,17 +179,11 @@ namespace MoneyTrackerMigrations.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Status")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Title")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("WorkLocation")
-                        .HasColumnType("TEXT");
 
                     b.Property<double>("YearlyWage")
                         .HasColumnType("REAL");

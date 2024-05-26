@@ -20,4 +20,6 @@ public class AutoPayModel
     public int LoanId { get; set; }
     public virtual LoanModel? Loan { get; set; } = null;
     public virtual ICollection<TransactionModel>? Transactions { get; set; } = null;
+    public int TransactionTypeId { get; set; }
+    public virtual TransactionTypeModel? TransactionType { get; set; }
 }
