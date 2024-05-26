@@ -111,6 +111,10 @@
 	  </MauiXaml>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Converters\" />
+	</ItemGroup>
+
 	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadUnhandledDeviceExceptionMoneyTrackerHideInfoBar="True" /></VisualStudio></ProjectExtensions>
 
 </Project>
