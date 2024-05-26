@@ -50,18 +50,4 @@ public class Helper
         Regex regex = new Regex(@"^\d+$");
         return regex.IsMatch(input);
     }
-
-    /// <summary>
-    /// Gets the color for the balance based on its value.
-    /// </summary>
-    /// <param name="balance">The balance value.</param>
-    /// <returns>The color code as a string.</returns>
-    public string GetBalanceColor(double balance)
-    {
-        string color = balance == 0 ? "#FFFFFF" : string.Empty;
-        if (string.IsNullOrEmpty(color))
-            color = balance > 0 ? "#20C11B" : "#FF2D00";
-
-        return color;
-    }
 }

@@ -9,20 +9,6 @@
                 <ResourceDictionary Source="../Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="../Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <Style TargetType="Label">
-                <Setter Property="TextColor" Value="{AppThemeBinding Dark=White, Light=Black, Default=Gray}" />
-            </Style>
-            <Style TargetType="Button">
-                <Setter Property="TextColor" Value="{AppThemeBinding Dark=White, Light=Black, Default=Gray}" />
-            </Style>
-            <Style TargetType="Entry">
-                <Setter Property="TextColor" Value="{AppThemeBinding Dark=White, Light=Black, Default=Gray}" />
-            </Style>
-            <Style TargetType="Frame">
-                <Setter Property="BackgroundColor" Value="{AppThemeBinding Dark=Black, Light=LightGray, Default=Gray}" />
-            </Style>
-            <Color x:Key="TextLightMode">Black</Color>
-            <Color x:Key="TextDarkMode">White</Color>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

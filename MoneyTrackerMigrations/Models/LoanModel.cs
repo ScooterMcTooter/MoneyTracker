@@ -6,11 +6,11 @@ public class LoanModel
 {
     [Key]
     public int Id { get; set; }
-    public string LoanName { get; set; } = string.Empty;
-    public double LoanAmount { get; set; }
-    public double InterestRate { get; set; }
-    public double MonthlyPayment { get; set; }
-    public double RemainingBalance { get; set; }
+    public string LoanName { get; set; }
+    public decimal LoanAmount { get; set; }
+    public decimal InterestRate { get; set; }
+    public decimal MonthlyPayment { get; set; }
+    public decimal RemainingBalance { get; set; }
     public DateTime DueDate { get; set; }
     public DateTime PaymentDate { get; set; }
     public bool PaidOff { get; set; }
