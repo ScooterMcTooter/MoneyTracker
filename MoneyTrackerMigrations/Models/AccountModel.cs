@@ -12,7 +12,7 @@ namespace MoneyTrackerMigrations.Models
         public int UserId { get; set; }
         public virtual UserModel? User { get; set; }
         [Required]
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; set; } = "Savings Default";
         [Required]
         public decimal Balance { get; set; } = 0;
         public string Provider { get; set; } = "Santander";
@@ -28,6 +28,5 @@ namespace MoneyTrackerMigrations.Models
         public virtual ICollection<BucketModel> Buckets { get; set; } = new List<BucketModel>();
         public virtual ICollection<TransactionModel> Transactions { get; set; } = new List<TransactionModel>();
         public virtual ICollection<AutoPayModel> AutoPays { get; set; } = new List<AutoPayModel>();
-        public virtual ICollection<JobModel> Jobs { get; set; } = new List<JobModel>();
     }
 }

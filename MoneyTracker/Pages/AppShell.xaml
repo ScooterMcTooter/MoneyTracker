@@ -4,95 +4,12 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:MoneyTracker.Pages"
-    xmlns:viewmodels="clr-namespace:MoneyTracker.ViewModels"
-    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-    xmlns:DataTypes="viewmodel:SettingsViewModel"
-    Shell.FlyoutBehavior="Flyout">
+    Shell.FlyoutBehavior="Flyout"
+    Title="Home">
 
     <Shell.FlyoutHeader>
-        <Label Text="Home" HorizontalTextAlignment="Center" FontSize="20"/>
+        <Label Text="Home" />
     </Shell.FlyoutHeader>
-
-    <Shell.FlyoutFooter>
-        <StackLayout>
-            <Button BackgroundColor="Transparent" TextColor="{AppThemeBinding Light=Black, Dark=White, Default=White}" Text="Settings" FontSize="16" Command="{Binding SetVisibilityCommand}"/>
-            <Grid IsVisible="{Binding IsDisplayed}"
-                  RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
-                  ColumnDefinitions=".3*,Auto,.2*">
-                <!--<ImageButton Source="settings.png" Command="{Binding SettingsCommand}" />-->
-                <Frame BackgroundColor="Transparent" Grid.ColumnSpan="3" Grid.Row="1">
-                    <Grid Grid.ColumnSpan="2"
-                        ColumnDefinitions=".2*,Auto,.2*"
-                        RowDefinitions="Auto"
-                        HorizontalOptions="CenterAndExpand"
-                        VerticalOptions="CenterAndExpand">
-                        <Button Grid.Column="1" Text="{Binding Theme}" TextColor="{AppThemeBinding Light=Black, Dark=White, Default=White}" BackgroundColor="Transparent" Command="{Binding SetAppThemeCommand}" VerticalOptions="Center" FontSize="12"/>
-                    </Grid>
-                </Frame>
-                <Frame BackgroundColor="Transparent" Grid.ColumnSpan="3" Grid.Row="2">
-                    <Grid Grid.ColumnSpan="2"
-                        ColumnDefinitions=".2*,Auto,.2*"
-                        RowDefinitions="Auto"
-                        RowSpacing="5"
-                        HorizontalOptions="CenterAndExpand"
-                        VerticalOptions="Center">
-                        <Button Grid.Column="2" Grid.Row="0" FontSize="12" Text="Enable Notifications" TextColor="{AppThemeBinding Light=Black, Dark=White, Default=White}" Background="Transparent" Command="{Binding IsNotificationsEnabled}" />
-                    </Grid>
-                </Frame>
-                <Frame BackgroundColor="Transparent" Grid.ColumnSpan="3" Grid.Row="3">
-                    <Grid Grid.ColumnSpan="2"
-                        ColumnDefinitions=".2*,Auto,.2*"
-                        RowDefinitions="Auto"
-                        RowSpacing="5"
-                        HorizontalOptions="CenterAndExpand"
-                        VerticalOptions="Center">
-                        <Label Grid.Column="1" Text="Enable Location" VerticalOptions="Center" FontSize="12"/>
-                        <CheckBox Grid.Column="2" Grid.Row="0" IsChecked="{Binding IsLocationEnabled}" />
-                    </Grid>
-                </Frame>
-                <Frame BackgroundColor="Transparent" Grid.ColumnSpan="3" Grid.Row="4">
-                    <Grid Grid.ColumnSpan="2"
-                        ColumnDefinitions=".2*,Auto,.2*"
-                        RowDefinitions="Auto"
-                        RowSpacing="5"
-                        HorizontalOptions="CenterAndExpand"
-                        VerticalOptions="Center">
-                        <Label Grid.Column="1" Text="Enable Biometrics" VerticalOptions="Center" FontSize="12"/>
-                        <CheckBox Grid.Column="2" Grid.Row="0" IsChecked="{Binding IsBiometricEnabled}" />
-                    </Grid>
-                </Frame>
-                <Frame BackgroundColor="Transparent" Grid.ColumnSpan="3" Grid.Row="0">
-                    <Grid Grid.ColumnSpan="2"
-                        ColumnDefinitions=".2*,Auto,.2*"
-                        RowDefinitions="Auto,Auto"
-                        RowSpacing="5"
-                        HorizontalOptions="CenterAndExpand"
-                        VerticalOptions="Center">
-                        <Button BackgroundColor="Transparent" Grid.Column="1" Grid.Row="1" Text="Reset Password" HorizontalOptions="Start" FontSize="12"/>
-                    </Grid>
-                </Frame>
-            </Grid>
-        </StackLayout>
-    </Shell.FlyoutFooter>
-
-    <ShellContent 
-        ContentTemplate="{DataTemplate local:LoginPage}"
-        Route="LoginPage" 
-        Shell.NavBarIsVisible="False"
-        Shell.FlyoutBehavior="Disabled"/>
-
-    <!--This will eventually be visible-->
-    <ShellContent 
-        IsVisible="False"
-        Title="User"
-        ContentTemplate="{DataTemplate local:UserPage}"
-        Route="UserPage" />
-
-    <ShellContent
-        IsVisible="False"
-        Title="Password Reset"
-        ContentTemplate="{DataTemplate local:PasswordResetPage}"
-        Route="PasswordResetPage" />
 
     <ShellContent
         Title="Home"
@@ -100,7 +17,7 @@
         Route="HomePage" />
 
     <ShellContent
-        Title="Various Money Accounts"
+        Title="Accounts"
         ContentTemplate="{DataTemplate local:AccountPage}"
         Route="AccountPage" />
 
@@ -109,10 +26,10 @@
         ContentTemplate="{DataTemplate local:TransactionsPage}"
         Route="TransactionsPage" />
 
-    <ShellContent 
-        Title="Jobs"
-        ContentTemplate="{DataTemplate local:JobPage}"
-        Route="JobPage" />
-
-
+    <!--<Shell.FlyoutFooter>
+        <ShellContent
+        Title="Settings"
+        ContentTemplate="{DataTemplate local:SettingsPage}"
+        Route="SettingsPage" />
+    </Shell.FlyoutFooter>-->
 </Shell>

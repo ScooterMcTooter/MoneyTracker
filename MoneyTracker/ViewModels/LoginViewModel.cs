@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using MoneyTrackerMigrations.Models;
 using MoneyTracker.Pages;
-using MoneyTrackerMigrations;
 
 namespace MoneyTracker.ViewModels;
 
@@ -43,14 +42,7 @@ public partial class LoginViewModel : ObservableObject
     [RelayCommand]
     async Task Create()
     {
-        try
-        { 
         await Shell.Current.GoToAsync(nameof(CreateUserPage));
-        }
-        catch (Exception ex)
-        {
-            await Console.Out.WriteLineAsync();
-        }
     }
 
     /// <summary>
@@ -81,7 +73,7 @@ public partial class LoginViewModel : ObservableObject
             if (user != null)
             {
                 Constants.IsAuthenticated = true;
-                await Shell.Current.GoToAsync($"//{nameof(HomePage)}");
+                await Shell.Current.GoToAsync(nameof(HomePage));
             }
             else
             {
