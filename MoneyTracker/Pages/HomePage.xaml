@@ -5,7 +5,8 @@
              x:Class="MoneyTracker.Pages.HomePage"
              xmlns:viewmodel="clr-namespace:MoneyTracker.ViewModels"
              xmlns:DataType="viewmodel:HomeViewModel"
-             Shell.FlyoutBehavior="Flyout">
+             Shell.FlyoutBehavior="Flyout"
+             Appearing="HomePageBind_Appearing">
 
     <!--<Shell.BackButtonBehavior>
         <BackButtonBehavior IsEnabled="False" IsVisible="False"/>
@@ -26,7 +27,7 @@
         <Grid RowDefinitions="auto,auto,auto,auto,auto,*,auto">
             <Grid RowSpacing="10"
                   Grid.Row="0"
-                RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
                 HorizontalOptions="FillAndExpand">
                 <!--This is the basic information regarding all of your quick data-->
                 <Frame 
@@ -284,6 +285,35 @@
                                                 FontSize="Small"/>
                                             <Label Text="{Binding AutoPay.AutoPayActive}"
                                                 FontSize="Small"/>
+                                        </StackLayout>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                </Frame>
+                <Frame Grid.Row="4">
+                    <Grid RowDefinitions="auto,auto,auto,auto">
+                        <Label Text="{Binding JobHeader}"
+                            FontSize="Medium"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"/>
+                        <ListView ItemsSource="{Binding Jobs}"
+                            SelectedItem="{Binding SelectedJob}"
+                            SelectionMode="Single"
+                            RowHeight="50">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="{Binding Job.Company}"
+                                                FontSize="Small"/>
+                                            <Label Text="{Binding Job.Title}"
+                                                FontSize="Small"/>
+                                            <Label Text="{Binding Job.YearlyWage, StringFormat='${0}'}"
+                                                FontSize="Small"/>
+                                            <!--<Label Text="{Binding Job.DueDate}"
+                                                FontSize="Small"/>-->
                                         </StackLayout>
                                     </ViewCell>
                                 </DataTemplate>

@@ -7,7 +7,8 @@
     xmlns:viewmodels="clr-namespace:MoneyTracker.ViewModels"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:DataTypes="viewmodel:SettingsViewModel"
-    Shell.FlyoutBehavior="Flyout">
+    Shell.FlyoutBehavior="Flyout"
+    BackgroundColor="Transparent">
 
     <Shell.FlyoutHeader>
         <Label Text="Home" HorizontalTextAlignment="Center" FontSize="20"/>

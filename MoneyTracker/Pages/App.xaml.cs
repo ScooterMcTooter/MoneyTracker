@@ -24,7 +24,9 @@ namespace MoneyTracker
             var serviceCollection = serviceProvider.GetService<IServiceCollection>();
 
             if (serviceCollection != null && myParameter != null)
+            {
                 serviceCollection.AddTransient(provider => new ViewModels.LoginViewModel(myParameter));
+            }
 
             var viewModel = serviceProvider.GetService<ViewModels.SettingsViewModel>();
             if (viewModel != null && myParameter != null)

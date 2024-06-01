@@ -14,4 +14,8 @@ public class LocationModel
     public string? State { get; set; }
     public int? Zip { get; set; }
     public virtual JobModel? Job { get; set; }
+    public int? JobId { get; set; }
+    public int? UserId { get; set; }
+    public virtual List<UserModel>? Users { get; set; }
+    public ICollection<UserLocation>? userLocations { get; set; }
 }

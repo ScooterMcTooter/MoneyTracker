@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MoneyTrackerMigrations;
 
@@ -10,9 +11,11 @@ using MoneyTrackerMigrations;
 namespace MoneyTrackerMigrations.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240531180930_AddPaychecksToJob")]
+    partial class AddPaychecksToJob
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -271,15 +274,9 @@ namespace MoneyTrackerMigrations.Migrations
                     b.Property<string>("City")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("JobId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("State")
                         .HasMaxLength(2)
                         .HasColumnType("TEXT");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("INTEGER");
 
                     b.Property<int?>("Zip")
                         .HasColumnType("INTEGER");
@@ -493,21 +490,6 @@ namespace MoneyTrackerMigrations.Migrations
                         });
                 });
 
-            modelBuilder.Entity("MoneyTrackerMigrations.Models.UserLocation", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("LocationId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("UserId", "LocationId");
-
-                    b.HasIndex("LocationId");
-
-                    b.ToTable("userLocations", (string)null);
-                });
-
             modelBuilder.Entity("MoneyTrackerMigrations.Models.UserModel", b =>
                 {
                     b.Property<int>("Id")
@@ -525,9 +507,6 @@ namespace MoneyTrackerMigrations.Migrations
 
                     b.Property<string>("LastName")
                         .HasColumnType("TEXT");
-
-                    b.Property<int?>("LocationModelId")
-                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("MFA")
                         .HasColumnType("INTEGER");
@@ -547,8 +526,6 @@ namespace MoneyTrackerMigrations.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LocationModelId");
 
                     b.ToTable("Users", (string)null);
                 });
@@ -723,32 +700,6 @@ namespace MoneyTrackerMigrations.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MoneyTrackerMigrations.Models.UserLocation", b =>
-                {
-                    b.HasOne("MoneyTrackerMigrations.Models.LocationModel", "Location")
-                        .WithMany("userLocations")
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MoneyTrackerMigrations.Models.UserModel", "User")
-                        .WithMany("UserLocations")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Location");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("MoneyTrackerMigrations.Models.UserModel", b =>
-                {
-                    b.HasOne("MoneyTrackerMigrations.Models.LocationModel", null)
-                        .WithMany("Users")
-                        .HasForeignKey("LocationModelId");
-                });
-
             modelBuilder.Entity("MoneyTrackerMigrations.Models.AccountModel", b =>
                 {
                     b.Navigation("AutoPays");
@@ -780,10 +731,6 @@ namespace MoneyTrackerMigrations.Migrations
             modelBuilder.Entity("MoneyTrackerMigrations.Models.LocationModel", b =>
                 {
                     b.Navigation("Job");
-
-                    b.Navigation("Users");
-
-                    b.Navigation("userLocations");
                 });
 
             modelBuilder.Entity("MoneyTrackerMigrations.Models.UserModel", b =>
@@ -799,8 +746,6 @@ namespace MoneyTrackerMigrations.Migrations
                     b.Navigation("Settings");
 
                     b.Navigation("Transactions");
-
-                    b.Navigation("UserLocations");
                 });
 #pragma warning restore 612, 618
         }

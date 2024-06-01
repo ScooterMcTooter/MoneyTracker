@@ -22,4 +22,16 @@ public partial class HomePage : ContentPage
             await HomeScroll.ScrollToAsync(0, 0, true);
         });
     }
+
+    private void HomePageBind_Appearing(object sender, EventArgs e)
+    {
+        var existingPages = Shell.Current.Navigation.NavigationStack.ToList();
+        foreach (var page in existingPages)
+        {
+            if (page != null && page != this)
+            {
+                Shell.Current.Navigation.RemovePage(page);
+            }
+        }
+    }
 }

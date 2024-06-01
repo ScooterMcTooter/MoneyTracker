@@ -16,7 +16,7 @@ namespace MoneyTracker.ViewModels
 
         [ForeignKey("LoansViewModel")]
         public int LoanId { get; set; }
-        public virtual List<LoansViewModel>? Loans { get; set;}
+        public virtual List<LoanViewModel>? Loans { get; set;}
 
         [ObservableProperty]
         bool autoPayActive;

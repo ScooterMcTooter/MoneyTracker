@@ -194,7 +194,7 @@ public partial class UserViewModel : ObservableValidator
     /// <summary>
     /// Gets or sets the user's loans.
     /// </summary>
-    public List<LoansViewModel>? Loans { get; set; }
+    public List<LoanViewModel>? Loans { get; set; }
 
     /// <summary>
     /// Gets or sets the user's auto pays.

@@ -19,10 +19,11 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
+
         builder.Services.AddTransient<AccountPage>();
         builder.Services.AddTransient<CreateUserPage>();
         builder.Services.AddTransient<HomePage>();
-        builder.Services.AddTransient<JobPage>();
+        builder.Services.AddSingleton<JobPage>();
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<PasswordResetPage>();
         builder.Services.AddTransient<TransactionsPage>();
@@ -34,7 +35,7 @@ public static class MauiProgram
         builder.Services.AddTransient<HomeViewModel>();
         builder.Services.AddTransient<JobViewModel>();
         builder.Services.AddTransient<LoginViewModel>();
-        builder.Services.AddTransient<LoansViewModel>();
+        builder.Services.AddTransient<LoanViewModel>();
         builder.Services.AddTransient<SavingsBucketsViewModel>();
         builder.Services.AddTransient<SettingsViewModel>();
         builder.Services.AddTransient<TransactionTypeViewModel>();

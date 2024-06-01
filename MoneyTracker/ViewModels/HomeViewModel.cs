@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.EntityFrameworkCore;
 using MoneyTracker.Pages;
 using MoneyTrackerMigrations;
 using MoneyTrackerMigrations.Models;
@@ -29,25 +28,31 @@ public partial class HomeViewModel : ObservableValidator
         helper = new Helper();
         User = new UserViewModel(_db);
         _user = User;
-        Loan = new LoansViewModel();
+        Loans = new ObservableCollection<LoanModel>(_db.loanModels.Where(x => x.UserId == Id).ToList());
         Settings = new SettingsViewModel();
         Transaction = new TransactionsViewModel(_db,User);
-        Transactions = new ObservableCollection<TransactionModel>();
+        Transactions = new ObservableCollection<TransactionModel>(_db.transactionModels.Where(x => x.UserId == Id).ToList() ?? new List<TransactionModel>() { new TransactionModel() { Name = string.Empty, Amount = 0, Date = DateTime.Now.Date }});
         Account = new AccountViewModel(); // Initialize Account property
         Accounts = new ObservableCollection<AccountModel>(_db.accountModels.Where(x => x.UserId == Id).ToList()); // Initialize Accounts property
+        Autos = new ObservableCollection<AutoPayModel>(_db.autoPayModels.Where(x => x.UserId == Id).ToList()); // Initialize Autos property
+        Jobs = new ObservableCollection<JobModel>(_db.jobModels.Where(x => x.UserId == Id).ToList());
         HasAccounts = Accounts.Count > 0;
         AccountHeader = Accounts.Count > 0 ? $"Total Accounts: {AccountCount}" : "You have no accounts!";
         LoanHeader = LoanCount > 0 ? $"Total Loans: {LoanCount}" : "You have no loans! Go Celebrate!";
         AutoHeader = AutoCount > 0 ? $"Total AutoPays: {Autos.Count}" : "You have no active AutoPays!";
+        TransactionHeader = TransactionCount > 0 ? $"Total Transactions: {TransactionCount}" : "You have no transactions!";
+        JobHeader = JobCount > 0 ? $"Total Jobs: {JobCount}" : "You have no jobs.";
         HasAutos = AutoCount > 0;
     }
 
     #region Properties
     public int Id { get; set; }
-    public virtual LoansViewModel? Loan { get; set; }
+    public virtual LoanViewModel? Loan { get; set; }
     public int LoanCount => _db.loanModels.Where(x => x.UserId == Id).Count();
     public int AccountCount => _db.accountModels.Where(x => x.UserId == Id).Count();
     public int AutoCount => _db.autoPayModels.Where(x => x.UserId == Id).Count();
+    public int TransactionCount => _db.transactionModels.Where(x => x.UserId == Id).Count();
+    public int JobCount => _db.jobModels.Where(x => x.UserId == Id).Count();
     private UserViewModel _user;
     public virtual UserViewModel User { get; set; }
     public virtual SettingsViewModel Settings { get; set; }
@@ -100,9 +105,13 @@ public partial class HomeViewModel : ObservableValidator
     public virtual ObservableCollection<LoanModel> Loans { get; set; } = new ObservableCollection<LoanModel>(); // Initialize Loans property
     [ObservableProperty]
     LoanModel selectedLoan;
-    public virtual ObservableCollection<AutoPayModel> Autos { get; set; } = new ObservableCollection<AutoPayModel>(); // Initialize Goals property
+    public virtual ObservableCollection<AutoPayModel> Autos { get; set; } = new ObservableCollection<AutoPayModel>(); // Initialize property
     [ObservableProperty]
     AutoPayModel selectedAuto;
+    [ObservableProperty]
+    ObservableCollection<JobModel> jobs;
+    [ObservableProperty]
+    JobModel? selectedJob;
     [ObservableProperty]
     bool chartVis;
     [ObservableProperty]
@@ -121,6 +130,14 @@ public partial class HomeViewModel : ObservableValidator
     bool hasAutos;
     [ObservableProperty]
     string autoHeader;
+    [ObservableProperty]
+    bool hasTransactions;
+    [ObservableProperty]
+    string transactionHeader;
+    [ObservableProperty]
+    bool hasJobs;
+    [ObservableProperty]
+    string jobHeader;
     #endregion
     #region Relay Commands
     /// <summary>

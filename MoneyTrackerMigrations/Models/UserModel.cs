@@ -27,4 +27,14 @@ public class UserModel
     public virtual ICollection<BucketModel>? Buckets { get; set; } = null;
     public virtual ICollection<JobModel>? Jobs { get; set; } = null;
     public virtual SettingsModel? Settings { get; set; } = null;
+    public virtual ICollection<UserLocation>? UserLocations { get; set; } = null;
+}
+
+public class UserLocation
+{
+    public int UserId { get; set; }
+    public UserModel? User { get; set; }
+
+    public int LocationId { get; set; }
+    public LocationModel? Location { get; set; }
 }

@@ -1,22 +1,24 @@
+using Microsoft.Extensions.DependencyInjection;
+using MoneyTracker;
 using MoneyTracker.ViewModels;
 
 namespace MoneyTracker.Pages;
 
 public partial class JobPage : ContentPage
 {
-	public JobPage(JobViewModel vm)
-	{
-		InitializeComponent();
-		BindingContext = vm;
-	}
+    public JobPage(IServiceProvider serviceProvider)
+    {
+        InitializeComponent();
+        BindingContext = serviceProvider.GetService<JobViewModel>();
+    }
 
     private async void CompanyInfoButton_Pressed(object sender, EventArgs e)
     {
-		await Shell.Current.DisplayAlert(
-			"Company Info & Job Type", 
-			$"The information we are looking for in the entry is the name of the company the job is for. {Environment.NewLine}{Environment.NewLine}" +
-			"The Information we are looking for in the Job Type picker is what kind of job you have.", 
-			"OK");
+        await Shell.Current.DisplayAlert(
+            "Company Info & Job Type",
+            $"The information we are looking for in the entry is the name of the company the job is for. {Environment.NewLine}{Environment.NewLine}" +
+            "The Information we are looking for in the Job Type picker is what kind of job you have.",
+            "OK");
         return;
     }
 
@@ -47,5 +49,27 @@ public partial class JobPage : ContentPage
             "The Information we are looking for in the job hours is how many hours you are expected to work a week",
             "OK");
         return;
+    }
+
+    private void DirectDeposit_Checked(object sender, EventArgs e)
+    {
+        if (DDCheckBox.IsChecked)
+            AccountPicker.IsEnabled = true;
+        else
+            AccountPicker.IsEnabled = false;
+    }
+
+    private void JobTypePicker_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if ((JobType)JobTypePicker.SelectedItem == JobType.Salary)
+        {
+            SalaryLabel.IsVisible = true;
+            SalaryAmount.IsVisible = true;
+        }
+        else
+        {
+            SalaryLabel.IsVisible = false;
+            SalaryAmount.IsVisible = false;
+        }
     }
 }

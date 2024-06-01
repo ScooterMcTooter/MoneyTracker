@@ -22,6 +22,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<TransactionTypeModel> transactionTypeModels { get; set; }
     public DbSet<UserModel> userModels { get; set; }
     public DbSet<SettingsModel> settingsModels { get; set; }
+    public DbSet<UserLocation> userLocations { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -176,6 +178,19 @@ public class ApplicationDbContext : DbContext
             .HasOne(l => l.Location)
             .WithOne(u => u.Job)
             .HasForeignKey<JobModel>(l => l.LocationId);
+
+        modelBuilder.Entity<UserLocation>()
+        .HasKey(ul => new { ul.UserId, ul.LocationId });
+
+        modelBuilder.Entity<UserLocation>()
+            .HasOne(ul => ul.User)
+            .WithMany(u => u.UserLocations)
+            .HasForeignKey(ul => ul.UserId);
+
+        modelBuilder.Entity<UserLocation>()
+            .HasOne(ul => ul.Location)
+            .WithMany(l => l.userLocations)
+            .HasForeignKey(ul => ul.LocationId);
         #endregion
 
         #region SeedData

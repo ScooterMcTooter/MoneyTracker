@@ -81,6 +81,7 @@ public partial class LoginViewModel : ObservableObject
             if (user != null)
             {
                 Constants.IsAuthenticated = true;
+                Constants.CurrentUser = user;
                 await Shell.Current.GoToAsync($"//{nameof(HomePage)}");
             }
             else
