@@ -17,17 +17,9 @@ public partial class JobViewModel : ObservableObject
         _serviceProvider = serviceProvider;
         _db = _serviceProvider.GetService<ApplicationDbContext>();
 
-        // Check if Constants.ConstJobs is not null and has items
-        if (Constants.ConstJobs != null && Constants.ConstJobs.Any())
-        {
-            Jobs = new ObservableCollection<JobModel>(Constants.ConstJobs);
-        }
-        else
-        {
-            // Fallback to fetching data from the database
-            Jobs = new ObservableCollection<JobModel>(_db.jobModels.Where(l => l.UserId == Constants.CurrentUser.Id).ToList());
-        }
-        
+        Constants.ConstJobsChanged += Constants_ConstJobsChanged;
+        Jobs = new ObservableCollection<JobModel>(Constants.ConstJobs ?? new List<JobModel>());
+
         JobStartDate = DateTime.Now;
         JobEndDate = null;
         JobType = JobType.None;
@@ -36,7 +28,6 @@ public partial class JobViewModel : ObservableObject
         JobHours = JobHours.None;
         Accounts = new ObservableCollection<AccountModel>(_db.accountModels.Where(a => a.UserId == Constants.CurrentUser.Id).ToList());
         Locations = new ObservableCollection<LocationModel>(_db.locationModels.Where(l => l.UserId == Constants.CurrentUser.Id).ToList());
-        //Jobs = new ObservableCollection<JobModel>(Constants.ConstJobs ?? _db.jobModels.Where(l => l.UserId == Constants.CurrentUser.Id).ToList());
     }
 
     private bool _jobIsCurrent;
@@ -536,6 +527,23 @@ public partial class JobViewModel : ObservableObject
         return true;
     }
     #endregion
+
+    private void Constants_ConstJobsChanged(object sender, EventArgs e)
+    {
+        // Update Jobs with the new contents of ConstJobs
+        Jobs.Clear();
+        foreach (var job in Constants.ConstJobs)
+        {
+            Jobs.Add(job);
+        }
+    }
+
+    // Make sure to unsubscribe from the event when the ViewModel is destroyed
+    // to prevent memory leaks.
+    ~JobViewModel()
+    {
+        Constants.ConstJobsChanged -= Constants_ConstJobsChanged;
+    }
 }
 
 #region enums

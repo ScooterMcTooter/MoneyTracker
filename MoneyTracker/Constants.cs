@@ -37,7 +37,24 @@ public static class Constants
     public static SettingsModel ConstSettings = new SettingsModel();
     public static List<AccountModel> ConstAccounts = new List<AccountModel>();
     public static List<AutoPayModel> ConstAutos = new List<AutoPayModel>();
-    public static List<JobModel> ConstJobs = new List<JobModel>();
+
+    private static List<JobModel> constJobs;
+    public static event EventHandler ConstJobsChanged;
+    public static List<JobModel> ConstJobs
+    {
+        get => constJobs;
+        set
+        {
+            constJobs = value;
+            OnConstJobsChanged();
+        }
+    }
+
+    private static void OnConstJobsChanged()
+    {
+        ConstJobsChanged?.Invoke(null, EventArgs.Empty);
+    }
+
     public static List<LoanModel> ConstLoans = new List<LoanModel>();
     public static List<TransactionModel> ConstTransactions = new List<TransactionModel>();
     #endregion
