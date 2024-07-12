@@ -19,7 +19,7 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="{Binding AddOrClose}" Command="{Binding AddJobCommand}"/>
     </ContentPage.ToolbarItems>
-
+    <ScrollView Grid.Row="0">
         <Grid RowDefinitions="auto,*,auto" RowSpacing="10">
             <CollectionView ItemsSource="{Binding Jobs}">
                 <CollectionView.ItemTemplate>
@@ -74,86 +74,87 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-        <ScrollView Grid.Row="1" IsEnabled="{Binding AddJobVisible}" VerticalOptions="FillAndExpand">
-            <Grid ColumnDefinitions=".25*,auto,1*,.5*,.25*"
+            <VerticalStackLayout Grid.Row="1" VerticalOptions="FillAndExpand">
+                <Grid ColumnDefinitions=".25*,auto,1*,.5*,.25*"
           ColumnSpacing="5"
           RowDefinitions="auto,auto,auto,auto,auto,auto,auto,auto"
           RowSpacing="10"
           IsVisible="{Binding AddJobVisible}">
-                <Button Text="i" Background="Transparent" TextColor="LightBlue" Clicked="CompanyInfoButton_Pressed"/>
-                <Entry Grid.Column="2" Placeholder="Company" Text="{Binding JobCompany}" TextColor="{AppThemeBinding Dark=White, Light=black, Default=Gray}"/>
-                <Picker Grid.Column="3" x:Name="JobTypePicker" Title="Select Job Type" ItemsSource="{Binding JobTypesValues}" SelectedItem="{Binding JobType}" SelectedIndexChanged="JobTypePicker_SelectedIndexChanged"/>
+                    <Button Text="i" Background="Transparent" TextColor="LightBlue" Clicked="CompanyInfoButton_Pressed"/>
+                    <Entry Grid.Column="2" Placeholder="Company" Text="{Binding JobCompany}" TextColor="{AppThemeBinding Dark=White, Light=black, Default=Gray}"/>
+                    <Picker Grid.Column="3" x:Name="JobTypePicker" Title="Select Job Type" ItemsSource="{Binding JobTypesValues}" SelectedItem="{Binding JobType}" SelectedIndexChanged="JobTypePicker_SelectedIndexChanged"/>
 
-                <Button Text="i" Grid.Row="1" Background="Transparent" TextColor="LightBlue" Clicked="TitleInfoButton_Pressed"/>
-                <Entry Grid.Column="2" Grid.Row="1" Placeholder="Title" Text="{Binding JobTitle}" />
-                <Picker Grid.Column="3" Grid.Row="1" x:Name="JobLocationPicker" Title="Select Job Working Location" ItemsSource="{Binding JobLocationValues}" SelectedItem="{Binding JobLocation}"/>
+                    <Button Text="i" Grid.Row="1" Background="Transparent" TextColor="LightBlue" Clicked="TitleInfoButton_Pressed"/>
+                    <Entry Grid.Column="2" Grid.Row="1" Placeholder="Title" Text="{Binding JobTitle}" />
+                    <Picker Grid.Column="3" Grid.Row="1" x:Name="JobLocationPicker" Title="Select Job Working Location" ItemsSource="{Binding JobLocationValues}" SelectedItem="{Binding JobLocation}"/>
 
-                <Button Text="i" Grid.Row="2" Background="Transparent" TextColor="LightBlue" Clicked="DescriptionInfoButton_Pressed"/>
-                <Entry Grid.Column="2" Grid.Row="2" Placeholder="Description" Text="{Binding JobDescription}" />
-                <Picker Grid.Column="3" Grid.Row="2" x:Name="JobStatusPicker" Title="Select length of job" ItemsSource="{Binding JobStatusValues}" SelectedItem="{Binding JobStatus}" />
+                    <Button Text="i" Grid.Row="2" Background="Transparent" TextColor="LightBlue" Clicked="DescriptionInfoButton_Pressed"/>
+                    <Entry Grid.Column="2" Grid.Row="2" Placeholder="Description" Text="{Binding JobDescription}" />
+                    <Picker Grid.Column="3" Grid.Row="2" x:Name="JobStatusPicker" Title="Select length of job" ItemsSource="{Binding JobStatusValues}" SelectedItem="{Binding JobStatus}" />
 
-                <Button Text="i" Grid.Row="3" Background="Transparent" TextColor="LightBlue" Clicked="PayInfoButton_Pressed"/>
-                <Grid Grid.Column="2" Grid.ColumnSpan="1" Grid.Row="3"
+                    <Button Text="i" Grid.Row="3" Background="Transparent" TextColor="LightBlue" Clicked="PayInfoButton_Pressed"/>
+                    <Grid Grid.Column="2" Grid.ColumnSpan="1" Grid.Row="3"
                     ColumnDefinitions="auto,auto,.1*,auto,.1*,auto">
-                    <Label Text="$" VerticalOptions="Center"/>
-                    <Entry Grid.Column="1" Keyboard="Numeric" Placeholder="0.00" Text="{Binding JobPay}" />
-                    <Label Grid.Column="2" Text="before tax: " VerticalOptions="Center" HorizontalOptions="End" FontSize="Micro"/>
-                    <Label Grid.Column="3" Text="$" VerticalOptions="Center"/>
-                    <Entry Grid.Column="4" Keyboard="Numeric" Placeholder="0.00" Text="{Binding JobPayTaxes}" />
-                </Grid>
-                <Picker Grid.Column="3" Grid.Row="3" x:Name="JobHoursPicker" Title="Select Job Type" ItemsSource="{Binding JobHoursValues}" SelectedItem="{Binding JobHours}"/>
+                        <Label Text="$" VerticalOptions="Center"/>
+                        <Entry Grid.Column="1" Keyboard="Numeric" Placeholder="0.00" Text="{Binding PayCheckAmount}" />
+                        <Label Grid.Column="2" Text="before tax: " VerticalOptions="Center" HorizontalOptions="End" FontSize="Micro"/>
+                        <Label Grid.Column="3" Text="$" VerticalOptions="Center"/>
+                        <Entry Grid.Column="4" Keyboard="Numeric" Placeholder="0.00" Text="{Binding payCheckAmountBeforeTax}" />
+                    </Grid>
+                    <Picker Grid.Column="3" Grid.Row="3" x:Name="JobHoursPicker" Title="Select Job Type" ItemsSource="{Binding JobHoursValues}" SelectedItem="{Binding JobHours}"/>
 
-                <Frame BackgroundColor="Transparent" Grid.ColumnSpan="5" Grid.Row="4">
-                    <HorizontalStackLayout Spacing="10" HorizontalOptions="CenterAndExpand">
-                        <VerticalStackLayout>
-                            <Label Text="Start Date" />
-                            <DatePicker Date="{Binding JobStartDate}" />
-                        </VerticalStackLayout>
-                        <VerticalStackLayout>
-                            <Label Text="Pay Day"/>
-                            <DatePicker Date="{Binding JobFirstPay}" />
-                        </VerticalStackLayout>
-                        <VerticalStackLayout>
-                            <Label Text="Current Job" VerticalOptions="Center"/>
-                            <CheckBox  IsChecked="{Binding JobIsCurrent}" />
-                        </VerticalStackLayout>
-                        <VerticalStackLayout>
-                            <Label Text="EndDate" />
-                            <DatePicker IsEnabled="{Binding JobIsCurrent, Converter={StaticResource InvertBooleanConverter}}" Date="{Binding JobEndDate}" />
-                        </VerticalStackLayout>
-                    </HorizontalStackLayout>
-                </Frame>
-                <Frame BackgroundColor="Transparent" Grid.ColumnSpan="5" Grid.Row="5">
-                    <Grid ColumnDefinitions="auto,auto,auto,*"
-                  RowDefinitions="auto,auto">
-                        <Label Grid.Column="1" Text="Direct Deposit" VerticalOptions="Center"/>
-                        <CheckBox x:Name="DDCheckBox" Grid.Column="2" IsChecked="{Binding DirectDeposit}" CheckedChanged="DirectDeposit_Checked"/>
-                        <Picker x:Name="AccountPicker" Grid.Column="3" Title="Select the account" SelectedItem="{Binding SelectedAccount}" ItemsSource="{Binding Accounts}"/>
-                        <HorizontalStackLayout Grid.Row="1" Grid.ColumnSpan="5">
-                            <Label Text="Pay Frequency in Weeks: " VerticalOptions="Center" />
-                            <Entry Keyboard="Numeric" Placeholder="2" Text="{Binding JobPayFrequencyInWeeks}" />
-                            <Label x:Name="SalaryLabel" Text="Salary: $" VerticalOptions="Center" />
-                            <Entry x:Name="SalaryAmount" Keyboard="Numeric" Placeholder="0.00" Text="{Binding JobPayYearly}" />
+                    <Frame BackgroundColor="Transparent" Grid.ColumnSpan="5" Grid.Row="4">
+                        <HorizontalStackLayout Spacing="10" HorizontalOptions="CenterAndExpand">
+                            <VerticalStackLayout>
+                                <Label Text="Start Date" />
+                                <DatePicker Date="{Binding JobStartDate}" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout>
+                                <Label Text="Pay Day"/>
+                                <DatePicker Date="{Binding JobFirstPay}" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout>
+                                <Label Text="Current Job" VerticalOptions="Center"/>
+                                <CheckBox  IsChecked="{Binding JobIsCurrent}" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout>
+                                <Label Text="EndDate" />
+                                <DatePicker IsEnabled="{Binding JobIsCurrent, Converter={StaticResource InvertBooleanConverter}}" Date="{Binding JobEndDate}" />
+                            </VerticalStackLayout>
                         </HorizontalStackLayout>
-                    </Grid>
-                </Frame>
-                <Frame BackgroundColor="Transparent" Grid.ColumnSpan="5" Grid.Row="6">
-                    <Grid RowDefinitions="auto,auto,auto,auto" RowSpacing="10">
-                        <Entry Placeholder="Address" Text="{Binding Address}" />
-                        <Entry Grid.Row="1" Placeholder="Address continued" Text="{Binding Address2}" />
-                        <Grid Grid.Row="2" 
-                      ColumnDefinitions=".4*,auto,.2*">
-                            <Entry Placeholder="City" Text="{Binding City}" />
-                            <Picker Grid.Column="1" Title="Select State" ItemsSource="{Binding StateValues}" SelectedItem="{Binding State}"/>
-                            <Entry Grid.Column="2" Keyboard="Numeric" Placeholder="Zip" Text="{Binding Zip}" />
+                    </Frame>
+                    <Frame BackgroundColor="Transparent" Grid.ColumnSpan="5" Grid.Row="5">
+                        <Grid ColumnDefinitions="auto,auto,auto,*"
+                  RowDefinitions="auto,auto">
+                            <Label Grid.Column="1" Text="Direct Deposit" VerticalOptions="Center"/>
+                            <CheckBox x:Name="DDCheckBox" Grid.Column="2" IsChecked="{Binding DirectDeposit}" CheckedChanged="DirectDeposit_Checked"/>
+                            <Picker x:Name="AccountPicker" Grid.Column="3" Title="Select the account" SelectedItem="{Binding SelectedAccount}" ItemsSource="{Binding Accounts}"/>
+                            <HorizontalStackLayout Grid.Row="1" Grid.ColumnSpan="5">
+                                <Label Text="Pay Frequency in Weeks: " VerticalOptions="Center" />
+                                <Entry Keyboard="Numeric" Placeholder="2" Text="{Binding JobPayFrequencyInWeeks}" />
+                                <Label x:Name="SalaryLabel" Text="Salary: $" VerticalOptions="Center" />
+                                <Entry x:Name="SalaryAmount" Keyboard="Numeric" Placeholder="0.00" Text="{Binding JobPayYearly}" />
+                            </HorizontalStackLayout>
                         </Grid>
+                    </Frame>
+                    <Frame BackgroundColor="Transparent" Grid.ColumnSpan="5" Grid.Row="6">
+                        <Grid RowDefinitions="auto,auto,auto,auto" RowSpacing="10">
+                            <Entry Placeholder="Address" Text="{Binding Address}" />
+                            <Entry Grid.Row="1" Placeholder="Address continued" Text="{Binding Address2}" />
+                            <Grid Grid.Row="2" 
+                      ColumnDefinitions=".4*,auto,.2*">
+                                <Entry Placeholder="City" Text="{Binding City}" />
+                                <Picker Grid.Column="1" Title="Select State" ItemsSource="{Binding StateValues}" SelectedItem="{Binding State}"/>
+                                <Entry Grid.Column="2" Keyboard="Numeric" Placeholder="Zip" Text="{Binding Zip}" />
+                            </Grid>
+                        </Grid>
+                    </Frame>
+                    <Grid Grid.ColumnSpan="5" Grid.Row="7" BackgroundColor="Transparent" ColumnDefinitions=".15*,.25*,.2*,.25*,.15*">
+                        <Button Grid.Column="1" Text="Save" Command="{Binding SaveJobCommand}"/>
+                        <Button Grid.Column="3" Text="Clear" Command="{Binding ClearFormCommand}"/>
                     </Grid>
-                </Frame>
-                <Grid Grid.ColumnSpan="5" Grid.Row="7" BackgroundColor="Transparent" ColumnDefinitions=".15*,.25*,.2*,.25*,.15*">
-                    <Button Grid.Column="1" Text="Save" Command="{Binding SaveJobCommand}"/>
-                    <Button Grid.Column="3" Text="Clear" Command="{Binding ClearFormCommand}"/>
                 </Grid>
-            </Grid>
-        </ScrollView>
-    </Grid>
+            </VerticalStackLayout>
+        </Grid>
+    </ScrollView>
 </ContentPage>

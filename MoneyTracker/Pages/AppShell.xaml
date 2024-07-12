@@ -115,5 +115,8 @@
         ContentTemplate="{DataTemplate local:JobPage}"
         Route="JobPage" />
 
-
+    <ShellContent
+        Title="Loans"
+        ContentTemplate="{DataTemplate local:LoanPage}"
+        Route="LoanPage" />
 </Shell>

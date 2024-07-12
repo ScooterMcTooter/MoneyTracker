@@ -150,10 +150,11 @@ public class ApplicationDbContext : DbContext
             .HasForeignKey(l => l.LoanId);
 
         //LoanModel to AutoPayModel
-        modelBuilder.Entity<AutoPayModel>()
-            .HasOne(l => l.Loan)
-            .WithMany(u => u.AutoPay)
-            .HasForeignKey(l => l.LoanId);
+        modelBuilder.Entity<LoanModel>()
+            .HasOne(l => l.AutoPays)
+            .WithOne(u => u.Loan)
+            .HasForeignKey<LoanModel>(l => l.AutoPayId)
+            .IsRequired(false);
 
         //SettingsModel to UserModel one to one
         modelBuilder.Entity<SettingsModel>()

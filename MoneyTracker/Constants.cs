@@ -32,7 +32,15 @@ public static class Constants
     public const string PasswordMissmatch = "Passwords did not match!";
     public const string UsernameReq = "Username must be between 5 and 20 characters with no numbers or spaces.";
 
+    #region User Data
     public static UserModel CurrentUser = new UserModel();
+    public static SettingsModel ConstSettings = new SettingsModel();
+    public static List<AccountModel> ConstAccounts = new List<AccountModel>();
+    public static List<AutoPayModel> ConstAutos = new List<AutoPayModel>();
+    public static List<JobModel> ConstJobs = new List<JobModel>();
+    public static List<LoanModel> ConstLoans = new List<LoanModel>();
+    public static List<TransactionModel> ConstTransactions = new List<TransactionModel>();
+    #endregion
 
     public static DateTime MaxDate = DateTime.Now.AddYears(-18).Date;
 }

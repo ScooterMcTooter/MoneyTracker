@@ -4,10 +4,153 @@
              x:Class="MoneyTracker.Pages.LoanPage"
              xmlns:viewmodel="clr-namespace:MoneyTracker.ViewModels"
              xmlns:DataType="viewmodel:LoanViewModel"
+             xmlns:ct="clr-namespace:CommunityToolkit.Maui.Behaviors;assembly=CommunityToolkit.Maui"
              Title="Loans">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{Binding ToolbarAddLoanText}"
+                        Command="{Binding AddLoanCommand}" />
+    </ContentPage.ToolbarItems>
+
     <Grid
-        RowDefinitions="auto,auto,auto,auto,auto"
-        ColumnDefinitions=".2*,auto,auto,.2*">
-        
+        RowDefinitions="auto,auto,auto,auto"
+        ColumnDefinitions=".2*,auto,auto,.2*"
+        RowSpacing="20">
+        <Label Text="{Binding LoanString}" Grid.ColumnSpan="4" HorizontalOptions="Center" FontSize="Large" />
+
+        <!--#region ListView to display loan details -->
+        <Frame Grid.Row="1" Grid.ColumnSpan="4" BackgroundColor="Transparent">
+            <ListView x:Name="LoanList"
+                      ItemsSource="{Binding Loans}"
+                      SelectedItem="{Binding SelectedLoan}"
+                      ItemSelected="LoanList_ItemSelected">
+            <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal">
+                                <Label Text="{Binding Name}" />
+                                <Label Text="{Binding Amount}" />
+                                <Label Text="{Binding InterestRate}" />
+                                <Label Text="{Binding MonthlyPayment}" />
+                                <Label Text="{Binding DueDate}" />
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Frame>
+        <!--#endregion-->
+        <!--#region Add Loan-->
+        <Frame Grid.Row="2" Grid.ColumnSpan="4" BackgroundColor="Transparent" HasShadow="True" IsVisible="{Binding IsAddLoanVisible}" IsEnabled="{Binding IsAddLoanVisible}">
+            <Grid RowSpacing="10"
+                  RowDefinitions="auto,auto,auto,auto,auto,auto,auto"
+                  ColumnDefinitions="auto,auto,auto,auto"
+                  Grid.Column="1"
+                  Grid.ColumnSpan="2">
+                <!--#region Row 1-->
+                <VerticalStackLayout Grid.Row="0" Grid.Column="1" HorizontalOptions="Center">
+                    <Label Text="Name" HorizontalOptions="Center" />
+                    <Entry Placeholder="Name" Text="{Binding LoanName}" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Row="0" Grid.Column="2" HorizontalOptions="Center">
+                    <Label Text="Amount" HorizontalOptions="Center" />
+                    <Entry Grid.Column="2" Placeholder="Amount" Keyboard="Numeric" Text="{Binding LoanAmount}" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Row="0" Grid.Column="3" HorizontalOptions="Center">
+                    <Label Text="Monthly Payment" HorizontalOptions="Center" />
+                    <Entry Grid.Column="3" Placeholder="Monthly Payment" Keyboard="Numeric" Text="{Binding MonthlyPayment}" />
+                </VerticalStackLayout>
+                <!--#endregion-->
+
+                <!--#region Row 2-->
+                <VerticalStackLayout Grid.Row="1" Grid.Column="1" HorizontalOptions="Center">
+                    <Label Text="Interest Rate" HorizontalOptions="Center" />
+                    <Entry Placeholder="Interest Rate" Keyboard="Numeric" Text="{Binding InterestRate}" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Row="1" Grid.Column="2" HorizontalOptions="Center">
+                    <Label Text="Total Interest" HorizontalOptions="Center" />
+                    <Entry Grid.Row="1" Grid.Column="2" Placeholder="Total Interest" Keyboard="Numeric" Text="{Binding TotalInterest}" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Row="1" Grid.Column="3" HorizontalOptions="Center">
+                    <Label Text="Remaining Balance" HorizontalOptions="Center" />
+                    <Entry Grid.Row="1" Grid.Column="3" Placeholder="Remaining Balance" Keyboard="Numeric" Text="{Binding RemainingBalance}" />
+                </VerticalStackLayout>
+                <!--#endregion-->
+
+                <!--#region Row 3-->
+                <VerticalStackLayout Grid.Row="2" Grid.Column="1" HorizontalOptions="CenterAndExpand">
+                    <Picker Title="Loan Type" ItemsSource="{Binding LoanTypeValues}" SelectedItem="{Binding SelectedLoanType}" HorizontalOptions="CenterAndExpand" />
+                    <Picker Title="Interest Type" ItemsSource="{Binding InterestTypeValues}" SelectedItem="{Binding SelectedInterestType}" HorizontalOptions="CenterAndExpand" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Row="2" Grid.Column="2" HorizontalOptions="Center">
+                    <Entry Placeholder="ex: Dept. Ed" Text="{Binding Guarantor}" HorizontalOptions="Center" />
+                    <Entry Placeholder="ex: Mohela" Text="{Binding Servicer}" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Row="2" Grid.Column="3" HorizontalOptions="CenterAndExpand">
+                    <Picker Title="Student Loan type" ItemsSource="{Binding StudentLoanTypeValues}" SelectedItem="{Binding SelectedStudentLoanType}" HorizontalOptions="CenterAndExpand" />
+                    <Picker Title="Fed Loan Type" ItemsSource="{Binding FedLoanTypeValues}" SelectedItem="{Binding SelectedFedLoanType}" HorizontalOptions="CenterAndExpand" />
+                </VerticalStackLayout>
+                <!--#endregion-->
+
+                <!--#region Row 4-->
+                <Grid Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
+                      ColumnDefinitions=".35*,auto">
+                    <VerticalStackLayout>
+                        <Entry Placeholder="School Name" Text="{Binding SchoolName}" />
+                        <Entry Placeholder="{Binding Guarantor}" Text="{Binding CurrentOwner}" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                        <Label Text="Disbursment Date" />
+                        <DatePicker Date="{Binding DisbursmentDate}" />
+                    </VerticalStackLayout>
+                </Grid>
+                <Grid Grid.Column="3" Grid.Row="3"
+                      RowDefinitions=".5*,auto"
+                      ColumnDefinitions=".5*,.5*"
+                      VerticalOptions="CenterAndExpand"
+                      Padding="10">
+                    <Label FontSize="Caption" Text="Monthly Paid" HorizontalOptions="Start" VerticalOptions="Center" />
+
+                    <CheckBox Grid.Column="1" IsChecked="{Binding IsPaid}" HorizontalOptions="End" />
+                    <Picker Grid.Row="1" Grid.ColumnSpan="2" Title="Loan Status" ItemsSource="{Binding LoanStatusValues}" SelectedIndex="{Binding SelectedLoanStatus}" />
+
+                </Grid>
+                <!--#endregion-->
+
+                <!--#region Row 5-->
+                <VerticalStackLayout Grid.Row="4" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                    <Label Text="Due Date" HorizontalOptions="Center" />
+                    <DatePicker Date="{Binding DueDate}" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Row="4" Grid.Column="2" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                    <Label Text="Payment Date" HorizontalOptions="Center" />
+                    <DatePicker Date="{Binding PaymentDate}" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Row="4" Grid.Column="3" HorizontalOptions="Center">
+                    <Label Text="Payments" HorizontalOptions="Center" />
+                    <Picker Title="Previous Payments" ItemsSource="{Binding Transactions}" SelectedIndex="{Binding SelectedTransaction}" />
+                </VerticalStackLayout>
+                <!--#endregion-->
+
+                <!--#region Row 6-->
+                <VerticalStackLayout Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" HorizontalOptions="Center">
+                    <Picker Title="AutoPay Accounts" ItemsSource="{Binding AutoPays}" SelectedIndex="{Binding SelectedAutoPay}" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Row="5" Grid.Column="3" HorizontalOptions="Center" VerticalOptions="End">
+                    <Picker Title="Repayment Plans" SelectedIndex="{Binding SelectedRepaymentPlan}" ItemsSource="{Binding LoanRepaymentPlanValues}" />
+                </VerticalStackLayout>
+                <!--#endregion-->
+
+                <!--#region Row 7-->
+                <Grid Grid.Row="6" Grid.ColumnSpan="4"
+                      ColumnDefinitions="auto,*,auto,auto">
+                    <Button Text="Save" BackgroundColor="Green" Command="{Binding SaveLoanCommand}" />
+                    <Button Grid.Column="2" BackgroundColor="DarkCyan" Text="Clear" Command="{Binding ClearAddLoanCommand}" />
+                    <Button Grid.Column="3" BackgroundColor="DarkRed" Text="Delete" Command="{Binding DeleteLoanCommand}" />
+                    <!--#endregion-->
+                </Grid>
+            </Grid>
+        </Frame>
+        <!--#endregion-->
     </Grid>
 </ContentPage>

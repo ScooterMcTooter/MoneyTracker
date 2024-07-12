@@ -6,10 +6,13 @@ namespace MoneyTracker.Pages;
 
 public partial class JobPage : ContentPage
 {
+    private readonly IServiceProvider _serviceProvider;
+
     public JobPage(IServiceProvider serviceProvider)
     {
         InitializeComponent();
-        BindingContext = serviceProvider.GetService<JobViewModel>();
+        _serviceProvider = serviceProvider;
+        BindingContext = _serviceProvider.GetService<JobViewModel>();
     }
 
     private async void CompanyInfoButton_Pressed(object sender, EventArgs e)

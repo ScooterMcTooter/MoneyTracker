@@ -10,10 +10,24 @@ namespace MoneyTracker.ViewModels;
 public partial class JobViewModel : ObservableObject
 {
     private readonly ApplicationDbContext _db;
+    private readonly IServiceProvider _serviceProvider;
 
-    public JobViewModel(ApplicationDbContext db)
+    public JobViewModel(IServiceProvider serviceProvider)
     {
-        _db = db;
+        _serviceProvider = serviceProvider;
+        _db = _serviceProvider.GetService<ApplicationDbContext>();
+
+        // Check if Constants.ConstJobs is not null and has items
+        if (Constants.ConstJobs != null && Constants.ConstJobs.Any())
+        {
+            Jobs = new ObservableCollection<JobModel>(Constants.ConstJobs);
+        }
+        else
+        {
+            // Fallback to fetching data from the database
+            Jobs = new ObservableCollection<JobModel>(_db.jobModels.Where(l => l.UserId == Constants.CurrentUser.Id).ToList());
+        }
+        
         JobStartDate = DateTime.Now;
         JobEndDate = null;
         JobType = JobType.None;
@@ -22,9 +36,7 @@ public partial class JobViewModel : ObservableObject
         JobHours = JobHours.None;
         Accounts = new ObservableCollection<AccountModel>(_db.accountModels.Where(a => a.UserId == Constants.CurrentUser.Id).ToList());
         Locations = new ObservableCollection<LocationModel>(_db.locationModels.Where(l => l.UserId == Constants.CurrentUser.Id).ToList());
-        Jobs = new ObservableCollection<JobModel>(_db.jobModels.Where(j => j.UserId == Constants.CurrentUser.Id).ToList());
-
-        //Constants.CurrentUser.
+        //Jobs = new ObservableCollection<JobModel>(Constants.ConstJobs ?? _db.jobModels.Where(l => l.UserId == Constants.CurrentUser.Id).ToList());
     }
 
     private bool _jobIsCurrent;
@@ -67,6 +79,10 @@ public partial class JobViewModel : ObservableObject
     [ObservableProperty]
     string jobDescription = string.Empty;
     [ObservableProperty]
+    double payCheckAmount;
+    [ObservableProperty]
+    double payCheckAmountBeforeTax;
+    [ObservableProperty]
     double? jobPay = null;
     [ObservableProperty]
     double? jobPayTaxes = null;
@@ -79,7 +95,7 @@ public partial class JobViewModel : ObservableObject
     [ObservableProperty]
     bool directDeposit = true;
     [ObservableProperty]
-    ObservableCollection<JobModel>? jobs;
+    ObservableCollection<JobModel> jobs;
     [ObservableProperty]
     JobModel? selectedJob;
     [ObservableProperty]
@@ -138,6 +154,8 @@ public partial class JobViewModel : ObservableObject
             Zip = Zip
         };
 
+
+
         // Save the job to the database with the current user ID
         JobModel job = new JobModel()
         {
@@ -161,9 +179,7 @@ public partial class JobViewModel : ObservableObject
             Status = JobStatus.ToString(),
             Hours = hours,
             UserId = Constants.CurrentUser.Id,
-            //User = Constants.CurrentUser,
-            AccountId = SelectedAccount?.Id ?? null,
-            //Account = SelectedAccount
+            AccountId = SelectedAccount?.Id ?? null
         };
 
         try
@@ -176,18 +192,23 @@ public partial class JobViewModel : ObservableObject
                     {
                         //Check to see if the job is already in the database without comparing the ID
                         bool jobExists = JobCompare(job);
+                        job.User = Constants.CurrentUser;
 
                         if (Jobs == null)
                         {
                             Jobs = new ObservableCollection<JobModel>() { job };
                             var entity = await _db.jobModels.AddAsync(job);
                             await _db.SaveChangesAsync();
+
+                            Constants.ConstJobs.Add(job);
                         }
                         else if (!jobExists)
                         {
                             Jobs.Add(job);
                             var entity = await _db.jobModels.AddAsync(job);
                             await _db.SaveChangesAsync();
+
+                            Constants.ConstJobs.Add(job);
                         }
                         else
                         {
@@ -203,8 +224,19 @@ public partial class JobViewModel : ObservableObject
                     }
                     else
                     {
+                        var trackedEntity = _db.ChangeTracker.Entries<JobModel>().FirstOrDefault(e => e.Entity.Id == job.Id);
+
+                        if (trackedEntity != null)
+                        {
+                            // The entity is being tracked
+                            _db.Entry(trackedEntity.Entity).State = EntityState.Detached;
+                        }
+
                         _db.jobModels.Update(job);
                         await _db.SaveChangesAsync();
+
+                        var j = Jobs.Where(j => j.Id == job.Id).First();
+                        j = job;
                     }
 
                     transaction.Commit();
@@ -280,6 +312,7 @@ public partial class JobViewModel : ObservableObject
                 return;
             }
 
+            LocationModel location = _db.locationModels.Where(l => l.Id == job.LocationId).FirstOrDefault();
             string hours = JobHoursConversions(job.Hours);
 
             //Set the form fields to the job that was selected
@@ -289,10 +322,11 @@ public partial class JobViewModel : ObservableObject
             Address = job.Location?.Address;
             Address2 = job.Location?.Address2;
             City = job.Location?.City;
-            State = Enum.Parse<JobState>(job.Location?.State);
+            State = Enum.Parse<JobState>(location.State);
             Zip = job.Location?.Zip;
             JobDescription = job.Description;
-            JobPay = job.HourlyWage;
+            JobPay = job.PayCheckAmount;
+            JobPayTaxes = job.PayCheckAmountBeforeTax;
             JobPayYearly = job.YearlyWage;
             JobStartDate = job.StartDate;
             JobIsCurrent = job.IsActive ?? false;
@@ -301,6 +335,9 @@ public partial class JobViewModel : ObservableObject
             JobLocation = Enum.Parse<JobLocation>(job.WorkLocation);
             JobStatus = Enum.Parse<JobStatus>(job.Status);
             JobHours = Enum.Parse<JobHours>(hours);
+            JobPayFrequencyInWeeks = job.PayFrequencyInWeeks;
+            DirectDeposit = job.DirectDeposit;
+            JobFirstPay = job.FirstPayDate >= DateTime.Now ? job.FirstPayDate : job.FirstPayDate.AddDays(job.PayFrequencyInWeeks * 7);
             SelectedAccount = job.Account;
 
             AddJobVisible = true;

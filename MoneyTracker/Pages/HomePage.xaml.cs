@@ -5,10 +5,14 @@ namespace MoneyTracker.Pages;
 
 public partial class HomePage : ContentPage
 {
-    public HomePage(HomeViewModel vm)
+    private readonly IServiceProvider _serviceProvider;
+
+    public HomePage(IServiceProvider serviceProvider)
     {
+        _serviceProvider = serviceProvider;
+
         InitializeComponent();
-        BindingContext = vm;
+        BindingContext = _serviceProvider.GetService<HomeViewModel>();
 
         Shell.Current.FlyoutBehavior = FlyoutBehavior.Flyout;
 
@@ -23,6 +27,12 @@ public partial class HomePage : ContentPage
         });
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        LoanListView.SelectedItem = null;
+    }
+
     private void HomePageBind_Appearing(object sender, EventArgs e)
     {
         var existingPages = Shell.Current.Navigation.NavigationStack.ToList();
@@ -32,6 +42,23 @@ public partial class HomePage : ContentPage
             {
                 Shell.Current.Navigation.RemovePage(page);
             }
+        }
+    }
+
+    private void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+    {
+        try
+        {
+            if (e.SelectedItem is MoneyTrackerMigrations.Models.LoanModel loan)
+            {
+
+                _serviceProvider.GetService<LoanViewModel>().EditSelectedLoanCommand.Execute(Constants.ConstLoans.Where(l => l.Id == loan.Id).First().Id);
+            }
+        }
+        catch (Exception ex)
+        {
+            Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+            return;
         }
     }
 }
