@@ -52,7 +52,7 @@ public partial class HomePage : ContentPage
             if (e.SelectedItem is MoneyTrackerMigrations.Models.LoanModel loan)
             {
 
-                _serviceProvider.GetService<LoanViewModel>().EditSelectedLoanCommand.Execute(Constants.ConstLoans.Where(l => l.Id == loan.Id).First().Id);
+                _serviceProvider.GetService<LoanViewModel>().EditLoanCommand.Execute(Constants.ConstLoans.Where(l => l.Id == loan.Id).First().Id);
             }
         }
         catch (Exception ex)

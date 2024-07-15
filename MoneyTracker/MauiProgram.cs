@@ -21,29 +21,29 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        builder.Services.AddSingleton<LoginPage>();
-        builder.Services.AddSingleton<AccountPage>();
-        builder.Services.AddSingleton<CreateUserPage>();
-        builder.Services.AddSingleton<HomePage>();
-        builder.Services.AddSingleton<JobPage>();
-        builder.Services.AddSingleton<LoanPage>();
-        builder.Services.AddSingleton<PasswordResetPage>();
-        builder.Services.AddSingleton<TransactionsPage>();
-        builder.Services.AddSingleton<UserPage>();
+        builder.Services.AddTransient<LoginPage>();
+        builder.Services.AddTransient<AccountPage>();
+        builder.Services.AddTransient<CreateUserPage>();
+        builder.Services.AddTransient<HomePage>();
+        builder.Services.AddTransient<JobPage>();
+        builder.Services.AddTransient<LoanPage>();
+        builder.Services.AddTransient<PasswordResetPage>();
+        builder.Services.AddTransient<TransactionsPage>();
+        builder.Services.AddTransient<UserPage>();
 
-        builder.Services.AddSingleton<LoginViewModel>();
-        builder.Services.AddSingleton<AccountViewModel>();
-        builder.Services.AddSingleton<AutoPayViewModel>();
-        builder.Services.AddSingleton<CreateUserViewModel>();
-        builder.Services.AddSingleton<HomeViewModel>();
-        builder.Services.AddSingleton<JobViewModel>();
-        builder.Services.AddSingleton<LoanViewModel>();
-        builder.Services.AddSingleton<SavingsBucketsViewModel>();
-        builder.Services.AddSingleton<SettingsViewModel>();
-        builder.Services.AddSingleton<TransactionTypeViewModel>();
-        builder.Services.AddSingleton<TransactionsViewModel>();
-        builder.Services.AddSingleton<UserViewModel>();
-        builder.Services.AddSingleton<IServiceProvider, ServiceProvider>();
+        builder.Services.AddTransient<LoginViewModel>();
+        builder.Services.AddTransient<AccountViewModel>();
+        builder.Services.AddTransient<AutoPayViewModel>();
+        builder.Services.AddTransient<CreateUserViewModel>();
+        builder.Services.AddTransient<HomeViewModel>();
+        builder.Services.AddTransient<JobViewModel>();
+        builder.Services.AddTransient<LoanViewModel>();
+        builder.Services.AddTransient<SavingsBucketsViewModel>();
+        builder.Services.AddTransient<SettingsViewModel>();
+        builder.Services.AddTransient<TransactionTypeViewModel>();
+        builder.Services.AddTransient<TransactionsViewModel>();
+        builder.Services.AddTransient<UserViewModel>();
+        builder.Services.AddTransient<IServiceProvider, ServiceProvider>();
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
         {
 #if DEBUG

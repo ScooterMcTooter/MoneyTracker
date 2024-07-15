@@ -55,7 +55,25 @@ public static class Constants
         ConstJobsChanged?.Invoke(null, EventArgs.Empty);
     }
 
-    public static List<LoanModel> ConstLoans = new List<LoanModel>();
+
+    private static List<LoanModel> constLoans;
+    public static List<LoanModel> ConstLoans
+    {
+        get => constLoans;
+        set
+        {
+            constLoans = value;
+            OnConstLoansChanged();
+        }
+    }
+ 
+    public static event EventHandler ConstLoansChanged;
+
+    private static void OnConstLoansChanged()
+    {
+        ConstLoansChanged?.Invoke(null, EventArgs.Empty);
+    }
+
     public static List<TransactionModel> ConstTransactions = new List<TransactionModel>();
     #endregion
 

@@ -51,7 +51,8 @@ public partial class HomeViewModel : ObservableValidator
         HasJobs = Jobs.Any();
         #endregion
 
-        TotalBalance = Accounts.Sum(x => (double)x.Balance);
+        CurrentIncome = helper.PayvsBills(0); //replace with Bills when that gets created
+        TotalBalance = CurrentSavings + CurrentChecking;
     }
 
     #region Properties
@@ -64,7 +65,7 @@ public partial class HomeViewModel : ObservableValidator
     #endregion
     public double Balance => CurrentIncome - CurrentExpenses;
     public double CurrentDebt => _db.loanModels.Where(x => x.UserId == User.Id).Sum(x => x.Amount);
-    public double CurrentNetWorth => (CurrentChecking + CurrentSavings) - CurrentDebt;
+    public double CurrentNetWorth => TotalBalance - CurrentDebt;
     #region Color Properties
     public string BalanceColor => helper.GetBalanceColor(Balance);
     public string TotalBalanceColor => helper.GetBalanceColor(TotalBalance);
@@ -73,8 +74,9 @@ public partial class HomeViewModel : ObservableValidator
     public string CurrentExpensesColor => helper.GetBalanceColor(CurrentExpenses);
     public string CurrentSavingsColor => helper.GetBalanceColor(CurrentSavings);
     public string CurrentCheckingColor => helper.GetBalanceColor(CurrentChecking);
+    public string CurrentDebtColor => helper.GetBalanceColor(CurrentDebt, true);
     #endregion
-    public string BalanceString => $"${CurrentIncome} - ${CurrentDebt}:";
+    public string BalanceString => $"${CurrentIncome} - ${CurrentExpenses}:";
     public string Width => (DeviceDisplay.MainDisplayInfo.Width * .3).ToString();
     #endregion
 

@@ -15,7 +15,7 @@ public partial class JobViewModel : ObservableObject
     public JobViewModel(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
-        _db = _serviceProvider.GetService<ApplicationDbContext>();
+        _db = _serviceProvider.GetService<ApplicationDbContext>() ?? throw new InvalidOperationException("ApplicationDbContext could not be retrieved from the service provider.");
 
         Constants.ConstJobsChanged += Constants_ConstJobsChanged;
         Jobs = new ObservableCollection<JobModel>(Constants.ConstJobs ?? new List<JobModel>());
@@ -131,10 +131,9 @@ public partial class JobViewModel : ObservableObject
         }
 
         int hours = JobHoursConversions(JobHours.ToString());
-        double pay = JobPay ?? 1;
         double payTaxes = JobPayTaxes ?? 1;
-        double payYearly = JobPayYearly == null ? Math.Round((52 / JobPayFrequencyInWeeks) * pay, 2) : (double)JobPayYearly;
-        double wage = Math.Round(pay / hours, 2);
+        double payYearly = JobPayYearly == null ? Math.Round((52 / JobPayFrequencyInWeeks) * JobPay ?? 0, 2) : (double)JobPayYearly;
+        double hourlyWage = Math.Round(JobPay ?? 1 / hours, 2);
 
         LocationModel location = new LocationModel()
         {
@@ -155,9 +154,9 @@ public partial class JobViewModel : ObservableObject
             Title = JobTitle,
             Location = location,
             Description = JobDescription,
-            PayCheckAmount = pay,
-            PayCheckAmountBeforeTax = payTaxes,
-            HourlyWage = wage,
+            PayCheckAmount = JobPay ?? 0,
+            PayCheckAmountBeforeTax = PayCheckAmountBeforeTax,
+            HourlyWage = hourlyWage,
             YearlyWage = payYearly,
             StartDate = JobStartDate,
             FirstPayDate = JobFirstPay ?? DateTime.Now,
