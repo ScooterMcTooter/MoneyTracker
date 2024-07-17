@@ -15,6 +15,8 @@ public class JobModel
     public DateTime StartDate { get; set; }
     public DateTime? EndDate { get; set; } = null;
     public int Hours { get; set; }
+    public double PayCheckAmount { get; set; }
+    public double PayCheckAmountBeforeTax { get; set; }
     public bool? IsActive { get; set; } = true;
     public double HourlyWage { get; set; }
     public double YearlyWage { get; set; }
@@ -23,7 +25,7 @@ public class JobModel
     public bool DirectDeposit { get; set; } = true;
     public string? Status { get; set; }
     public string? WorkLocation { get; set; }
-    public int AccountId { get; set; }
+    public int? AccountId { get; set; }
     public AccountModel? Account { get; set; }
     public DateTime FirstPayDate { get; set; } = DateTime.Now;
     public UserModel? User { get; set; }

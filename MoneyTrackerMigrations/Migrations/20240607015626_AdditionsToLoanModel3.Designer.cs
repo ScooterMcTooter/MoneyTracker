@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MoneyTrackerMigrations;
 
@@ -10,9 +11,11 @@ using MoneyTrackerMigrations;
 namespace MoneyTrackerMigrations.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240607015626_AdditionsToLoanModel3")]
+    partial class AdditionsToLoanModel3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -104,6 +107,9 @@ namespace MoneyTrackerMigrations.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
+
+                    b.HasIndex("LoanId")
+                        .IsUnique();
 
                     b.HasIndex("TransactionTypeId");
 
@@ -295,9 +301,6 @@ namespace MoneyTrackerMigrations.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AutoPayId")
-                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -635,6 +638,12 @@ namespace MoneyTrackerMigrations.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MoneyTrackerMigrations.Models.LoanModel", "Loan")
+                        .WithOne("AutoPays")
+                        .HasForeignKey("MoneyTrackerMigrations.Models.AutoPayModel", "LoanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("MoneyTrackerMigrations.Models.TransactionTypeModel", "TransactionType")
                         .WithMany()
                         .HasForeignKey("TransactionTypeId")
@@ -648,6 +657,8 @@ namespace MoneyTrackerMigrations.Migrations
                         .IsRequired();
 
                     b.Navigation("Accounts");
+
+                    b.Navigation("Loan");
 
                     b.Navigation("TransactionType");
 
@@ -692,17 +703,11 @@ namespace MoneyTrackerMigrations.Migrations
 
             modelBuilder.Entity("MoneyTrackerMigrations.Models.LoanModel", b =>
                 {
-                    b.HasOne("MoneyTrackerMigrations.Models.AutoPayModel", "AutoPays")
-                        .WithOne("Loan")
-                        .HasForeignKey("MoneyTrackerMigrations.Models.LoanModel", "AutoPayId");
-
                     b.HasOne("MoneyTrackerMigrations.Models.UserModel", "User")
                         .WithMany("Loans")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("AutoPays");
 
                     b.Navigation("User");
                 });
@@ -808,8 +813,6 @@ namespace MoneyTrackerMigrations.Migrations
 
             modelBuilder.Entity("MoneyTrackerMigrations.Models.AutoPayModel", b =>
                 {
-                    b.Navigation("Loan");
-
                     b.Navigation("Transactions");
                 });
 
@@ -820,6 +823,8 @@ namespace MoneyTrackerMigrations.Migrations
 
             modelBuilder.Entity("MoneyTrackerMigrations.Models.LoanModel", b =>
                 {
+                    b.Navigation("AutoPays");
+
                     b.Navigation("Transactions");
                 });
 

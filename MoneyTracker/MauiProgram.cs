@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CommunityToolkit.Maui;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MoneyTracker.Pages;
 using MoneyTracker.ViewModels;
@@ -13,33 +14,36 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseMauiCommunityToolkit() // Added the missing method call
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
+        builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<AccountPage>();
         builder.Services.AddTransient<CreateUserPage>();
         builder.Services.AddTransient<HomePage>();
         builder.Services.AddTransient<JobPage>();
-        builder.Services.AddTransient<LoginPage>();
+        builder.Services.AddTransient<LoanPage>();
         builder.Services.AddTransient<PasswordResetPage>();
         builder.Services.AddTransient<TransactionsPage>();
-        builder.Services.AddSingleton<UserPage>();
+        builder.Services.AddTransient<UserPage>();
 
+        builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<AccountViewModel>();
         builder.Services.AddTransient<AutoPayViewModel>();
         builder.Services.AddTransient<CreateUserViewModel>();
         builder.Services.AddTransient<HomeViewModel>();
         builder.Services.AddTransient<JobViewModel>();
-        builder.Services.AddTransient<LoginViewModel>();
-        builder.Services.AddTransient<LoansViewModel>();
+        builder.Services.AddTransient<LoanViewModel>();
         builder.Services.AddTransient<SavingsBucketsViewModel>();
         builder.Services.AddTransient<SettingsViewModel>();
         builder.Services.AddTransient<TransactionTypeViewModel>();
         builder.Services.AddTransient<TransactionsViewModel>();
-        builder.Services.AddSingleton<UserViewModel>();
+        builder.Services.AddTransient<UserViewModel>();
+        builder.Services.AddTransient<IServiceProvider, ServiceProvider>();
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
         {
 #if DEBUG

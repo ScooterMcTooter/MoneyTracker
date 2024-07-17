@@ -37,7 +37,7 @@ public partial class CreateUserViewModel
     public int PhoneNumber { get; set; }
     public DateTime Dob { get; set; }
     public virtual UserViewModel? User { get; set; }
-    public virtual LoansViewModel? Loans { get; set; }
+    public virtual LoanViewModel? Loans { get; set; }
     public virtual AccountViewModel? Account { get; set; }
     public virtual TransactionsViewModel? Transactions { get; set; }
     public virtual AutoPayViewModel? AutoPay { get; set; }

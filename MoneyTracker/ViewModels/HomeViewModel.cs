@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.EntityFrameworkCore;
 using MoneyTracker.Pages;
 using MoneyTrackerMigrations;
 using MoneyTrackerMigrations.Models;
@@ -27,35 +26,47 @@ public partial class HomeViewModel : ObservableValidator
     {
         _db = db;
         helper = new Helper();
-        User = new UserViewModel(_db);
-        _user = User;
-        Loan = new LoansViewModel();
-        Settings = new SettingsViewModel();
-        Transaction = new TransactionsViewModel(_db,User);
-        Transactions = new ObservableCollection<TransactionModel>();
-        Account = new AccountViewModel(); // Initialize Account property
-        Accounts = new ObservableCollection<AccountModel>(_db.accountModels.Where(x => x.UserId == Id).ToList()); // Initialize Accounts property
-        HasAccounts = Accounts.Count > 0;
-        AccountHeader = Accounts.Count > 0 ? $"Total Accounts: {AccountCount}" : "You have no accounts!";
-        LoanHeader = LoanCount > 0 ? $"Total Loans: {LoanCount}" : "You have no loans! Go Celebrate!";
-        AutoHeader = AutoCount > 0 ? $"Total AutoPays: {Autos.Count}" : "You have no active AutoPays!";
-        HasAutos = AutoCount > 0;
+
+        #region Set Model Properties
+        User = Constants.CurrentUser;
+        Loans = new ObservableCollection<LoanModel>(Constants.ConstLoans);
+        Settings = Constants.ConstSettings;
+        Accounts = new ObservableCollection<AccountModel>(Constants.ConstAccounts);
+        Autos = new ObservableCollection<AutoPayModel>(Constants.ConstAutos);
+        Jobs = new ObservableCollection<JobModel>(Constants.ConstJobs);
+        Transactions = new ObservableCollection<TransactionModel>(Constants.ConstTransactions);
+        #endregion
+        #region Model Headers
+        AccountHeader = Accounts.Any() ? $"Total Accounts: {AccountCount}" : "You have no accounts!";
+        LoanHeader = Loans.Any() ? $"Total Loans: {LoanCount}" : "You have no loans! Go Celebrate!";
+        AutoHeader = Autos.Any() ? $"Total AutoPays: {Autos.Count}" : "You have no active AutoPays!";
+        TransactionHeader = Transactions.Any() ? $"Total Transactions: {TransactionCount}" : "You have no transactions!";
+        JobHeader = Jobs.Any() ? $"Total Jobs: {JobCount}" : "You have no jobs.";
+        #endregion
+        #region 'Has' Properties
+        HasAccounts = Accounts.Any();
+        HasAutos = Autos.Any();
+        HasLoans = Loans.Any();
+        HasTransactions = Transactions.Any();
+        HasJobs = Jobs.Any();
+        #endregion
+
+        CurrentIncome = helper.PayvsBills(0); //replace with Bills when that gets created
+        TotalBalance = CurrentSavings + CurrentChecking;
     }
 
     #region Properties
-    public int Id { get; set; }
-    public virtual LoansViewModel? Loan { get; set; }
-    public int LoanCount => _db.loanModels.Where(x => x.UserId == Id).Count();
-    public int AccountCount => _db.accountModels.Where(x => x.UserId == Id).Count();
-    public int AutoCount => _db.autoPayModels.Where(x => x.UserId == Id).Count();
-    private UserViewModel _user;
-    public virtual UserViewModel User { get; set; }
-    public virtual SettingsViewModel Settings { get; set; }
-    public virtual TransactionsViewModel Transaction { get; set; }
-    public virtual AccountViewModel Account { get; set; }
+    #region Count Properties
+    public int LoanCount => Constants.ConstLoans.Count();
+    public int AccountCount => Constants.ConstAccounts.Count();
+    public int AutoCount => Constants.ConstAutos.Count();
+    public int TransactionCount => Constants.ConstTransactions.Count();
+    public int JobCount => Constants.ConstJobs.Count();
+    #endregion
     public double Balance => CurrentIncome - CurrentExpenses;
-    public double CurrentDebt => _db.loanModels.Where(x => x.UserId == Id).Sum(x => x.LoanAmount);
-    public double CurrentNetWorth => (CurrentChecking + CurrentSavings) - CurrentDebt;
+    public double CurrentDebt => _db.loanModels.Where(x => x.UserId == User.Id).Sum(x => x.Amount);
+    public double CurrentNetWorth => TotalBalance - CurrentDebt;
+    #region Color Properties
     public string BalanceColor => helper.GetBalanceColor(Balance);
     public string TotalBalanceColor => helper.GetBalanceColor(TotalBalance);
     public string CurrentNetWorthColor => helper.GetBalanceColor(CurrentNetWorth);
@@ -63,8 +74,10 @@ public partial class HomeViewModel : ObservableValidator
     public string CurrentExpensesColor => helper.GetBalanceColor(CurrentExpenses);
     public string CurrentSavingsColor => helper.GetBalanceColor(CurrentSavings);
     public string CurrentCheckingColor => helper.GetBalanceColor(CurrentChecking);
-    public string BalanceString => $"${CurrentIncome} - ${CurrentDebt}:";
-    public string Width => (DeviceDisplay.MainDisplayInfo.Width * .2).ToString();
+    public string CurrentDebtColor => helper.GetBalanceColor(CurrentDebt, true);
+    #endregion
+    public string BalanceString => $"${CurrentIncome} - ${CurrentExpenses}:";
+    public string Width => (DeviceDisplay.MainDisplayInfo.Width * .3).ToString();
     #endregion
 
     //set the background color of the Frame to the color of the user's theme
@@ -84,6 +97,11 @@ public partial class HomeViewModel : ObservableValidator
 
     #region Observable Properties
     [ObservableProperty]
+    UserModel user;
+    [ObservableProperty]
+    SettingsModel settings;
+
+    [ObservableProperty]
     double totalBalance;
     [ObservableProperty]
     double currentIncome;
@@ -93,16 +111,36 @@ public partial class HomeViewModel : ObservableValidator
     double currentSavings;
     [ObservableProperty]
     double currentChecking;
-    public virtual ObservableCollection<TransactionModel> Transactions { get; set; } = new ObservableCollection<TransactionModel>(); // Initialize Transactions property
-    public virtual ObservableCollection<AccountModel> Accounts { get; set; } = new ObservableCollection<AccountModel>(); // Initialize Accounts property
     [ObservableProperty]
-    AccountModel selectedAccount;
-    public virtual ObservableCollection<LoanModel> Loans { get; set; } = new ObservableCollection<LoanModel>(); // Initialize Loans property
+    ObservableCollection<TransactionModel>? transactions;
     [ObservableProperty]
-    LoanModel selectedLoan;
-    public virtual ObservableCollection<AutoPayModel> Autos { get; set; } = new ObservableCollection<AutoPayModel>(); // Initialize Goals property
+    TransactionModel? selectedTransaction;
     [ObservableProperty]
-    AutoPayModel selectedAuto;
+    TransactionModel? addTransactionM;
+    [ObservableProperty]
+    ObservableCollection<AccountModel>? accounts;
+    [ObservableProperty]
+    AccountModel? selectedAccount;
+    [ObservableProperty]
+    AccountModel? addAccountM;
+    [ObservableProperty]
+    ObservableCollection<LoanModel>? loans;
+    [ObservableProperty]
+    LoanModel? selectedLoan;
+    [ObservableProperty]
+    LoanModel? addLoanM;
+    [ObservableProperty]
+    ObservableCollection<AutoPayModel>? autos;
+    [ObservableProperty]
+    AutoPayModel? selectedAuto;
+    [ObservableProperty]
+    AutoPayModel? addAutoM;
+    [ObservableProperty]
+    ObservableCollection<JobModel> jobs;
+    [ObservableProperty]
+    JobModel? selectedJob;
+    [ObservableProperty]
+    JobModel? addJobM;
     [ObservableProperty]
     bool chartVis;
     [ObservableProperty]
@@ -121,6 +159,14 @@ public partial class HomeViewModel : ObservableValidator
     bool hasAutos;
     [ObservableProperty]
     string autoHeader;
+    [ObservableProperty]
+    bool hasTransactions;
+    [ObservableProperty]
+    string transactionHeader;
+    [ObservableProperty]
+    bool hasJobs;
+    [ObservableProperty]
+    string jobHeader;
     #endregion
     #region Relay Commands
     /// <summary>
@@ -174,9 +220,9 @@ public partial class HomeViewModel : ObservableValidator
     {
         TransactionModel transaction = new TransactionModel
         {
-            Name = Transaction.Name,
-            Amount = Transaction.Amount,
-            Date = Transaction.Date.GetValueOrDefault(),
+            Name = AddTransactionM.Name,
+            Amount = AddTransactionM.Amount,
+            Date = AddTransactionM.Date,
         };
 
         if (Transactions.Count == 0)
@@ -193,7 +239,7 @@ public partial class HomeViewModel : ObservableValidator
     [RelayCommand]
     async Task AddAccount()
     {
-        AccountModel account = new AccountModel { Name = Account.AccountName, Balance = Account.AccountNumber };
+        AccountModel account = new AccountModel { Name = AddAccountM.Name, Balance = AddAccountM.Balance };
         if (string.IsNullOrEmpty(account.Name))
             return;
 
@@ -208,13 +254,40 @@ public partial class HomeViewModel : ObservableValidator
     [RelayCommand]
     async Task AddLoan()
     {
-        LoanModel loan = new LoanModel { LoanName = Loan.LoanName ?? "", LoanAmount = Loan.LoanAmount };
-        if (string.IsNullOrEmpty(loan.LoanName))
+        LoanModel loan = new LoanModel { Name = AddLoanM.Name ?? "", Amount = AddLoanM.Amount };
+        if (string.IsNullOrEmpty(loan.Name))
             return;
 
+        if (await IsNew(loan))
+        {
+
+        }
+        
         await _db.loanModels.AddAsync(loan);
         await _db.SaveChangesAsync();
         return;
+    }
+
+    [RelayCommand]
+    async Task EditLoan(LoanModel loan)
+    {
+        if (loan == null)
+            return;
+
+        var pars = new Dictionary<string, LoanModel>
+        {
+            { "loan", loan }
+        };
+
+        await Shell.Current.GoToAsync($"{nameof(LoanPage)}");
+        return;
+    }
+    #endregion
+
+    #region Methods
+    private async Task<bool> IsNew(dynamic obj)
+    {
+        return await Task.Run(() => false );
     }
     #endregion
 }

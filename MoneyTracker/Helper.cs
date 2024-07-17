@@ -56,12 +56,68 @@ public class Helper
     /// </summary>
     /// <param name="balance">The balance value.</param>
     /// <returns>The color code as a string.</returns>
-    public string GetBalanceColor(double balance)
+    public string GetBalanceColor(double balance, bool opposite = false)
     {
-        string color = balance == 0 ? "#FFFFFF" : string.Empty;
-        if (string.IsNullOrEmpty(color))
+        string color = string.Empty;
+        if (!opposite)
             color = balance > 0 ? "#20C11B" : "#FF2D00";
+        else
+            color = balance > 0 ? "#FF2D00" : "#20C11B";
 
         return color;
+    }
+
+    public double PayvsBills(double bills)
+    {
+        double sum = 0;
+        var jobs = Constants.ConstJobs.Where(j => j.IsActive == true).ToList();
+
+        foreach (var job in jobs)
+        {
+            DateTime nextPayDate = job.FirstPayDate;
+            int payFrequencyInWeeks = job.PayFrequencyInWeeks;
+            int numberOfPaychecks = GetNumberOfPaychecks(payFrequencyInWeeks, nextPayDate);
+            sum += job.PayCheckAmount * numberOfPaychecks;
+        }
+
+        return Math.Round(sum - bills, 2);
+    }
+    /// <summary>
+    /// Calculates the number of paychecks based on pay frequency and the next pay date.
+    /// </summary>
+    /// <param name="payFrequencyInWeeks">The pay frequency in weeks.</param>
+    /// <param name="nextPayDate">The next pay date.</param>
+    /// <returns>The number of paychecks.</returns>
+    public int GetNumberOfPaychecks(int payFrequencyInWeeks, DateTime nextPayDate)
+    {
+        DateTime next = nextPayDate;
+        DateTime CheckDate = DateTime.Now.Date;
+        int numberOfPaychecks = 1;
+
+        while (next.Month == CheckDate.Month)
+        {
+            if (next.AddDays((payFrequencyInWeeks * 7)).Month == CheckDate.Month)
+            {
+                numberOfPaychecks++;
+            }
+            next = next.AddDays((payFrequencyInWeeks * 7));
+        }
+
+        next = nextPayDate;
+
+        if (nextPayDate.Month == CheckDate.Month)
+        {
+            //Find the amount of pays that happened in the last month bassed on the next pay date and pay frequency
+            while (next.Month == DateTime.Now.Month)
+            {
+                if (next.AddDays(-1 * (payFrequencyInWeeks * 7)).Month == CheckDate.Month)
+                {
+                    numberOfPaychecks++;
+                }
+                next = next.AddDays(-1 * (payFrequencyInWeeks * 7));
+            }
+        }
+
+        return numberOfPaychecks;
     }
 }

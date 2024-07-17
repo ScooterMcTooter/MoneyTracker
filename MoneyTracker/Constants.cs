@@ -1,3 +1,5 @@
+using MoneyTrackerMigrations.Models;
+
 namespace MoneyTracker;
 
 public static class Constants
@@ -29,6 +31,51 @@ public static class Constants
     public const string PasswordReq = "Password must be between 15 and 20 characters and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.";
     public const string PasswordMissmatch = "Passwords did not match!";
     public const string UsernameReq = "Username must be between 5 and 20 characters with no numbers or spaces.";
+
+    #region User Data
+    public static UserModel CurrentUser = new UserModel();
+    public static SettingsModel ConstSettings = new SettingsModel();
+    public static List<AccountModel> ConstAccounts = new List<AccountModel>();
+    public static List<AutoPayModel> ConstAutos = new List<AutoPayModel>();
+
+    private static List<JobModel> constJobs;
+    public static event EventHandler ConstJobsChanged;
+    public static List<JobModel> ConstJobs
+    {
+        get => constJobs;
+        set
+        {
+            constJobs = value;
+            OnConstJobsChanged();
+        }
+    }
+
+    private static void OnConstJobsChanged()
+    {
+        ConstJobsChanged?.Invoke(null, EventArgs.Empty);
+    }
+
+
+    private static List<LoanModel> constLoans;
+    public static List<LoanModel> ConstLoans
+    {
+        get => constLoans;
+        set
+        {
+            constLoans = value;
+            OnConstLoansChanged();
+        }
+    }
+ 
+    public static event EventHandler ConstLoansChanged;
+
+    private static void OnConstLoansChanged()
+    {
+        ConstLoansChanged?.Invoke(null, EventArgs.Empty);
+    }
+
+    public static List<TransactionModel> ConstTransactions = new List<TransactionModel>();
+    #endregion
 
     public static DateTime MaxDate = DateTime.Now.AddYears(-18).Date;
 }

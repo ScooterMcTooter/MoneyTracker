@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MoneyTrackerMigrations;
 
@@ -10,9 +11,11 @@ using MoneyTrackerMigrations;
 namespace MoneyTrackerMigrations.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240531180930_AddPaychecksToJob")]
+    partial class AddPaychecksToJob
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -104,6 +107,8 @@ namespace MoneyTrackerMigrations.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
+
+                    b.HasIndex("LoanId");
 
                     b.HasIndex("TransactionTypeId");
 
@@ -219,52 +224,24 @@ namespace MoneyTrackerMigrations.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<double>("Amount")
-                        .HasColumnType("REAL");
-
-                    b.Property<int?>("AutoPayId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("CurrentOwner")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("DisbursementDate")
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime>("DueDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("FedLoanType")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Guarantor")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<double>("InterestRate")
                         .HasColumnType("REAL");
 
-                    b.Property<string>("InterestType")
-                        .HasColumnType("TEXT");
+                    b.Property<double>("LoanAmount")
+                        .HasColumnType("REAL");
 
-                    b.Property<string>("LoanStatus")
+                    b.Property<string>("LoanName")
                         .IsRequired()
                         .HasColumnType("TEXT");
-
-                    b.Property<string>("LoanType")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("MonthlyPaid")
-                        .HasColumnType("INTEGER");
 
                     b.Property<double>("MonthlyPayment")
                         .HasColumnType("REAL");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<bool>("PaidOff")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("TEXT");
@@ -272,32 +249,10 @@ namespace MoneyTrackerMigrations.Migrations
                     b.Property<double>("RemainingBalance")
                         .HasColumnType("REAL");
 
-                    b.Property<double>("RemainingInterest")
-                        .HasColumnType("REAL");
-
-                    b.Property<string>("RepaymentPlan")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SchoolName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Servicer")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("StudentLoanType")
-                        .HasColumnType("TEXT");
-
-                    b.Property<double>("TotalInterest")
-                        .HasColumnType("REAL");
-
                     b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AutoPayId")
-                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -319,15 +274,9 @@ namespace MoneyTrackerMigrations.Migrations
                     b.Property<string>("City")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("JobId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("State")
                         .HasMaxLength(2)
                         .HasColumnType("TEXT");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("INTEGER");
 
                     b.Property<int?>("Zip")
                         .HasColumnType("INTEGER");
@@ -541,21 +490,6 @@ namespace MoneyTrackerMigrations.Migrations
                         });
                 });
 
-            modelBuilder.Entity("MoneyTrackerMigrations.Models.UserLocation", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("LocationId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("UserId", "LocationId");
-
-                    b.HasIndex("LocationId");
-
-                    b.ToTable("userLocations");
-                });
-
             modelBuilder.Entity("MoneyTrackerMigrations.Models.UserModel", b =>
                 {
                     b.Property<int>("Id")
@@ -573,9 +507,6 @@ namespace MoneyTrackerMigrations.Migrations
 
                     b.Property<string>("LastName")
                         .HasColumnType("TEXT");
-
-                    b.Property<int?>("LocationModelId")
-                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("MFA")
                         .HasColumnType("INTEGER");
@@ -595,8 +526,6 @@ namespace MoneyTrackerMigrations.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LocationModelId");
 
                     b.ToTable("Users", (string)null);
                 });
@@ -635,6 +564,12 @@ namespace MoneyTrackerMigrations.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MoneyTrackerMigrations.Models.LoanModel", "Loan")
+                        .WithMany("AutoPay")
+                        .HasForeignKey("LoanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("MoneyTrackerMigrations.Models.TransactionTypeModel", "TransactionType")
                         .WithMany()
                         .HasForeignKey("TransactionTypeId")
@@ -648,6 +583,8 @@ namespace MoneyTrackerMigrations.Migrations
                         .IsRequired();
 
                     b.Navigation("Accounts");
+
+                    b.Navigation("Loan");
 
                     b.Navigation("TransactionType");
 
@@ -692,17 +629,11 @@ namespace MoneyTrackerMigrations.Migrations
 
             modelBuilder.Entity("MoneyTrackerMigrations.Models.LoanModel", b =>
                 {
-                    b.HasOne("MoneyTrackerMigrations.Models.AutoPayModel", "AutoPays")
-                        .WithOne("Loan")
-                        .HasForeignKey("MoneyTrackerMigrations.Models.LoanModel", "AutoPayId");
-
                     b.HasOne("MoneyTrackerMigrations.Models.UserModel", "User")
                         .WithMany("Loans")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("AutoPays");
 
                     b.Navigation("User");
                 });
@@ -769,32 +700,6 @@ namespace MoneyTrackerMigrations.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MoneyTrackerMigrations.Models.UserLocation", b =>
-                {
-                    b.HasOne("MoneyTrackerMigrations.Models.LocationModel", "Location")
-                        .WithMany("userLocations")
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MoneyTrackerMigrations.Models.UserModel", "User")
-                        .WithMany("UserLocations")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Location");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("MoneyTrackerMigrations.Models.UserModel", b =>
-                {
-                    b.HasOne("MoneyTrackerMigrations.Models.LocationModel", null)
-                        .WithMany("Users")
-                        .HasForeignKey("LocationModelId");
-                });
-
             modelBuilder.Entity("MoneyTrackerMigrations.Models.AccountModel", b =>
                 {
                     b.Navigation("AutoPays");
@@ -808,8 +713,6 @@ namespace MoneyTrackerMigrations.Migrations
 
             modelBuilder.Entity("MoneyTrackerMigrations.Models.AutoPayModel", b =>
                 {
-                    b.Navigation("Loan");
-
                     b.Navigation("Transactions");
                 });
 
@@ -820,16 +723,14 @@ namespace MoneyTrackerMigrations.Migrations
 
             modelBuilder.Entity("MoneyTrackerMigrations.Models.LoanModel", b =>
                 {
+                    b.Navigation("AutoPay");
+
                     b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("MoneyTrackerMigrations.Models.LocationModel", b =>
                 {
                     b.Navigation("Job");
-
-                    b.Navigation("Users");
-
-                    b.Navigation("userLocations");
                 });
 
             modelBuilder.Entity("MoneyTrackerMigrations.Models.UserModel", b =>
@@ -845,8 +746,6 @@ namespace MoneyTrackerMigrations.Migrations
                     b.Navigation("Settings");
 
                     b.Navigation("Transactions");
-
-                    b.Navigation("UserLocations");
                 });
 #pragma warning restore 612, 618
         }

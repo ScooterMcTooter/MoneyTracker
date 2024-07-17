@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Name="LoanPageBind"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MoneyTracker.Pages.LoanPage"
+             xmlns:viewmodel="clr-namespace:MoneyTracker.ViewModels"
+             xmlns:DataType="viewmodel:LoanViewModel"
+             Title="Loans"
+             BackgroundColor="{AppThemeBinding Dark=Gray, Light=White, Default=Gray}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{Binding AddOrClose}" Command="{Binding AddLoanCommand}" CommandParameter="{Binding Edit}"/>
+    </ContentPage.ToolbarItems>
+
+    <ScrollView VerticalScrollBarVisibility="Never">
+        <Grid
+            RowDefinitions="auto,auto,auto,auto"
+            ColumnDefinitions=".2*,.5*,*,.2*"
+            RowSpacing="20">
+            <Label HorizontalTextAlignment="Center" Text="{Binding LoanString}" Grid.Column="1" Grid.ColumnSpan="2" HorizontalOptions="Center" FontSize="Large" />
+
+            <!--#region ListView to display loan details -->
+            <Frame Grid.Row="1" Grid.ColumnSpan="4" BackgroundColor="Transparent">
+                <CollectionView ItemsSource="{Binding Loans}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <SwipeView>
+                                <SwipeView.RightItems>
+                                    <SwipeItems>
+                                        <SwipeItem  Text="Edit" BackgroundColor="Green" 
+                                           Command="{Binding BindingContext.EditLoanCommand, Source={x:Reference LoanPageBind}}" 
+                                           CommandParameter="{Binding .}" />
+                                        <SwipeItem  Text="Delete" BackgroundColor="Red" 
+                                            Command="{Binding BindingContext.DeleteLoanCommand, Source={x:Reference LoanPageBind}}" 
+                                            CommandParameter="{Binding .}" />
+                                    </SwipeItems>
+                                </SwipeView.RightItems>
+                                <SwipeView.Content>
+                                    <Grid ColumnDefinitions=".5*,.65*,50,60,.75*"
+                                          RowDefinitions="auto,auto"
+                                          RowSpacing="10"
+                                          HorizontalOptions="CenterAndExpand"
+                                          ColumnSpacing="10">
+                                        <Label Grid.Column="0" Grid.Row="0" HorizontalOptions="Center" Text="Name" />
+                                        <Label Grid.Column="1" Grid.Row="0" HorizontalOptions="Center" Text="Remaining" />
+                                        <Label Grid.Column="2" Grid.Row="0" HorizontalOptions="Center" Text="Interest" />
+                                        <Label Grid.Column="3" Grid.Row="0" HorizontalOptions="Center" Text="Payment" />
+                                        <Label Grid.Column="4" Grid.Row="0" HorizontalOptions="Center" Text="Due Date" />
+                                        <Label Grid.Column="0" Grid.Row="1" HorizontalOptions="Center" Text="{Binding Name}" />
+                                        <Label Grid.Column="1" Grid.Row="1" HorizontalOptions="Center" Text="{Binding Amount, StringFormat='${0}'}" />
+                                        <Label Grid.Column="2" Grid.Row="1" HorizontalOptions="Center" Text="{Binding InterestRate, StringFormat='{0}%'}" />
+                                        <Label Grid.Column="3" Grid.Row="1" HorizontalOptions="Center" Text="{Binding MonthlyPayment, StringFormat='${0}'}" />
+                                        <Label Grid.Column="4" Grid.Row="1" HorizontalOptions="Center" Text="{Binding DueDate, StringFormat='{0:MM/dd/yyy}'}" />
+                                    </Grid>
+                                </SwipeView.Content>
+                            </SwipeView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Frame>
+            <!--#endregion-->
+
+            <!--#region Add Loan block-->
+            <Frame Grid.Row="2" Grid.ColumnSpan="4" BackgroundColor="Black" HasShadow="True" IsVisible="{Binding IsAddLoanVisible}">
+                <Grid RowSpacing="10"
+                  RowDefinitions="auto,auto,auto,auto,auto,auto,auto"
+                  ColumnDefinitions="auto,auto,auto,auto">
+                    <!--#region Row 1-->
+                    <VerticalStackLayout Grid.Row="0" Grid.Column="1" HorizontalOptions="Center">
+                        <Label Text="Name" HorizontalOptions="Center" />
+                        <Entry Placeholder="Name" Text="{Binding LoanName}" HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Row="0" Grid.Column="2" HorizontalOptions="Center">
+                        <Label Text="Amount" HorizontalOptions="Center" />
+                        <Entry Grid.Column="2" Placeholder="Amount" Keyboard="Numeric" Text="{Binding LoanAmount}" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Row="0" Grid.Column="3" HorizontalOptions="Center">
+                        <Label Text="Monthly Payment" HorizontalOptions="Center" />
+                        <Entry Grid.Column="3" Placeholder="Monthly Payment" Keyboard="Numeric" Text="{Binding MonthlyPayment}" />
+                    </VerticalStackLayout>
+                    <!--#endregion-->
+
+                    <!--#region Row 2-->
+                    <VerticalStackLayout Grid.Row="1" Grid.Column="1" HorizontalOptions="Center">
+                        <Label Text="Interest Rate" HorizontalOptions="Center" />
+                        <Entry Placeholder="Interest Rate" Keyboard="Numeric" Text="{Binding InterestRate}" HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Row="1" Grid.Column="2" HorizontalOptions="Center">
+                        <Label Text="Total Interest" HorizontalOptions="Center" />
+                        <Entry Grid.Row="1" Grid.Column="2" Placeholder="Total Interest" Keyboard="Numeric" Text="{Binding TotalInterest}" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Row="1" Grid.Column="3" HorizontalOptions="Center">
+                        <Label Text="Remaining Balance" HorizontalOptions="Center" />
+                        <Entry Grid.Row="1" Grid.Column="3" Placeholder="Remaining Balance" Keyboard="Numeric" Text="{Binding RemainingBalance}" />
+                    </VerticalStackLayout>
+                    <!--#endregion-->
+
+                    <!--#region Row 3-->
+                    <VerticalStackLayout Grid.Row="2" Grid.Column="1" HorizontalOptions="CenterAndExpand">
+                        <Picker Title="Loan Type" ItemsSource="{Binding LoanTypeValues}" SelectedItem="{Binding SelectedLoanType}" HorizontalOptions="CenterAndExpand" />
+                        <Picker Title="Interest Type" ItemsSource="{Binding InterestTypeValues}" SelectedItem="{Binding SelectedInterestType}" HorizontalOptions="CenterAndExpand" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Row="2" Grid.Column="2" HorizontalOptions="Center">
+                        <Entry Placeholder="ex: Dept. Ed" Text="{Binding Guarantor}" HorizontalOptions="Center" />
+                        <Entry Placeholder="ex: Mohela" Text="{Binding Servicer}" HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Row="2" Grid.Column="3" HorizontalOptions="CenterAndExpand">
+                        <Picker Title="Student Loan type" ItemsSource="{Binding StudentLoanTypeValues}" SelectedItem="{Binding SelectedStudentLoanType}" HorizontalOptions="CenterAndExpand" />
+                        <Picker Title="Fed Loan Type" ItemsSource="{Binding FedLoanTypeValues}" SelectedItem="{Binding SelectedFedLoanType}" HorizontalOptions="CenterAndExpand" />
+                    </VerticalStackLayout>
+                    <!--#endregion-->
+
+                    <!--#region Row 4-->
+                    <Grid Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
+                      ColumnDefinitions=".35*,auto">
+                        <VerticalStackLayout>
+                            <Entry Placeholder="School Name" Text="{Binding SchoolName}" />
+                            <Entry Placeholder="{Binding Guarantor}" Text="{Binding CurrentOwner}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                            <Label Text="Disbursment Date" />
+                            <DatePicker Date="{Binding DisbursmentDate}" />
+                        </VerticalStackLayout>
+                    </Grid>
+                    <Grid Grid.Column="3" Grid.Row="3"
+                      RowDefinitions=".5*,auto"
+                      ColumnDefinitions=".5*,.5*"
+                      VerticalOptions="CenterAndExpand"
+                      Padding="10">
+                        <Label FontSize="Caption" Text="Monthly Paid" HorizontalOptions="Start" VerticalOptions="Center" />
+
+                        <CheckBox Grid.Column="1" IsChecked="{Binding IsPaid}" HorizontalOptions="End" />
+                        <Picker Grid.Row="1" Grid.ColumnSpan="2" Title="Loan Status" ItemsSource="{Binding LoanStatusValues}" SelectedIndex="{Binding SelectedLoanStatus}" />
+
+                    </Grid>
+                    <!--#endregion-->
+
+                    <!--#region Row 5-->
+                    <VerticalStackLayout Grid.Row="4" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                        <Label Text="Due Date" HorizontalOptions="Center" />
+                        <DatePicker Date="{Binding DueDate}" HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Row="4" Grid.Column="2" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                        <Label Text="Payment Date" HorizontalOptions="Center" />
+                        <DatePicker Date="{Binding PaymentDate}" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Row="4" Grid.Column="3" HorizontalOptions="Center">
+                        <Label Text="Payments" HorizontalOptions="Center" />
+                        <Picker Title="Previous Payments" ItemsSource="{Binding Transactions}" SelectedIndex="{Binding SelectedTransaction}" />
+                    </VerticalStackLayout>
+                    <!--#endregion-->
+
+                    <!--#region Row 6-->
+                    <VerticalStackLayout Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" HorizontalOptions="Center">
+                        <Picker Title="AutoPay Accounts" ItemsSource="{Binding AutoPays}" SelectedIndex="{Binding SelectedAutoPay}" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Row="5" Grid.Column="3" HorizontalOptions="Center" VerticalOptions="End">
+                        <Picker Title="Repayment Plans" SelectedIndex="{Binding SelectedRepaymentPlan}" ItemsSource="{Binding LoanRepaymentPlanValues}" />
+                    </VerticalStackLayout>
+                    <!--#endregion-->
+
+                    <!--#region Row 7-->
+                    <Grid Grid.Row="6" Grid.ColumnSpan="4"
+                      ColumnDefinitions="auto,*,auto,auto">
+                        <Button Text="Save" BackgroundColor="Green" Command="{Binding SaveLoanCommand}" />
+                        <Button Grid.Column="2" BackgroundColor="DarkCyan" Text="Clear" Command="{Binding ClearAddLoanCommand}" />
+                        <Button Grid.Column="3" BackgroundColor="DarkRed" Text="Delete" Command="{Binding DeleteLoanCommand}" />
+                        <!--#endregion-->
+                    </Grid>
+                </Grid>
+            </Frame>
+            <!--#endregion-->
+
+        </Grid>
+    </ScrollView>
+</ContentPage>
