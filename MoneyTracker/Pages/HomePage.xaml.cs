@@ -12,7 +12,7 @@ public partial class HomePage : ContentPage
         _serviceProvider = serviceProvider;
 
         InitializeComponent();
-        BindingContext = _serviceProvider.GetService<HomeViewModel>();
+        BindingContext = _serviceProvider.GetService<HomeViewModel>() ?? throw new NotImplementedException("There is a failure when trying to access the HomeView service."); ;
 
         Shell.Current.FlyoutBehavior = FlyoutBehavior.Flyout;
 
@@ -45,19 +45,25 @@ public partial class HomePage : ContentPage
         }
     }
 
-    private void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+    private async void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
     {
         try
         {
-            if (e.SelectedItem is MoneyTrackerMigrations.Models.LoanModel loan)
+            var list = sender as ListView;
+            if (list != null)
             {
-
-                _serviceProvider.GetService<LoanViewModel>().EditLoanCommand.Execute(Constants.ConstLoans.Where(l => l.Id == loan.Id).First().Id);
+                LoanModel selectedLoan = list.SelectedItem as LoanModel;
+                if (selectedLoan != null)
+                {
+                    _serviceProvider.GetService<LoanViewModel>().SelectedLoan = selectedLoan;
+                    await Shell.Current.GoToAsync(nameof(LoanPage));
+                }
+                await Shell.Current.GoToAsync($"{nameof(LoanPage)}");
             }
         }
         catch (Exception ex)
         {
-            Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+            await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
             return;
         }
     }

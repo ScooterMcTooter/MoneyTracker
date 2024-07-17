@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage x:Name="LoanPageBind"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MoneyTracker.Pages.LoanPage"
              xmlns:viewmodel="clr-namespace:MoneyTracker.ViewModels"
@@ -27,16 +28,17 @@
                                 <SwipeView.RightItems>
                                     <SwipeItems>
                                         <SwipeItem  Text="Edit" BackgroundColor="Green" 
-                                           Command="{Binding BindngContext.EditSelectedLoanCommand, Source={x:Reference LoanPageBind}}" 
+                                           Command="{Binding BindingContext.EditLoanCommand, Source={x:Reference LoanPageBind}}" 
                                            CommandParameter="{Binding .}" />
                                         <SwipeItem  Text="Delete" BackgroundColor="Red" 
-                                            Command="{Binding BindngContext.DeleteLoanCommand, Source={x:Reference LoanPageBind}}" 
+                                            Command="{Binding BindingContext.DeleteLoanCommand, Source={x:Reference LoanPageBind}}" 
                                             CommandParameter="{Binding .}" />
                                     </SwipeItems>
                                 </SwipeView.RightItems>
                                 <SwipeView.Content>
                                     <Grid ColumnDefinitions=".5*,.65*,50,60,.75*"
                                           RowDefinitions="auto,auto"
+                                          RowSpacing="10"
                                           HorizontalOptions="CenterAndExpand"
                                           ColumnSpacing="10">
                                         <Label Grid.Column="0" Grid.Row="0" HorizontalOptions="Center" Text="Name" />
@@ -59,7 +61,7 @@
             <!--#endregion-->
 
             <!--#region Add Loan block-->
-            <Frame Grid.Row="2" Grid.ColumnSpan="4" BackgroundColor="Transparent" HasShadow="True" IsVisible="{Binding IsAddLoanVisible}">
+            <Frame Grid.Row="2" Grid.ColumnSpan="4" BackgroundColor="Black" HasShadow="True" IsVisible="{Binding IsAddLoanVisible}">
                 <Grid RowSpacing="10"
                   RowDefinitions="auto,auto,auto,auto,auto,auto,auto"
                   ColumnDefinitions="auto,auto,auto,auto">

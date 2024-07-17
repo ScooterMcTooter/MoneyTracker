@@ -175,7 +175,7 @@
                 <!--#endregion-->
                 <!--#region Loans-->
                 <Frame Grid.Row="2">
-                    <Grid RowDefinitions="auto,auto,auto,auto"
+                    <Grid RowDefinitions="auto,*,auto,auto"
                           RowSpacing="10">
                         <Label Text="{Binding LoanHeader}"
                             FontSize="Medium"
@@ -183,7 +183,7 @@
                             VerticalOptions="Center"/>
                         <ListView x:Name="LoanListView"
                             ItemsSource="{Binding Loans}"
-                            SelectedItem="{Binding SelectedLoanHomeCommand}"
+                            SelectedItem="{Binding SelectedLoan}"
                             ItemSelected="ListView_ItemSelected"
                             Grid.Row="1"
                             SelectionMode="Single">
@@ -191,8 +191,8 @@
                                 <DataTemplate>
                                     <ViewCell>
                                         <Grid ColumnDefinitions="*,auto,auto,auto,auto,*"
-                                              RowDefinitions="*,auto,auto,*"
-                                              RowSpacing="10"
+                                              RowDefinitions=".25*,auto,auto,.25*"
+                                              RowSpacing="2"
                                               ColumnSpacing="10">
                                             <Label Text="Name"
                                                    Grid.Column="1"

@@ -268,20 +268,20 @@ public partial class HomeViewModel : ObservableValidator
         return;
     }
 
-    //[RelayCommand]
-    //async Task LoanSelectedGo(LoanModel loan)
-    //{
-    //    if (loan == null)
-    //        return;
+    [RelayCommand]
+    async Task EditLoan(LoanModel loan)
+    {
+        if (loan == null)
+            return;
 
-    //    var pars = new Dictionary<string, LoanModel>
-    //    {
-    //        { "loan", loan }
-    //    };
+        var pars = new Dictionary<string, LoanModel>
+        {
+            { "loan", loan }
+        };
 
-    //    await Shell.Current.GoToAsync($"{nameof(LoanPage)}");
-    //    return;
-    //}
+        await Shell.Current.GoToAsync($"{nameof(LoanPage)}");
+        return;
+    }
     #endregion
 
     #region Methods

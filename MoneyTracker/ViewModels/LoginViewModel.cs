@@ -76,7 +76,7 @@ public partial class LoginViewModel : ObservableObject
                 pass = new Helper().HashPassword(_password);
             }
 
-            UserModel? user = _db.userModels.FirstOrDefault(u => u.UserName != null && u.Password != null && u.UserName.Equals(_username) && u.Password.Equals(pass));
+            UserModel? user = _db.userModels.First(u => u.UserName != null && u.Password != null && u.UserName.Equals(_username) && u.Password.Equals(pass));
 
             if (user != null)
             {

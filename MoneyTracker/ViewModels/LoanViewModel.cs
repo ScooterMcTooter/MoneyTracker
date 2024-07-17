@@ -1,10 +1,11 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿global using MoneyTrackerMigrations;
+global using MoneyTrackerMigrations.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using MoneyTrackerMigrations;
-using MoneyTrackerMigrations.Models;
+using MoneyTracker.Pages;
 using System.Collections.ObjectModel;
-using Xamarin.KotlinX.Coroutines;
 
 namespace MoneyTracker.ViewModels;
 
@@ -14,30 +15,31 @@ public partial class LoanViewModel : ObservableObject
     private readonly IServiceProvider _serviceProvider;
     public LoanViewModel(IServiceProvider serviceProvider)
     {
-        try
+        _serviceProvider = serviceProvider;
+        _db = _serviceProvider.GetService<ApplicationDbContext>() ?? throw new InvalidOperationException("ApplicationDbContext could not be retrieved from the service provider.");
+        if (Constants.ConstLoans == null)
         {
-            _serviceProvider = serviceProvider;
-            _db = _serviceProvider.GetService<ApplicationDbContext>() ?? throw new InvalidOperationException("ApplicationDbContext could not be retrieved from the service provider.");
-            
+            Loans = new ObservableCollection<LoanModel>(new List<LoanModel>());
+            LoanString = "You have no active loans!";
+        }
+        else
+        {
             Loans = new ObservableCollection<LoanModel>(Constants.ConstLoans);
-            UserIdop = Constants.CurrentUser.Id;
-            User = _db.userModels.Find(UserIdop);
-            //UserId = User.Id;
-            Transactions = new ObservableCollection<TransactionModel>(Constants.ConstTransactions);
-            SelectedLoan = _db.loanModels.FirstOrDefault() ?? new LoanModel();
-            IsStudentLoan = SelectedLoanType == LoanType.Student;
-            RemainingBalance = selectedLoan.RemainingBalance.ToString();
-            RemainingInterest = (SelectedLoan.Amount - SelectedLoan.TotalInterest).ToString();
-            Guarantor = SelectedLoan.Guarantor;
-            DisbursementDate = SelectedLoan.DisbursementDate;
-            RepaymentPlan = Enum.Parse<LoanRepaymentPlans>(SelectedLoan.RepaymentPlan);
-            LoanString = Constants.ConstLoans.Count() > 0 ? $"You have {Constants.ConstLoans.Count()} loan(s) with a total of ${Constants.ConstLoans.Sum(l => l.Amount)}" : "You have no active loans!";
-            IsAddLoanVisible = false;
+            LoanString = $"You have {Constants.ConstLoans.Count()} loan(s) with a total of ${Constants.ConstLoans.Sum(l => l.Amount)}";
         }
-        catch (Exception ex)
-        {
-            throw;
-        }
+        
+        UserIdop = Constants.CurrentUser.Id;
+        User = _db.userModels.Find(UserIdop);
+        //UserId = User.Id;
+        Transactions = new ObservableCollection<TransactionModel>(Constants.ConstTransactions);
+        SelectedLoan = _db.loanModels.FirstOrDefault() ?? new LoanModel();
+        IsStudentLoan = SelectedLoanType == LoanType.Student;
+        RemainingBalance = selectedLoan.RemainingBalance.ToString();
+        RemainingInterest = (SelectedLoan.Amount - SelectedLoan.TotalInterest).ToString();
+        Guarantor = SelectedLoan.Guarantor;
+        DisbursementDate = SelectedLoan.DisbursementDate;
+        RepaymentPlan = Enum.Parse<LoanRepaymentPlans>(SelectedLoan.RepaymentPlan);
+        IsAddLoanVisible = false;
     }
 
     #region Properties
@@ -203,10 +205,12 @@ public partial class LoanViewModel : ObservableObject
     /// </summary>
     /// <returns>A task representing the asynchronous operation.</returns>
     [RelayCommand]
-    async Task AddLoan(bool e)
+    public async Task AddLoan(bool e)
     {
         try
         {
+            await ClearAddLoan();
+
             if (IsAddLoanVisible)
             {
                 IsAddLoanVisible = false;
@@ -216,13 +220,12 @@ public partial class LoanViewModel : ObservableObject
             {
                 IsAddLoanVisible = true;
                 AddOrClose = "Cancel";
-                await ClearAddLoan();
             }
             else
             {
                 IsAddLoanVisible = true;
                 AddOrClose = "Cancel";
-                EditLoan(new LoanModel());
+                await EditLoan(new LoanModel());
             }
         }
         catch (Exception ex)
@@ -231,6 +234,10 @@ public partial class LoanViewModel : ObservableObject
         }
     }
 
+    /// <summary>
+    /// Saves the loan to the database.
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation.</returns>
     [RelayCommand]
     public async Task SaveLoan()
     {
@@ -270,18 +277,19 @@ public partial class LoanViewModel : ObservableObject
             if (_db.loanModels.Any(l => l.Id == newLoan.Id))
             {
                 _db.loanModels.Update(newLoan);
+                await _db.SaveChangesAsync();
                 Loans[Loans.IndexOf(SelectedLoan)] = newLoan;
                 Constants.ConstLoans[Constants.ConstLoans.IndexOf(SelectedLoan)] = newLoan;
             }
             else
             {
                 await _db.loanModels.AddAsync(newLoan);
+                await _db.SaveChangesAsync();
                 Loans.Add(newLoan);
                 Constants.ConstLoans.Add(newLoan);
             }
 
             LoanString = Loans?.Count() > 0 ? $"You have {Loans.Count()} loans with a total of ${Loans.Sum(l => l.Amount)}" : "You have no active loans!";
-            await _db.SaveChangesAsync();
             SelectedLoan = newLoan;
             IsAddLoanVisible = false;
             AddOrClose = "Add Loan";
@@ -319,49 +327,26 @@ public partial class LoanViewModel : ObservableObject
         }
     }
 
-    //[RelayCommand]
-    //public void EditLoan()
-    //{
-    //    LoanModel? loan = _db.loanModels.Find(SelectedLoan.Id);
-
-    //    if (loan != null)
-    //    {
-    //        LoanName = loan.Name;
-    //        LoanAmount = loan.Amount;
-    //        InterestRate = loan.InterestRate;
-    //        TotalInterest = loan.TotalInterest;
-    //        MonthlyPayment = loan.MonthlyPayment.ToString();
-    //        RemainingBalance = loan.RemainingBalance.ToString();
-    //        DueDate = loan.DueDate;
-    //        PaymentDate = loan.PaymentDate;
-    //        PaidOff = loan.MonthlyPaid;
-    //        SelectedLoanType = Enum.Parse<LoanType>(loan.LoanType);
-    //        SelectedStudentLoanType = Enum.Parse<StudentLoanType>(loan.StudentLoanType);
-    //        IsStudentLoan = Enum.Parse<LoanType>(loan.LoanType) == LoanType.Student;
-    //        SelectedLoanStatus = Enum.Parse<LoanStatus>(loan.LoanStatus);
-    //        SelectedFedLoanType = Enum.Parse<FedLoanType>(loan.FedLoanType);
-    //        SelectedInterestType = Enum.Parse<InterestType>(loan.InterestType);
-    //        SchoolName = loan.SchoolName;
-    //        CurrentOwner = loan.CurrentOwner;
-    //        Guarantor = loan.Guarantor;
-    //        DisbursementDate = loan.DisbursementDate;
-    //        SelectedRepaymentPlan = Enum.Parse<LoanRepaymentPlans>(loan.RepaymentPlan);
-    //    }
-
-    //    return;
-    //}
-
+    /// <summary>
+    /// Edits the specified loan.
+    /// </summary>
+    /// <param name="loan">The loan to edit.</param>
     [RelayCommand]
     public async Task EditLoan(LoanModel loan)
     {
         try
         {
+            if (loan == null)
+            {
+                await Shell.Current.DisplayAlert("Error", "Loan not found when attempting to edit", "OK");
+                return;
+            }
+
             //check if the navigation stack is empty
-            if (Shell.Current.Navigation.NavigationStack.Count > 0)
-                new LoanViewModel(_serviceProvider);
+            //if (Shell.Current.Navigation.NavigationStack.Count > 0)
+            //    new LoanViewModel(_serviceProvider);
 
             LoanString = Constants.ConstLoans.Count() > 0 ? $"You have {Constants.ConstLoans.Count()} loans with a total of ${Constants.ConstLoans.Sum(l => l.Amount)}" : "You have no active loans!";
-
 
             LoanModel? Loan = _db.loanModels.Where(l => l.Id == loan.Id).First() ?? new LoanModel();
 
@@ -388,25 +373,39 @@ public partial class LoanViewModel : ObservableObject
                 CurrentOwner = Loan.CurrentOwner;
                 Guarantor = Loan.Guarantor;
                 DisbursementDate = Loan.DisbursementDate;
+                SelectedLoanType = Enum.Parse<LoanType>(Loan.LoanType);
+                SelectedLoanStatus = Enum.Parse<LoanStatus>(Loan.LoanStatus);
+                SelectedStudentLoanType = Enum.Parse<StudentLoanType>(Loan.StudentLoanType);
+                SelectedFedLoanType = Enum.Parse<FedLoanType>(Loan.FedLoanType);
+                SelectedInterestType = Enum.Parse<InterestType>(Loan.InterestType);
                 SelectedRepaymentPlan = Enum.Parse<LoanRepaymentPlans>(Loan.RepaymentPlan);
             }
         }
-        catch
+        catch (Exception ex)
         {
-            throw;
+            await Shell.Current.DisplayAlert("Error", $"{ex}", "OK");
+            return;
         }
 
-        
+
         await Task.CompletedTask;
         return;
     }
 
+
+    /// <summary>
+    /// Handles the selection of the loan type.
+    /// </summary>
     [RelayCommand]
     public void LoanTypeSelected()
     {
+        // Update the IsStudentLoan property based on the selected loan type
         IsStudentLoan = SelectedLoanType == LoanType.Student;
     }
 
+    /// <summary>
+    /// Refreshes the loans collection and updates the loan string.
+    /// </summary>
     [RelayCommand]
     public void RefreshLoansCommand()
     {
@@ -414,9 +413,12 @@ public partial class LoanViewModel : ObservableObject
         LoanString = Constants.ConstLoans.Count() > 0 ? $"You have {Constants.ConstLoans.Count()} loans with a total of ${Constants.ConstLoans.Sum(l => l.Amount)}" : "You have no active loans!";
         return;
     }
-    #endregion
 
-    #region Methods
+    /// <summary>
+    /// Clears the add loan fields.
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    [RelayCommand]
     private async Task ClearAddLoan()
     {
         LoanName = string.Empty;
@@ -438,10 +440,16 @@ public partial class LoanViewModel : ObservableObject
         Guarantor = string.Empty;
         DisbursementDate = DateTime.Now;
         SelectedRepaymentPlan = LoanRepaymentPlans.Standard;
+        SelectedAutoPay = null;
+        SelectedTransaction = null;
 
         await Task.Yield();
         return;
     }
+    #endregion
+
+    #region Methods
+
     #endregion
 
     private void Constants_ConstLoansChanged(object sender, EventArgs e)
@@ -462,6 +470,7 @@ public partial class LoanViewModel : ObservableObject
     }
 }
 
+#region Enums
 public enum LoanType
 {
     Auto,
@@ -528,3 +537,4 @@ public enum LoanRepaymentPlans
     SAVE,
     NA
 }
+#endregion
