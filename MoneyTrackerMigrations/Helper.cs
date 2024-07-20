@@ -25,19 +25,28 @@ public class Helper
     /// <returns>The hashed account number as a hexadecimal string.</returns>
     public string HashAccountNumber(string accountNumber)
     {
-        if (accountNumber == null) throw new ArgumentNullException(nameof(accountNumber));
-        else if (CheckDigitsAndNoWhitespaces(accountNumber)) throw new ArgumentException("The account number must contain only digits and no whitespaces.", nameof(accountNumber));
 
-        using (SHA256 sha256Hash = SHA256.Create())
+        try
         {
-            byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(accountNumber));
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < bytes.Length; i++)
+            if (accountNumber == null) throw new ArgumentNullException(nameof(accountNumber));
+            else if (CheckDigitsAndNoWhitespaces(accountNumber)) throw new ArgumentException("The account number must contain only digits and no whitespaces.", nameof(accountNumber));
+
+            using (SHA256 sha256Hash = SHA256.Create())
             {
-                builder.Append(bytes[i].ToString("x2"));
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(accountNumber));
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+                return builder.ToString();
             }
-            return builder.ToString();
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message} in {ex.Source}");
+        }
+        return string.Empty;
     }
 
     /// <summary>

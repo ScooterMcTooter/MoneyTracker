@@ -1,5 +1,3 @@
-using MoneyTrackerMigrations.Models;
-
 namespace MoneyTracker;
 
 public static class Constants
@@ -33,16 +31,67 @@ public static class Constants
     public const string UsernameReq = "Username must be between 5 and 20 characters with no numbers or spaces.";
 
     #region User Data
+    public static double maxWidth;
+
     public static UserModel CurrentUser = new UserModel();
     public static SettingsModel ConstSettings = new SettingsModel();
-    public static List<AccountModel> ConstAccounts = new List<AccountModel>();
-    public static List<AutoPayModel> ConstAutos = new List<AutoPayModel>();
 
-    private static List<JobModel> constJobs;
-    public static event EventHandler ConstJobsChanged;
+    private static List<BucketModel>? constBuckets;
+    public static event EventHandler? ConstBucketsChanged;
+    public static List<BucketModel> ConstBuckets
+    {
+        get => constBuckets ?? new List<BucketModel>();
+        set
+        {
+            constBuckets = value;
+            OnConstBucketsChanged();
+        }
+    }
+
+    private static void OnConstBucketsChanged()
+    {
+        ConstBucketsChanged?.Invoke(null, EventArgs.Empty);
+    }
+
+    private static List<AccountModel>? constAccounts;
+    public static event EventHandler? ConstAccountsChanged;
+    public static List<AccountModel> ConstAccounts
+    {
+        get => constAccounts ?? new List<AccountModel>();
+        set
+        {
+            constAccounts = value;
+            OnConstAccountsChanged();
+        }
+    }
+
+    private static void OnConstAccountsChanged()
+    {
+        ConstAccountsChanged?.Invoke(null, EventArgs.Empty);
+    }
+
+    private static List<AutoPayModel>? constAutoPays;
+    public static event EventHandler? ConstAutoPaysChanged;
+    public static List<AutoPayModel> ConstAutoPays
+    {
+        get => constAutoPays ?? new List<AutoPayModel>();
+        set
+        {
+            constAutoPays = value;
+            OnConstAutoPaysChanged();
+        }
+    }
+
+    private static void OnConstAutoPaysChanged()
+    {
+        ConstAutoPaysChanged?.Invoke(null, EventArgs.Empty);
+    }
+
+    private static List<JobModel>? constJobs;
+    public static event EventHandler? ConstJobsChanged;
     public static List<JobModel> ConstJobs
     {
-        get => constJobs;
+        get => constJobs ?? new List<JobModel>();
         set
         {
             constJobs = value;
@@ -56,10 +105,10 @@ public static class Constants
     }
 
 
-    private static List<LoanModel> constLoans;
+    private static List<LoanModel>? constLoans;
     public static List<LoanModel> ConstLoans
     {
-        get => constLoans;
+        get => constLoans ?? new List<LoanModel>();
         set
         {
             constLoans = value;
@@ -67,7 +116,7 @@ public static class Constants
         }
     }
  
-    public static event EventHandler ConstLoansChanged;
+    public static event EventHandler? ConstLoansChanged;
 
     private static void OnConstLoansChanged()
     {

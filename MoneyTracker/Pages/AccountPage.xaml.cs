@@ -4,9 +4,12 @@ namespace MoneyTracker.Pages;
 
 public partial class AccountPage : ContentPage
 {
-	public AccountPage(AccountViewModel vm)
+	private readonly IServiceProvider _serviceProvider;
+
+	public AccountPage(IServiceProvider serviceProvider)
 	{
 		InitializeComponent();
-		BindingContext = vm;
+		_serviceProvider = serviceProvider;
+		BindingContext = _serviceProvider.GetService<AccountViewModel>();
 	}
 }
