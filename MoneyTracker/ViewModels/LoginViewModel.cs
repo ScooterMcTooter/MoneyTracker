@@ -44,8 +44,8 @@ public partial class LoginViewModel : ObservableObject
     async Task Create()
     {
         try
-        { 
-        await Shell.Current.GoToAsync(nameof(CreateUserPage));
+        {
+            await Shell.Current.GoToAsync(nameof(CreateUserPage));
         }
         catch (Exception ex)
         {
@@ -76,7 +76,16 @@ public partial class LoginViewModel : ObservableObject
                 pass = new Helper().HashPassword(_password);
             }
 
-            UserModel? user = _db.userModels.First(u => u.UserName != null && u.Password != null && u.UserName.Equals(_username) && u.Password.Equals(pass));
+            UserModel? user = new UserModel();
+            List<UserModel>? users = _db.userModels.Where(u => u.UserName != null && u.UserName.Equals(_username)).ToList();
+
+            if (users.Count() > 0)
+                user = users.FirstOrDefault(u => u.Password != null && u.Password.Equals(pass));
+            else
+            {
+                await Shell.Current.DisplayAlert("Login Failed", "The username or password is incorrect", "OK");//LOGIN FAILED password
+                return;
+            }
 
             if (user != null)
             {

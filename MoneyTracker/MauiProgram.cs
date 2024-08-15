@@ -14,13 +14,14 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
-            .UseMauiCommunityToolkit() // Added the missing method call
+            .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
+        #region Pages
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<AccountPage>();
         builder.Services.AddTransient<CreateUserPage>();
@@ -30,6 +31,8 @@ public static class MauiProgram
         builder.Services.AddTransient<PasswordResetPage>();
         builder.Services.AddTransient<TransactionsPage>();
         builder.Services.AddTransient<UserPage>();
+        #endregion
+        #region ViewModels
 
         builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<AccountViewModel>();
@@ -43,15 +46,29 @@ public static class MauiProgram
         builder.Services.AddTransient<TransactionTypeViewModel>();
         builder.Services.AddTransient<TransactionsViewModel>();
         builder.Services.AddTransient<UserViewModel>();
+        #endregion
+
+        #region Interfaces
+        builder.Services.AddTransient<IDialogService, DialogService>();
         builder.Services.AddTransient<IServiceProvider, ServiceProvider>();
+        #endregion
+
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
         {
+
 #if DEBUG
             options.UseSqlite("Data Source=MoneyTracker_dev.db");
 #else
             options.UseSqlite("Data Source=MoneyTracker.db");
 #endif
         });
+
+        using (var scope = builder.Services.BuildServiceProvider().CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            dbContext.Database.Migrate();
+        }
+
 #if DEBUG
         builder.Logging.AddDebug();
 #endif

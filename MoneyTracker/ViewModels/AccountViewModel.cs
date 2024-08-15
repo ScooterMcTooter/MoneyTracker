@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using System.Reflection.Metadata.Ecma335;
 using System.Text.RegularExpressions;
 
 namespace MoneyTracker.ViewModels;
@@ -8,12 +9,14 @@ namespace MoneyTracker.ViewModels;
 public partial class AccountViewModel : ObservableObject
 {
     private readonly ApplicationDbContext _db;
+    private readonly IDialogService _dialogService;
     private readonly IServiceProvider _serviceProvider;
 
     public AccountViewModel(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
         _db = _serviceProvider.GetService<ApplicationDbContext>() ?? throw new NotImplementedException("There is a failure when trying to access the ApplicationDbContext service.");
+        _dialogService = _serviceProvider.GetService<IDialogService>() ?? throw new NotImplementedException("There is a failure when trying to access the IDialogService service.");
 
         Accounts = new ObservableCollection<AccountModel>(Constants.ConstAccounts ?? []);
         Jobs = new ObservableCollection<JobModel>(Constants.ConstJobs.Where(j => j.UserId == Constants.CurrentUser.Id) ?? []);
@@ -21,42 +24,20 @@ public partial class AccountViewModel : ObservableObject
         Transactions = new ObservableCollection<TransactionModel>(Constants.ConstTransactions.Where(t => t.UserId == Constants.CurrentUser.Id) ?? []);
         AutoPays = new ObservableCollection<AutoPayModel>(Constants.ConstAutoPays.Where(a => a.UserId == Constants.CurrentUser.Id) ?? []);
 
-        if (Accounts.Count == 0)
-            Message = $"Welcome to the Account Page! Once you have some accounts they will be displayed here!";
-        else if (Accounts.Count > 1)
-            Message = $"You have {Accounts.Count} accounts!";
-        else
-            Message = Accounts.Sum(a => a.Balance) > 0 ? $"Your account has a balance of ${Accounts.Sum(a => a.Balance)}!" : $"Your accounts balances equal out to {Accounts.Sum(a => a.Balance)}";
+        LastFour = string.IsNullOrEmpty(AccountNumber) ? string.Empty : AccountNumber.Substring(AccountNumber.Length - 4);
+        SelectedAccount = Accounts.FirstOrDefault() ?? new AccountModel();
+        CreateMessage();
 
         AddAccountText = AddAccountVisible ? "Cancel" : "Add Account";
     }
 
     #region Properties
     public double Width => Constants.maxWidth;
-
-    private string _accountNumber;
-    public string AccountNumber
-    {
-        get => _accountNumber;
-        set
-        {
-            _accountNumber = value;
-            OnPropertyChanged(nameof(AccountNumber));
-            OnPropertyChanged(nameof(FormattedAccountNumber));
-        }
-    }
-
-    public string FormattedAccountNumber
-    {
-        get
-        {
-            // Insert your formatting logic here, similar to the converter example
-            return Regex.Replace(_accountNumber, ".{4}", "$0-").TrimEnd('-');
-        }
-    }
     #endregion
 
     #region Observable Properties
+    [ObservableProperty]
+    AccountModel selectedAccount;
     [ObservableProperty]
     string message = string.Empty;
     [ObservableProperty]
@@ -67,10 +48,12 @@ public partial class AccountViewModel : ObservableObject
     ObservableCollection<AccountModel> accounts;
     [ObservableProperty]
     string name = string.Empty;
-    //[ObservableProperty]
-    //int accountNumber;
     [ObservableProperty]
-    double balance;
+    string lastFour;
+    [ObservableProperty]
+    string accountNumber = string.Empty;
+    [ObservableProperty]
+    float balance;
     [ObservableProperty]
     string provider = string.Empty;
     [ObservableProperty]
@@ -117,10 +100,24 @@ public partial class AccountViewModel : ObservableObject
             UserId = Constants.CurrentUser.Id
         };
 
-        _db.accountModels.Add(account);
+        var edit = Constants.ConstAccounts.Where(a => a.UserId == Constants.CurrentUser.Id && a.AccountNumber.Equals(AccountNumber));
+
+        if (edit != null)
+        {
+            _db.accountModels.Update(account);
+        }
+        else
+        {
+            _db.accountModels.Add(account);
+        }
+
         _db.SaveChanges();
 
-        Accounts.Add(account);
+        int eId = Constants.CurrentUser.Id;
+        Constants.ConstAccounts = _db.accountModels.Where(a => a.UserId == eId).ToList();
+        Accounts = new ObservableCollection<AccountModel>(Constants.ConstAccounts);
+        CreateMessage();
+
         AddAccountVisible = false;
         AddAccountText = "Add Account";
         return;
@@ -133,7 +130,7 @@ public partial class AccountViewModel : ObservableObject
     void ClearAccount()
     {
         Name = string.Empty;
-        AccountNumber = 0;
+        AccountNumber = string.Empty;
         Balance = 0;
         Provider = string.Empty;
         Type = string.Empty;
@@ -146,12 +143,19 @@ public partial class AccountViewModel : ObservableObject
     /// </summary>
     /// <param name="account">The account to delete.</param>
     [RelayCommand]
-    void DeleteAccount(AccountModel account)
+    async Task DeleteAccount(AccountModel account)
     {
+        bool confirmed = await _dialogService.ShowConfirmationDialogAsync("Account Deletion", "Are you sure you want to delete this account?", "Yes", "Cancel");
+
+        if (!confirmed)
+            return;
+
+        CreateMessage();
         _db.accountModels.Remove(account);
         _db.SaveChanges();
 
         Accounts.Remove(account);
+        Constants.ConstAccounts = Accounts.ToList();
         return;
     }
 
@@ -162,12 +166,32 @@ public partial class AccountViewModel : ObservableObject
     [RelayCommand]
     void EditAccount(AccountModel account)
     {
+        AddAccount();
+        Accounts.Remove(account);
+        Constants.ConstAccounts.Remove(account);
+
         Name = account.Name;
-        AccountNumber = int.Parse(account.AccountNumber);
-        Balance = (double)account.Balance;
+        AccountNumber = account.AccountNumber;
+        Balance = (float)account.Balance;
         Provider = account.Provider;
         Type = account.Type;
         RoutingNumber = account.RoutingNumber ?? string.Empty;
+
+        _db.accountModels.Update(account);
+        _db.SaveChanges();
+        Accounts.Add(account);
+        Constants.ConstAccounts.Add(account);
+        return;
+    }
+    #endregion
+
+    #region Methods
+    private void CreateMessage()
+    {
+        if (Accounts.Count == 0)
+            Message = $"Welcome to the Account Page! Once you have some accounts they will be displayed here!";
+        else if (Accounts.Count > 1)
+            Message = Accounts.Sum(a => a.Balance) > 0 ? $"Your account has a balance of ${Accounts.Sum(a => a.Balance)}!" : $"Your accounts balances equal out to {Accounts.Sum(a => a.Balance)}";
         return;
     }
     #endregion

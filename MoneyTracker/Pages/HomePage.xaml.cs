@@ -12,7 +12,7 @@ public partial class HomePage : ContentPage
         _serviceProvider = serviceProvider;
 
         InitializeComponent();
-        BindingContext = _serviceProvider.GetService<HomeViewModel>() ?? throw new NotImplementedException("There is a failure when trying to access the HomeView service."); ;
+        BindingContext = _serviceProvider.GetService<HomeViewModel>() ?? throw new NotImplementedException("There is a failure when trying to access the HomeView service.");
 
         Shell.Current.FlyoutBehavior = FlyoutBehavior.Flyout;
 
@@ -30,7 +30,16 @@ public partial class HomePage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
+
+        // Clear selection for LoanListView
         LoanListView.SelectedItem = null;
+
+        // Clear selection for AccountListView
+        AccountListView.SelectedItem = null;
+
+        // Add similar lines for any other ListView controls you have
+        // Example:
+        // AnotherListView.SelectedItem = null;
     }
 
     private void HomePageBind_Appearing(object sender, EventArgs e)
@@ -58,7 +67,30 @@ public partial class HomePage : ContentPage
                     _serviceProvider.GetService<LoanViewModel>().SelectedLoan = selectedLoan;
                     await Shell.Current.GoToAsync(nameof(LoanPage));
                 }
-                await Shell.Current.GoToAsync($"{nameof(LoanPage)}");
+                await Shell.Current.GoToAsync($"//{nameof(LoanPage)}");
+            }
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+            return;
+        }
+    }
+
+    private async void ListView_AccountSelected(object sender, SelectedItemChangedEventArgs e)
+    {
+        try
+        {
+            var list = sender as ListView;
+            if (list != null)
+            {
+                AccountModel selectedAccount = list.SelectedItem as AccountModel;
+                if (selectedAccount != null)
+                {
+                    _serviceProvider.GetService<AccountViewModel>().SelectedAccount = selectedAccount;
+                    await Shell.Current.GoToAsync($"//{nameof(AccountPage)}");
+                }
+                await Shell.Current.GoToAsync($"//{nameof(AccountPage)}");
             }
         }
         catch (Exception ex)

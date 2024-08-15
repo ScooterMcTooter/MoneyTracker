@@ -1,56 +1,57 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using MoneyTracker.Pages;
-using MoneyTrackerMigrations;
+using MoneyTracker.ViewModels;
 
 namespace MoneyTracker
 {
     public partial class App : Application
     {
+        private readonly IServiceProvider _serviceProvider;
+        private readonly ApplicationDbContext _db;
+
         public App(IServiceProvider serviceProvider)
         {
             InitializeComponent();
+            _serviceProvider = serviceProvider;
+            _db = _serviceProvider.GetService<ApplicationDbContext>() ?? throw new NotImplementedException("There is a failure when trying to access the ApplicationDbContext service.");
 
             if (App.Current != null)
                 App.Current.UserAppTheme = App.Current.UserAppTheme == AppTheme.Dark || App.Current.UserAppTheme == AppTheme.Unspecified ? AppTheme.Dark : AppTheme.Light;
 
+            var dbContext = serviceProvider.GetService<ApplicationDbContext>();
+            var serviceCollection = serviceProvider.GetService<IServiceCollection>();
+            var AutoPayViewModel = serviceProvider.GetService<AutoPayViewModel>();
+            var AccountViewModel = serviceProvider.GetService<AccountViewModel>();
+            var CreateUserViewModel = serviceProvider.GetService<CreateUserViewModel>();
+            var JobViewModel = serviceProvider.GetService<JobViewModel>();
+            var LoanViewModel = serviceProvider.GetService<LoanViewModel>();
+            var SavingsBucketsViewModel = serviceProvider.GetService<SavingsBucketsViewModel>();
+            var SettingsViewModel = serviceProvider.GetService<SettingsViewModel>();
+            var TransactionsViewModel = serviceProvider.GetService<TransactionsViewModel>();
+            var UserViewModel = serviceProvider.GetService<UserViewModel>();
+
             using (var scope = serviceProvider.CreateScope())
             {
-                var db = scope.ServiceProvider.GetRequiredService<MoneyTrackerMigrations.ApplicationDbContext>();
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 db.Database.Migrate();
             }
 
-            var dbContext = serviceProvider.GetService<ApplicationDbContext>();
-            var serviceCollection = serviceProvider.GetService<IServiceCollection>();
-            var userViewModel = serviceProvider.GetService<ViewModels.UserViewModel>();
-            var LoanViewModel = serviceProvider.GetService<ViewModels.LoanViewModel>();
-            var JobViewModel = serviceProvider.GetService<ViewModels.JobViewModel>();
-            var CreateUserViewModel = serviceProvider.GetService<ViewModels.CreateUserViewModel>();
-            var SavingsBucketsViewModel = serviceProvider.GetService<ViewModels.SavingsBucketsViewModel>();
-            var SettingsViewModel = serviceProvider.GetService<ViewModels.SettingsViewModel>();
-            var AutoPayViewModel = serviceProvider.GetService<ViewModels.AutoPayViewModel>();
-            var TransactionsViewModel = serviceProvider.GetService<ViewModels.TransactionsViewModel>();
+            if (_db != null)
+                MainPage = new AppShell(serviceProvider);
 
-            if (serviceCollection != null && dbContext != null)
+            if (serviceCollection != null && _db != null)
             {
-                serviceCollection.AddTransient(provider => new ViewModels.LoginViewModel(dbContext));
-                serviceCollection.AddTransient(provider => new ViewModels.HomeViewModel(dbContext));
-                serviceCollection.AddTransient(provider => new ViewModels.UserViewModel(dbContext));
-                //serviceCollection.AddTransient(provider => new ViewModels.AccountViewModel(myParameter));
-                serviceCollection.AddTransient(provider => new ViewModels.TransactionsViewModel(dbContext, userViewModel));
-                serviceCollection.AddTransient(provider => new ViewModels.JobViewModel(provider));
-                serviceCollection.AddTransient(provider => new ViewModels.LoanViewModel(provider));
-                serviceCollection.AddTransient(provider => new ViewModels.CreateUserViewModel(dbContext));
+                serviceCollection.AddTransient(provider => new AccountViewModel(_serviceProvider));
+                serviceCollection.AddTransient(provider => new HomeViewModel(_db));
+                serviceCollection.AddTransient(provider => new JobViewModel(_serviceProvider));
+                serviceCollection.AddTransient(provider => new LoanViewModel(_serviceProvider));
+                serviceCollection.AddTransient(provider => new LoginViewModel(_db));
+                serviceCollection.AddTransient(provider => new TransactionsViewModel(_db, _serviceProvider.GetService<UserViewModel>()));
+                serviceCollection.AddTransient(provider => new UserViewModel(_db));
+                serviceCollection.AddTransient(provider => new CreateUserViewModel(_db));
+                //serviceCollection.AddTransient(provider => new ViewModels.AutoPayViewModel(dbContext));
                 //serviceCollection.AddTransient(provider => new ViewModels.SavingsBucketsViewModel(dbContext));
                 //serviceCollection.AddTransient(provider => new ViewModels.SettingsViewModel(dbContext));
-                //serviceCollection.AddTransient(provider => new ViewModels.AutoPayViewModel(dbContext));
-
             }
-
-            var viewModel = serviceProvider.GetService<ViewModels.SettingsViewModel>();
-            if (viewModel != null && dbContext != null)
-                MainPage = new AppShell(serviceProvider, viewModel);
         }
-
     }
 }
