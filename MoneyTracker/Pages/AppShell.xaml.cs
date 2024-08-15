@@ -5,12 +5,13 @@ namespace MoneyTracker;
 
 public partial class AppShell : Shell
 {
-    private readonly SettingsViewModel _vm;
-    public AppShell(IServiceProvider serviceProvider, SettingsViewModel vm)
+    private readonly IServiceProvider _serviceProvider;
+    public AppShell(IServiceProvider serviceProvider)
     {
         InitializeComponent();
 
-        BindingContext = _vm = vm;
+        _serviceProvider = serviceProvider;
+        BindingContext = _serviceProvider.GetService<SettingsViewModel>() ?? throw new NotImplementedException("There is a failure when trying to access the SettingsViewModel service.");
 
         Routing.RegisterRoute(nameof(LoginPage), typeof(LoginPage));
         Routing.RegisterRoute(nameof(PasswordResetPage), typeof(PasswordResetPage));

@@ -148,24 +148,49 @@
                 <!--#endregion-->
                 <!--#region Accounts-->
                 <Frame Grid.Row="1">
-                    <Grid RowDefinitions="auto,auto,auto">
+                    <Grid RowDefinitions="auto,auto,auto,auto">
                         <Label Text="{Binding AccountHeader}"
                                FontSize="Medium"
                                HorizontalOptions="Center"
                                VerticalOptions="Center"/>
-                        <ListView ItemsSource="{Binding Accounts}"
+                        <ListView x:Name="AccountListView"
+                            ItemsSource="{Binding Accounts}"
                                   SelectedItem="{Binding SelectedAccount}"
+                                    ItemSelected="ListView_AccountSelected"
                                   SelectionMode="Single"
-                                  RowHeight="50">
+                                  Grid.Row="1">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <ViewCell>
-                                        <StackLayout Orientation="Horizontal">
-                                            <Label Text="{Binding Account.Name}"
-                                                   FontSize="Medium"/>
-                                            <Label Text="{Binding Account.Balance, StringFormat='${0}'}"
-                                                   FontSize="Medium"/>
-                                        </StackLayout>
+                                        <Grid ColumnDefinitions="*,auto,auto,auto,auto,*"
+                                              RowDefinitions=".25*,auto,auto,.25*"
+                                              RowSpacing="2"
+                                              ColumnSpacing="10">
+                                            <Label Text="Name"
+                                                   Grid.Column="1"
+                                                   Grid.Row="1"
+                                                   FontSize="Small"/>
+                                            <Label Text="{Binding Name}"
+                                                   Grid.Column="1"
+                                                   Grid.Row="2"
+                                                   FontSize="Small"/>
+                                            <Label Text="Last 4 of Acct Num"
+                                                    Grid.Column="2"
+                                                    Grid.Row="1"
+                                                    FontSize="Small"/>
+                                            <Label Text="{Binding LastFourDigits}"
+                                                    Grid.Column="2"
+                                                    Grid.Row="2"
+                                                    FontSize="Small"/>
+                                            <Label Text="Balance"
+                                                    Grid.Column="3"
+                                                    Grid.Row="1"
+                                                    FontSize="Small"/>
+                                            <Label Text="{Binding Balance, StringFormat='${0}'}"
+                                                   Grid.Row="2"
+                                                    Grid.Column="3"
+                                                   FontSize="Small"/>
+                                        </Grid>
                                     </ViewCell>
                                 </DataTemplate>
                             </ListView.ItemTemplate>

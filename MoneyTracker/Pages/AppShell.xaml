@@ -101,7 +101,7 @@
         Route="HomePage" />
 
     <ShellContent
-        Title="Various Money Accounts"
+        Title="Accounts"
         ContentTemplate="{DataTemplate local:AccountPage}"
         Route="AccountPage" />
 

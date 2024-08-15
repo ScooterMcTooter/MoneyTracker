@@ -32,7 +32,7 @@ public partial class HomeViewModel : ObservableValidator
         Loans = new ObservableCollection<LoanModel>(Constants.ConstLoans);
         Settings = Constants.ConstSettings;
         Accounts = new ObservableCollection<AccountModel>(Constants.ConstAccounts);
-        Autos = new ObservableCollection<AutoPayModel>(Constants.ConstAutos);
+        Autos = new ObservableCollection<AutoPayModel>(Constants.ConstAutoPays);
         Jobs = new ObservableCollection<JobModel>(Constants.ConstJobs);
         Transactions = new ObservableCollection<TransactionModel>(Constants.ConstTransactions);
         #endregion
@@ -59,7 +59,7 @@ public partial class HomeViewModel : ObservableValidator
     #region Count Properties
     public int LoanCount => Constants.ConstLoans.Count();
     public int AccountCount => Constants.ConstAccounts.Count();
-    public int AutoCount => Constants.ConstAutos.Count();
+    public int AutoCount => Constants.ConstAutoPays.Count();
     public int TransactionCount => Constants.ConstTransactions.Count();
     public int JobCount => Constants.ConstJobs.Count();
     #endregion
