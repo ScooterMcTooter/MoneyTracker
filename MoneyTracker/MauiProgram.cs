@@ -33,7 +33,7 @@ public static class MauiProgram
         builder.Services.AddTransient<UserPage>();
         #endregion
         #region ViewModels
-        builder.Services.AddTransient<LoginViewModel>();
+        builder.Services.AddSingleton<LoginViewModel>();
         builder.Services.AddTransient<AccountViewModel>();
         builder.Services.AddTransient<AutoPayViewModel>();
         builder.Services.AddTransient<CreateUserViewModel>();

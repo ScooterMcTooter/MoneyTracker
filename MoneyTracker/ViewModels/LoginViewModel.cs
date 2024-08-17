@@ -57,7 +57,7 @@ public partial class LoginViewModel : ObservableObject
     /// Logs in the user.
     /// </summary>
     [RelayCommand]
-    async Task Login()
+    public async Task Login()
     {
         try
         {

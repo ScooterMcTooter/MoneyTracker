@@ -55,5 +55,28 @@ namespace MoneyTracker
                 //serviceCollection.AddTransient(provider => new ViewModels.SettingsViewModel(dbContext));
             }
         }
+
+        protected override void OnStart()
+        {
+            base.OnStart();
+#if DEBUG
+            try
+            {
+                _serviceProvider.GetService<LoginViewModel>().Password = "<PASSWORD>";
+                _serviceProvider.GetService<LoginViewModel>().Username = "Scoot";
+                _serviceProvider.GetService<LoginViewModel>().Login();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                Shell.Current.GoToAsync("//HomePage");
+            }
+#else
+            Shell.Current.GoToAsync("//LoginPage");
+#endif
+        }
     }
 }
