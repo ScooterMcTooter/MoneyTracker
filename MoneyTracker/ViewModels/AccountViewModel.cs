@@ -33,9 +33,24 @@ public partial class AccountViewModel : ObservableObject
 
     #region Properties
     public double Width => Constants.maxWidth;
+
+    public List<string> AccountTypeValues
+    {
+        get
+        {
+            return Enum.GetValues(typeof(AccountType))
+                       .Cast<AccountType>()
+                       .Select(e => e.ToString())
+                       .ToList();
+        }
+    }
     #endregion
 
     #region Observable Properties
+    [ObservableProperty]
+    AccountType? accountTypeEnum;
+    [ObservableProperty] 
+    AccountType? selectedAccountType = AccountType.Checking;
     [ObservableProperty]
     AccountModel selectedAccount;
     [ObservableProperty]
@@ -193,6 +208,16 @@ public partial class AccountViewModel : ObservableObject
         else if (Accounts.Count > 1)
             Message = Accounts.Sum(a => a.Balance) > 0 ? $"Your account has a balance of ${Accounts.Sum(a => a.Balance)}!" : $"Your accounts balances equal out to {Accounts.Sum(a => a.Balance)}";
         return;
+    }
+    #endregion
+
+    #region Enums
+    public enum AccountType
+    {
+        Checking,
+        Savings,
+        Credit,
+        Loan
     }
     #endregion
 }

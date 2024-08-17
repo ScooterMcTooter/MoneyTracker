@@ -18,6 +18,7 @@ namespace MoneyTracker
                 App.Current.UserAppTheme = App.Current.UserAppTheme == AppTheme.Dark || App.Current.UserAppTheme == AppTheme.Unspecified ? AppTheme.Dark : AppTheme.Light;
 
             var dbContext = serviceProvider.GetService<ApplicationDbContext>();
+            var Helper = serviceProvider.GetService<Helper>();
             var serviceCollection = serviceProvider.GetService<IServiceCollection>();
             var AutoPayViewModel = serviceProvider.GetService<AutoPayViewModel>();
             var AccountViewModel = serviceProvider.GetService<AccountViewModel>();
@@ -40,15 +41,16 @@ namespace MoneyTracker
 
             if (serviceCollection != null && _db != null)
             {
+                serviceCollection.AddTransient(provider => new Helper());
                 serviceCollection.AddTransient(provider => new AccountViewModel(_serviceProvider));
-                serviceCollection.AddTransient(provider => new HomeViewModel(_db));
+                serviceCollection.AddTransient(provider => new HomeViewModel(_db, _serviceProvider));
                 serviceCollection.AddTransient(provider => new JobViewModel(_serviceProvider));
                 serviceCollection.AddTransient(provider => new LoanViewModel(_serviceProvider));
                 serviceCollection.AddTransient(provider => new LoginViewModel(_db));
-                serviceCollection.AddTransient(provider => new TransactionsViewModel(_db, _serviceProvider.GetService<UserViewModel>()));
+                serviceCollection.AddTransient(provider => new TransactionsViewModel(_db, _serviceProvider.GetService<UserViewModel>() ?? new UserViewModel(_db)));
                 serviceCollection.AddTransient(provider => new UserViewModel(_db));
                 serviceCollection.AddTransient(provider => new CreateUserViewModel(_db));
-                //serviceCollection.AddTransient(provider => new ViewModels.AutoPayViewModel(dbContext));
+                //serviceCollection.AddTransient(provider => new AutoPayViewModel(dbContext));
                 //serviceCollection.AddTransient(provider => new ViewModels.SavingsBucketsViewModel(dbContext));
                 //serviceCollection.AddTransient(provider => new ViewModels.SettingsViewModel(dbContext));
             }

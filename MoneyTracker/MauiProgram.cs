@@ -33,7 +33,6 @@ public static class MauiProgram
         builder.Services.AddTransient<UserPage>();
         #endregion
         #region ViewModels
-
         builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<AccountViewModel>();
         builder.Services.AddTransient<AutoPayViewModel>();
@@ -47,7 +46,9 @@ public static class MauiProgram
         builder.Services.AddTransient<TransactionsViewModel>();
         builder.Services.AddTransient<UserViewModel>();
         #endregion
-
+        #region Methods
+        builder.Services.AddTransient<Helper>();
+        #endregion
         #region Interfaces
         builder.Services.AddTransient<IDialogService, DialogService>();
         builder.Services.AddTransient<IServiceProvider, ServiceProvider>();
