@@ -56,6 +56,9 @@ public partial class HomeViewModel : ObservableValidator
         CurrentIncome = helper.PayvsBills(0); //replace with Bills when that gets created
         CurrentCredit = GetCredit();
         CurrentLoans = GetLoans();
+        CurrentChecking = GetChecking();
+        CurrentSavings = GetSavings();
+
         TotalBalance = ((CurrentSavings + CurrentChecking + CurrentCredit) - CurrentLoans);
     }
 
@@ -69,7 +72,7 @@ public partial class HomeViewModel : ObservableValidator
     #endregion
     public double Balance => CurrentIncome - CurrentExpenses;
     public double CurrentDebt => Loans?.Where(x => x.UserId == User.Id).Sum(x => x.Amount) ?? 0;
-    public double CurrentNetWorth => TotalBalance - GetLoans();
+    public double CurrentNetWorth => GetNetWorth();
     #region Color Properties
     public string BalanceColor => helper.GetBalanceColor(Balance);
     public string TotalBalanceColor => helper.GetBalanceColor(TotalBalance);
@@ -314,7 +317,39 @@ public partial class HomeViewModel : ObservableValidator
             return 0;
 
         var loan = Math.Round(Loans.Where(x => x.UserId == User.Id).ToList().Sum(x => x.RemainingBalance), 2);
-        return (double)loan;
+        if(loan == 0)
+            loan = (double)Math.Round(_db.accountModels.Where(x => x.UserId == User.Id && x.Type.Equals("Loan")).ToList().Sum(x => x.Balance), 2);
+
+        return loan;
+    }
+
+    private double GetChecking()
+    {
+        if(User.Id == 0)
+            return 0;
+
+        var checking = Math.Round(_db.accountModels.Where(x => x.UserId == User.Id && x.Type.Equals("Checking")).ToList().Sum(x => x.Balance), 2);
+        return (double)checking;
+    }
+
+    private double GetSavings()
+    {
+        if(User.Id == 0)
+            return 0;
+
+        var savings = Math.Round(_db.accountModels.Where(x => x.UserId == User.Id && x.Type.Equals("Savings")).ToList().Sum(x => x.Balance), 2);
+        return (double)savings;
+    }
+
+    private double GetNetWorth()
+    {
+        if(User.Id == 0)
+            return 0;
+
+        var netWorth = Math.Round(CurrentSavings + CurrentChecking + CurrentCredit - CurrentLoans, 2);
+        //Add in the value of any assets the user has
+
+        return (double)netWorth;
     }
     #endregion
 }
