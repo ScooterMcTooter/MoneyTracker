@@ -21,11 +21,13 @@ public partial class HomeViewModel : ObservableValidator
 {
 
     readonly ApplicationDbContext _db;
+    readonly IServiceProvider _serviceProvider;
     readonly Helper helper;
-    public HomeViewModel(ApplicationDbContext db)
+    public HomeViewModel(ApplicationDbContext db, IServiceProvider serviceProvider)
     {
         _db = db;
-        helper = new Helper();
+        _serviceProvider = serviceProvider;
+        helper = _serviceProvider.GetRequiredService<Helper>();
 
         #region Set Model Properties
         User = Constants.CurrentUser;
@@ -52,7 +54,12 @@ public partial class HomeViewModel : ObservableValidator
         #endregion
 
         CurrentIncome = helper.PayvsBills(0); //replace with Bills when that gets created
-        TotalBalance = CurrentSavings + CurrentChecking;
+        CurrentCredit = GetCredit();
+        CurrentLoans = GetLoans();
+        CurrentChecking = GetChecking();
+        CurrentSavings = GetSavings();
+
+        TotalBalance = ((CurrentSavings + CurrentChecking + CurrentCredit) - CurrentLoans);
     }
 
     #region Properties
@@ -64,8 +71,8 @@ public partial class HomeViewModel : ObservableValidator
     public int JobCount => Constants.ConstJobs.Count();
     #endregion
     public double Balance => CurrentIncome - CurrentExpenses;
-    public double CurrentDebt => _db.loanModels.Where(x => x.UserId == User.Id).Sum(x => x.Amount);
-    public double CurrentNetWorth => TotalBalance - CurrentDebt;
+    public double CurrentDebt => Loans?.Where(x => x.UserId == User.Id).Sum(x => x.Amount) ?? 0;
+    public double CurrentNetWorth => GetNetWorth();
     #region Color Properties
     public string BalanceColor => helper.GetBalanceColor(Balance);
     public string TotalBalanceColor => helper.GetBalanceColor(TotalBalance);
@@ -75,6 +82,7 @@ public partial class HomeViewModel : ObservableValidator
     public string CurrentSavingsColor => helper.GetBalanceColor(CurrentSavings);
     public string CurrentCheckingColor => helper.GetBalanceColor(CurrentChecking);
     public string CurrentDebtColor => helper.GetBalanceColor(CurrentDebt, true);
+    public string CurrentCreditColor => helper.GetBalanceColor(CurrentCredit, true);
     #endregion
     public string BalanceString => $"${CurrentIncome} - ${CurrentExpenses}:";
     public string Width => (DeviceDisplay.MainDisplayInfo.Width * .3).ToString();
@@ -111,6 +119,10 @@ public partial class HomeViewModel : ObservableValidator
     double currentSavings;
     [ObservableProperty]
     double currentChecking;
+    [ObservableProperty]
+    double currentCredit;
+    [ObservableProperty]
+    double currentLoans;
     [ObservableProperty]
     ObservableCollection<TransactionModel>? transactions;
     [ObservableProperty]
@@ -288,6 +300,56 @@ public partial class HomeViewModel : ObservableValidator
     private async Task<bool> IsNew(dynamic obj)
     {
         return await Task.Run(() => false );
+    }
+
+    private double GetCredit()
+    {
+        if(User.Id == 0)
+            return 0;
+
+        var credit = Math.Round(_db.accountModels.Where(x => x.UserId == User.Id && x.Type.Equals("Credit")).ToList().Sum(x => x.Balance), 2);        
+        return (double)credit;
+    }
+
+    private double GetLoans()
+    {
+        if(User.Id == 0)
+            return 0;
+
+        var loan = Math.Round(Loans.Where(x => x.UserId == User.Id).ToList().Sum(x => x.RemainingBalance), 2);
+        if(loan == 0)
+            loan = (double)Math.Round(_db.accountModels.Where(x => x.UserId == User.Id && x.Type.Equals("Loan")).ToList().Sum(x => x.Balance), 2);
+
+        return loan;
+    }
+
+    private double GetChecking()
+    {
+        if(User.Id == 0)
+            return 0;
+
+        var checking = Math.Round(_db.accountModels.Where(x => x.UserId == User.Id && x.Type.Equals("Checking")).ToList().Sum(x => x.Balance), 2);
+        return (double)checking;
+    }
+
+    private double GetSavings()
+    {
+        if(User.Id == 0)
+            return 0;
+
+        var savings = Math.Round(_db.accountModels.Where(x => x.UserId == User.Id && x.Type.Equals("Savings")).ToList().Sum(x => x.Balance), 2);
+        return (double)savings;
+    }
+
+    private double GetNetWorth()
+    {
+        if(User.Id == 0)
+            return 0;
+
+        var netWorth = Math.Round(CurrentSavings + CurrentChecking + CurrentCredit - CurrentLoans, 2);
+        //Add in the value of any assets the user has
+
+        return (double)netWorth;
     }
     #endregion
 }

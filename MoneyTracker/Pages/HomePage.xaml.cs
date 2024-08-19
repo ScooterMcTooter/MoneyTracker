@@ -61,13 +61,12 @@ public partial class HomePage : ContentPage
             var list = sender as ListView;
             if (list != null)
             {
-                LoanModel selectedLoan = list.SelectedItem as LoanModel;
+                LoanModel? selectedLoan = list.SelectedItem as LoanModel;
                 if (selectedLoan != null)
                 {
                     _serviceProvider.GetService<LoanViewModel>().SelectedLoan = selectedLoan;
-                    await Shell.Current.GoToAsync(nameof(LoanPage));
+                    await Shell.Current.GoToAsync($"//{nameof(LoanPage)}");
                 }
-                await Shell.Current.GoToAsync($"//{nameof(LoanPage)}");
             }
         }
         catch (Exception ex)
@@ -84,7 +83,7 @@ public partial class HomePage : ContentPage
             var list = sender as ListView;
             if (list != null)
             {
-                AccountModel selectedAccount = list.SelectedItem as AccountModel;
+                AccountModel? selectedAccount = list.SelectedItem as AccountModel;
                 if (selectedAccount != null)
                 {
                     _serviceProvider.GetService<AccountViewModel>().SelectedAccount = selectedAccount;
