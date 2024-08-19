@@ -24,7 +24,7 @@ namespace MoneyTrackerMigrations.Models
             get => _AccountNumber;
             set
             {
-                _LastFourDigits = value.Substring(value.Length - 4);
+                _LastFourDigits = value;
                 _AccountNumber = new Helper().HashAccountNumber(value);
             }
         }
@@ -33,8 +33,8 @@ namespace MoneyTrackerMigrations.Models
         private string _LastFourDigits = string.Empty;
         public string LastFourDigits
         {
-            get => _LastFourDigits;
-            set => _LastFourDigits = value;
+            get => _LastFourDigits.Substring(_LastFourDigits.Length > 0 ? _LastFourDigits.Length - 4 : 0);
+            set => _LastFourDigits = value.Substring(value.Length > 0 ? value.Length - 4 : 0);
         }
         public string? RoutingNumber { get; set; } = null;
         public virtual ICollection<BucketModel> Buckets { get; set; } = new List<BucketModel>();

@@ -12,10 +12,10 @@
 
     <Grid RowDefinitions="auto,auto,auto,auto"
           RowSpacing="5"
-          ColumnDefinitions=".15*,*,.15*"
+          ColumnDefinitions=".1*,*,.1*"
           HorizontalOptions="Center" VerticalOptions="Fill"
           ColumnSpacing="10">
-        <Label Grid.Column="1" HorizontalOptions="CenterAndExpand" FontSize="Large" MaximumWidthRequest="{Binding Width}" Text="{Binding Message}"/>
+        <Label Grid.Column="1" HorizontalOptions="CenterAndExpand" FontSize="Large" Text="{Binding Message}"/>
         <ScrollView Grid.Row="1" Grid.Column="1">
             <CollectionView ItemsSource="{Binding Accounts}">
                 <CollectionView.ItemTemplate>
@@ -42,7 +42,7 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </ScrollView>
-        <Frame Grid.Row="3" Grid.Column="1" BackgroundColor="Transparent" MaximumWidthRequest="{Binding Width}" IsVisible="{Binding AddAccountVisible}" BorderColor="{AppThemeBinding Dark=White, Light=black, Default=grey}">
+        <Frame Grid.Row="3" Grid.ColumnSpan="2" BackgroundColor="Transparent" IsVisible="{Binding AddAccountVisible}" BorderColor="{AppThemeBinding Dark=White, Light=black, Default=grey}">
             <Grid RowDefinitions="auto,auto,auto,auto,auto,auto,auto,auto"
               RowSpacing="5"
               ColumnDefinitions="auto,auto,*,auto"
@@ -50,13 +50,13 @@
                 <Label Grid.Column="1" Text="Name: "/>
                 <Entry Grid.Column="2" Placeholder="My Checking" Text="{Binding Name}"/>
                 <Label Grid.Column="1" Grid.Row="2" Text="Account Number: "/>
-                <Entry Grid.Column="2" Grid.Row="2" Keyboard="Numeric" Placeholder="xxxxxxxxx1234" Text="{Binding LastFour}"/>
+                <Entry Grid.Column="2" Grid.Row="2" Keyboard="Numeric" Placeholder="xxxxxxxxx1234" Text="{Binding LastFour}"/>   
                 <Label Grid.Column="1" Grid.Row="3" Text="Routing Number: "/>
                 <Entry Grid.Column="2" Grid.Row="3" Keyboard="Numeric" Placeholder="01234567890" Text="{Binding RoutingNumber}"/>
                 <Label Grid.Column="1" Grid.Row="4" Text="Provider: "/>
                 <Entry Grid.Column="2" Grid.Row="4" Placeholder="Santander" Text="{Binding Provider}"/>
                 <Label Grid.Column="1" Grid.Row="5" Text="Type: "/>
-                <Entry Grid.Column="2" Grid.Row="5" Placeholder="Checking" Text="{Binding Type}"/>
+                <Picker Grid.Column="2" Grid.Row="5" ItemsSource="{Binding AccountTypeValues}" SelectedItem="{Binding SelectedAccountType}"  />
                 <Label Grid.Column="1" Grid.Row="6" Text="Balance: $"/>
                 <Entry Grid.Column="2" Grid.Row="6" Keyboard="Numeric" Placeholder="1.00" Text="{Binding Balance}"/>
                 <StackLayout Grid.Row="7" Grid.ColumnSpan="4" Orientation="Horizontal" Spacing="10">
