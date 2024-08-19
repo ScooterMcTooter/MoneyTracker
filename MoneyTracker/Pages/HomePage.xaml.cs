@@ -90,7 +90,6 @@ public partial class HomePage : ContentPage
                     _serviceProvider.GetService<AccountViewModel>().SelectedAccount = selectedAccount;
                     await Shell.Current.GoToAsync($"//{nameof(AccountPage)}");
                 }
-                await Shell.Current.GoToAsync($"//{nameof(AccountPage)}");
             }
         }
         catch (Exception ex)

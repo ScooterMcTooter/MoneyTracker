@@ -28,12 +28,12 @@ public partial class AccountViewModel : ObservableObject
         AutoPays = new ObservableCollection<AutoPayModel>(Constants.ConstAutoPays.Where(a => a.UserId == Constants.CurrentUser.Id) ?? []);
 
         LastFour = string.IsNullOrEmpty(AccountNumber) ? string.Empty : AccountNumber.Substring(AccountNumber.Length - 4);
-        SelectedAccount = Accounts.FirstOrDefault() ?? new AccountModel(); 
         AccountTypeValues = new ObservableCollection<AccountType>(Enum.GetValues(typeof(AccountType)).Cast<AccountType>());
-        selectedAccountType = Enum.TryParse(SelectedAccount.Type, out AccountType type) ? type : AccountType.Checking;
+        selectedAccountType = Enum.TryParse(SelectedAccount?.Type, out AccountType type) ? type : AccountType.Checking;
 
         CreateMessage();
 
+        IsEdit = true;
         AddAccountText = AddAccountVisible ? "Cancel" : "Add Account";
     }
 
@@ -49,7 +49,7 @@ public partial class AccountViewModel : ObservableObject
     [ObservableProperty]
     AccountType selectedAccountType = AccountType.Checking;
     [ObservableProperty]
-    AccountModel selectedAccount;
+    AccountModel? selectedAccount;
     [ObservableProperty]
     string message = string.Empty;
     [ObservableProperty]
@@ -72,6 +72,8 @@ public partial class AccountViewModel : ObservableObject
     string type = string.Empty;
     [ObservableProperty]
     string routingNumber = string.Empty;
+    [ObservableProperty]
+    bool isEdit;
     [ObservableProperty]
     ObservableCollection<BucketModel> buckets = [];
     [ObservableProperty]
@@ -101,26 +103,39 @@ public partial class AccountViewModel : ObservableObject
     [RelayCommand]
     void SaveAccount(AccountModel _account)
     {
-        Console.WriteLine(SelectedAccount);
+        AccountModel a = new AccountModel();
         _account.Type = SelectedAccountType.ToString();
         var existingEntity = _db.accountModels.FirstOrDefault(e => e.Id == _account.Id);
-
+        
         try
         {
             if (existingEntity != null)
             {
+                a = new AccountModel
+                {
+                    Id = existingEntity.Id,
+                    UserId = Constants.CurrentUser.Id,
+                    Name = Name,
+                    Balance = (decimal)Balance,
+                    Provider = Provider,
+                    AccountNumber = AccountNumber,
+                    RoutingNumber = RoutingNumber,
+                    Type = SelectedAccountType.ToString()
+                };
+
                 _db.Entry(existingEntity).State = EntityState.Detached;
             }
 
-            if ((_serviceProvider.GetService<Helper>() ?? null!).IsChanged(_account, existingEntity))
+            if ((_serviceProvider.GetService<Helper>() ?? new Helper()).IsChanged(a, existingEntity))
             {
-                _db.accountModels.Update(_account);
+                _db.accountModels.Update(a);
             }
             else
             {
-                _db.accountModels.Add(_account);
+                _db.accountModels.Add(a);
             }
 
+            IsEdit = true;
             _db.SaveChanges();
 
             int eId = Constants.CurrentUser.Id;
@@ -192,6 +207,9 @@ public partial class AccountViewModel : ObservableObject
     {
         try
         {
+            SelectedAccount = account;
+            SelectedAccount.Type = SelectedAccountType.ToString();
+
             var existingEntity = _db.accountModels.FirstOrDefault(e => e.Id == account.Id);
             if (existingEntity != null)
             {
@@ -206,11 +224,13 @@ public partial class AccountViewModel : ObservableObject
             Provider = account.Provider;
             RoutingNumber = account.RoutingNumber ?? string.Empty;
             LastFour = account.AccountNumber.Substring(account.AccountNumber.Length > 0 ? account.AccountNumber.Length - 4 : 0);
+            IsEdit = false;
         }
         catch (Exception ex)
         {
             // Handle exception
-            throw;
+            Shell.Current.DisplayAlert("Error", $"An error occurred while trying to edit the account. \r\n {ex}", "OK");
+            return;
         }
 
         return;
@@ -224,13 +244,23 @@ public partial class AccountViewModel : ObservableObject
         if (Accounts.Count == 0)
             Message = $"Welcome to the Account Page! Once you have some accounts they will be displayed here!";
         else if (Accounts.Count > 1)
-            Message = Accounts.Sum(a => a.Balance) > 0 ? $"Your account has a balance of ${Accounts.Sum(a => a.Balance)}!" : $"Your accounts balances equal out to {Accounts.Sum(a => a.Balance)}";
+            Message = Accounts.Sum(a => a.Balance) > 0 ? $"Your account has a balance of\r\n${Accounts.Sum(a => a.Balance)}!" : $"Your accounts balances equal out to {Accounts.Sum(a => a.Balance)}";
         return;
     }
 
     partial void OnAccountNumberChanged(string value)
     {
         LastFour = value.Length >= 4 ? value[^4..] : value;
+    }
+    #endregion
+
+    #region Enums
+    public enum AccountType
+    {
+        Checking,
+        Savings,
+        Credit,
+        Loan
     }
     #endregion
 }
