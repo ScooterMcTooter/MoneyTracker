@@ -28,6 +28,8 @@ public partial class JobViewModel : ObservableObject
         JobHours = JobHours.None;
         Accounts = new ObservableCollection<AccountModel>(_db.accountModels.Where(a => a.UserId == Constants.CurrentUser.Id).ToList());
         Locations = new ObservableCollection<LocationModel>(_db.locationModels.Where(l => l.UserId == Constants.CurrentUser.Id).ToList());
+
+        accountNames = Accounts.Select(a => a.Name).ToList();
     }
 
     private bool _jobIsCurrent;
@@ -85,6 +87,8 @@ public partial class JobViewModel : ObservableObject
     int jobPayFrequencyInWeeks = 2;
     [ObservableProperty]
     bool directDeposit = true;
+    [ObservableProperty]
+    List<string>? accountNames;
     [ObservableProperty]
     ObservableCollection<JobModel> jobs;
     [ObservableProperty]

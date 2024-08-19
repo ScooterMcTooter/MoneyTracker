@@ -128,7 +128,7 @@
                   RowDefinitions="auto,auto">
                             <Label Grid.Column="1" Text="Direct Deposit" VerticalOptions="Center"/>
                             <CheckBox x:Name="DDCheckBox" Grid.Column="2" IsChecked="{Binding DirectDeposit}" CheckedChanged="DirectDeposit_Checked"/>
-                            <Picker x:Name="AccountPicker" Grid.Column="3" Title="Select the account" SelectedItem="{Binding SelectedAccount}" ItemsSource="{Binding Accounts}"/>
+                            <Picker x:Name="AccountPicker" Grid.Column="3" Title="Select the account" SelectedItem="{Binding SelectedAccount}" ItemsSource="{Binding AccountNames}"/>
                             <HorizontalStackLayout Grid.Row="1" Grid.ColumnSpan="5">
                                 <Label Text="Pay Frequency in Weeks: " VerticalOptions="Center" />
                                 <Entry Keyboard="Numeric" Placeholder="2" Text="{Binding JobPayFrequencyInWeeks}" />
