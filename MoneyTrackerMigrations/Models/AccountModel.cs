@@ -24,18 +24,12 @@ namespace MoneyTrackerMigrations.Models
             get => _AccountNumber;
             set
             {
-                _LastFourDigits = value.Substring(value.Length - 4);
                 _AccountNumber = new Helper().HashAccountNumber(value);
             }
         }
 
         [NotMapped]
-        private string _LastFourDigits = string.Empty;
-        public string LastFourDigits
-        {
-            get => _LastFourDigits;
-            set => _LastFourDigits = value;
-        }
+        public string? LastFour { get; set; } = null;
         public string? RoutingNumber { get; set; } = null;
         public virtual ICollection<BucketModel> Buckets { get; set; } = new List<BucketModel>();
         public virtual ICollection<TransactionModel> Transactions { get; set; } = new List<TransactionModel>();

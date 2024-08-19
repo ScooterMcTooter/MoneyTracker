@@ -10,61 +10,77 @@
         <ToolbarItem Text="{Binding AddAccountText}" Command="{Binding AddAccountCommand}"/>
     </ContentPage.ToolbarItems>
 
-    <Grid RowDefinitions="auto,auto,auto,auto"
+    <ScrollView>
+        <Grid RowDefinitions="auto,auto,auto,auto"
           RowSpacing="5"
-          ColumnDefinitions=".15*,*,.15*"
-          HorizontalOptions="Center" VerticalOptions="Fill"
+          ColumnDefinitions=".1*,*,.1*"
+          HorizontalOptions="Fill" VerticalOptions="Fill"
           ColumnSpacing="10">
-        <Label Grid.Column="1" HorizontalOptions="CenterAndExpand" FontSize="Large" MaximumWidthRequest="{Binding Width}" Text="{Binding Message}"/>
-        <ScrollView Grid.Row="1" Grid.Column="1">
-            <CollectionView ItemsSource="{Binding Accounts}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <SwipeView>
-                            <SwipeView.RightItems>
-                                <SwipeItems>
-                                    <SwipeItem Text="Delete" BackgroundColor="Red" Command="{Binding BindingContext.DeleteAccountCommand, Source={x:Reference AccountPageBind}}" CommandParameter="{Binding .}"/>
-                                    <SwipeItem Text="Edit" BackgroundColor="Green" Command="{Binding BindingContext.EditAccountCommand, Source={x:Reference AccountPageBind}}" CommandParameter="{Binding .}"/>
-                                </SwipeItems>
-                            </SwipeView.RightItems>
-                            <SwipeView.Content>
-                                <Grid RowDefinitions="auto,auto,auto"
-                                      RowSpacing="5"
-                                      ColumnDefinitions=".25*,auto,auto,auto,.25*"
+            <Label Grid.Column="1" HorizontalOptions="CenterAndExpand" FontSize="Large" Text="{Binding Message}"/>
+            <ScrollView Grid.Row="1" Grid.Column="1">
+                <CollectionView ItemsSource="{Binding Accounts}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <SwipeView>
+                                <SwipeView.RightItems>
+                                    <SwipeItems>
+                                        <SwipeItem Text="Delete" BackgroundColor="Red" Command="{Binding BindingContext.DeleteAccountCommand, Source={x:Reference AccountPageBind}}"
+                                                   CommandParameter="{Binding .}"/>
+                                    </SwipeItems>
+                                </SwipeView.RightItems>
+                                <SwipeView.LeftItems>
+                                    <SwipeItems>
+                                        <SwipeItem Text="Edit" BackgroundColor="Green" Command="{Binding BindingContext.EditAccountCommand, Source={x:Reference AccountPageBind}}"
+                                                   CommandParameter="{Binding .}"/>
+                                    </SwipeItems>
+                                </SwipeView.LeftItems>
+                                <SwipeView.Content>
+                                    <Frame BackgroundColor="Transparent" BorderColor="{AppThemeBinding Dark=White, Light=black, Default=grey}">
+                                        <Grid RowDefinitions="auto,auto"
+                                      ColumnDefinitions=".25*,auto,auto,auto,auto,.25*"
                                       ColumnSpacing="10">
-                                    <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}"/>
-                                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding Provider}"/>
-                                    <Label Grid.Row="0" Grid.Column="2" Text="{Binding Balance}"/>
-                                </Grid>
-                            </SwipeView.Content>
-                        </SwipeView>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </ScrollView>
-        <Frame Grid.Row="3" Grid.Column="1" BackgroundColor="Transparent" MaximumWidthRequest="{Binding Width}" IsVisible="{Binding AddAccountVisible}" BorderColor="{AppThemeBinding Dark=White, Light=black, Default=grey}">
-            <Grid RowDefinitions="auto,auto,auto,auto,auto,auto,auto,auto"
-              RowSpacing="5"
-              ColumnDefinitions="auto,auto,*,auto"
-              HorizontalOptions="Center" VerticalOptions="Center">
-                <Label Grid.Column="1" Text="Name: "/>
-                <Entry Grid.Column="2" Placeholder="My Checking" Text="{Binding Name}"/>
-                <Label Grid.Column="1" Grid.Row="2" Text="Account Number: "/>
-                <Entry Grid.Column="2" Grid.Row="2" Keyboard="Numeric" Placeholder="xxxxxxxxx1234" Text="{Binding LastFour}"/>
-                <Label Grid.Column="1" Grid.Row="3" Text="Routing Number: "/>
-                <Entry Grid.Column="2" Grid.Row="3" Keyboard="Numeric" Placeholder="01234567890" Text="{Binding RoutingNumber}"/>
-                <Label Grid.Column="1" Grid.Row="4" Text="Provider: "/>
-                <Entry Grid.Column="2" Grid.Row="4" Placeholder="Santander" Text="{Binding Provider}"/>
-                <Label Grid.Column="1" Grid.Row="5" Text="Type: "/>
-                <Entry Grid.Column="2" Grid.Row="5" Placeholder="Checking" Text="{Binding Type}"/>
-                <Label Grid.Column="1" Grid.Row="6" Text="Balance: $"/>
-                <Entry Grid.Column="2" Grid.Row="6" Keyboard="Numeric" Placeholder="1.00" Text="{Binding Balance}"/>
-                <StackLayout Grid.Row="7" Grid.ColumnSpan="4" Orientation="Horizontal" Spacing="10">
-                    <Button Text="Save" Command="{Binding SaveAccountCommand}"/>
-                    <Button Text="Clear form" Command="{Binding ClearAccountCommand}"/>
-                    <Button Text="Cancel" Command="{Binding AddAccountCommand}"/><!--This will hide the panel and reset the fields-->
-                </StackLayout>
-            </Grid>
-        </Frame>
-    </Grid>
+                                            <Label Grid.Row="0" Grid.Column="1" Text="Name"/>
+                                            <Label Grid.Row="1" Grid.Column="1" Text="{Binding Name}"/>
+                                            <Label Grid.Row="0" Grid.Column="2" Text="Type"/>
+                                            <Label Grid.Row="1" Grid.Column="2" Text="{Binding Type}"/>
+                                            <Label Grid.Row="0" Grid.Column="3" Text="Provider"/>
+                                            <Label Grid.Row="1" Grid.Column="3" Text="{Binding Provider}"/>
+                                            <Label Grid.Row="0" Grid.Column="4" Text="Balance"/>
+                                            <Label Grid.Row="1" Grid.Column="4" Text="{Binding Balance}"/>
+                                        </Grid>
+                                    </Frame>
+                                </SwipeView.Content>
+                            </SwipeView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </ScrollView>
+            <Frame Grid.Row="3" Grid.ColumnSpan="2" BackgroundColor="Transparent" IsVisible="{Binding AddAccountVisible}" BorderColor="{AppThemeBinding Dark=White, Light=black, Default=grey}">
+                <Grid RowDefinitions="auto,auto,auto,auto,auto,auto,auto,auto"
+                      RowSpacing="5"
+                      ColumnDefinitions="auto,auto,*,auto"
+                      HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Entry IsVisible="False" Text="{Binding Id}"/>
+                    <Label Grid.Column="1" Text="Name: "/>
+                    <Entry Grid.Column="2" Placeholder="My Checking" Text="{Binding Name}"/>
+                    <Label Grid.Column="1" Grid.Row="2" Text="Account Number: "/>
+                    <Entry Grid.Column="2" Grid.Row="2" Keyboard="Numeric" Placeholder="xxxxxxxxx1234" Text="{Binding LastFour}"/>
+                    <Label Grid.Column="1" Grid.Row="3" Text="Routing Number: "/>
+                    <Entry Grid.Column="2" Grid.Row="3" Keyboard="Numeric" Placeholder="01234567890" Text="{Binding RoutingNumber}"/>
+                    <Label Grid.Column="1" Grid.Row="4" Text="Provider: "/>
+                    <Entry Grid.Column="2" Grid.Row="4" Placeholder="Santander" Text="{Binding Provider}"/>
+                    <Label Grid.Column="1" Grid.Row="5" Text="Type: "/>
+                    <Picker Grid.Column="2" Grid.Row="5" ItemsSource="{Binding AccountTypeValues}" SelectedItem="{Binding SelectedAccountType}" />
+                    <Label Grid.Column="1" Grid.Row="6" Text="Balance: $"/>
+                    <Entry Grid.Column="2" Grid.Row="6" Keyboard="Numeric" Placeholder="1.00" Text="{Binding Balance}"/>
+                    <StackLayout Grid.Row="7" Grid.ColumnSpan="4" Orientation="Horizontal" Spacing="10">
+                        <Button Text="Save" Command="{Binding SaveAccountCommand}" CommandParameter="{Binding SelectedAccount}"/>
+                        <Button Text="Clear form" Command="{Binding ClearAccountCommand}"/>
+                        <Button Text="Cancel" Command="{Binding AddAccountCommand}"/>
+                        <!--This will hide the panel and reset the fields-->
+                    </StackLayout>
+                </Grid>
+            </Frame>
+        </Grid>
+    </ScrollView>
 </ContentPage>

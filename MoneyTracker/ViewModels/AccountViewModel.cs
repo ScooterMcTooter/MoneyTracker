@@ -1,7 +1,10 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.EntityFrameworkCore;
+using MoneyTrackerMigrations.Models;
 using System.Collections.ObjectModel;
 using System.Reflection.Metadata.Ecma335;
+using System.Security.Principal;
 using System.Text.RegularExpressions;
 
 namespace MoneyTracker.ViewModels;
@@ -25,7 +28,10 @@ public partial class AccountViewModel : ObservableObject
         AutoPays = new ObservableCollection<AutoPayModel>(Constants.ConstAutoPays.Where(a => a.UserId == Constants.CurrentUser.Id) ?? []);
 
         LastFour = string.IsNullOrEmpty(AccountNumber) ? string.Empty : AccountNumber.Substring(AccountNumber.Length - 4);
-        SelectedAccount = Accounts.FirstOrDefault() ?? new AccountModel();
+        SelectedAccount = Accounts.FirstOrDefault() ?? new AccountModel(); 
+        AccountTypeValues = new ObservableCollection<AccountType>(Enum.GetValues(typeof(AccountType)).Cast<AccountType>());
+        selectedAccountType = Enum.TryParse(SelectedAccount.Type, out AccountType type) ? type : AccountType.Checking;
+
         CreateMessage();
 
         AddAccountText = AddAccountVisible ? "Cancel" : "Add Account";
@@ -36,6 +42,12 @@ public partial class AccountViewModel : ObservableObject
     #endregion
 
     #region Observable Properties
+    [ObservableProperty]
+    ObservableCollection<AccountType> accountTypeValues;
+    [ObservableProperty]
+    AccountType? accountTypeEnum;
+    [ObservableProperty]
+    AccountType selectedAccountType = AccountType.Checking;
     [ObservableProperty]
     AccountModel selectedAccount;
     [ObservableProperty]
@@ -87,41 +99,46 @@ public partial class AccountViewModel : ObservableObject
     /// Saves the account.
     /// </summary>
     [RelayCommand]
-    void SaveAccount()
+    void SaveAccount(AccountModel _account)
     {
-        AccountModel account = new AccountModel()
-        {
-            Name = Name,
-            AccountNumber = AccountNumber.ToString(),
-            Balance = (decimal)Balance,
-            Provider = Provider,
-            Type = Type,
-            RoutingNumber = RoutingNumber,
-            UserId = Constants.CurrentUser.Id
-        };
+        Console.WriteLine(SelectedAccount);
+        _account.Type = SelectedAccountType.ToString();
+        var existingEntity = _db.accountModels.FirstOrDefault(e => e.Id == _account.Id);
 
-        var edit = Constants.ConstAccounts.Where(a => a.UserId == Constants.CurrentUser.Id && a.AccountNumber.Equals(AccountNumber));
-
-        if (edit != null)
+        try
         {
-            _db.accountModels.Update(account);
+            if (existingEntity != null)
+            {
+                _db.Entry(existingEntity).State = EntityState.Detached;
+            }
+
+            if ((_serviceProvider.GetService<Helper>() ?? null!).IsChanged(_account, existingEntity))
+            {
+                _db.accountModels.Update(_account);
+            }
+            else
+            {
+                _db.accountModels.Add(_account);
+            }
+
+            _db.SaveChanges();
+
+            int eId = Constants.CurrentUser.Id;
+            Constants.ConstAccounts = _db.accountModels.Where(a => a.UserId == eId).ToList();
+            Accounts = new ObservableCollection<AccountModel>(Constants.ConstAccounts);
+            CreateMessage();
+
+            AddAccountVisible = false;
+            AddAccountText = "Add Account";
         }
-        else
+        catch (Exception ex)
         {
-            _db.accountModels.Add(account);
+            // Handle exception
+            throw;
         }
-
-        _db.SaveChanges();
-
-        int eId = Constants.CurrentUser.Id;
-        Constants.ConstAccounts = _db.accountModels.Where(a => a.UserId == eId).ToList();
-        Accounts = new ObservableCollection<AccountModel>(Constants.ConstAccounts);
-        CreateMessage();
-
-        AddAccountVisible = false;
-        AddAccountText = "Add Account";
         return;
     }
+
 
     /// <summary>
     /// Clears the account fields.
@@ -145,6 +162,13 @@ public partial class AccountViewModel : ObservableObject
     [RelayCommand]
     async Task DeleteAccount(AccountModel account)
     {
+        //Ensure that the _db is not already being used
+
+
+        if (account == null)
+        {
+            return;
+        }
         bool confirmed = await _dialogService.ShowConfirmationDialogAsync("Account Deletion", "Are you sure you want to delete this account?", "Yes", "Cancel");
 
         if (!confirmed)
@@ -166,23 +190,32 @@ public partial class AccountViewModel : ObservableObject
     [RelayCommand]
     void EditAccount(AccountModel account)
     {
-        AddAccount();
-        Accounts.Remove(account);
-        Constants.ConstAccounts.Remove(account);
+        try
+        {
+            var existingEntity = _db.accountModels.FirstOrDefault(e => e.Id == account.Id);
+            if (existingEntity != null)
+            {
+                _db.Entry(existingEntity).State = EntityState.Detached;
+            }
 
-        Name = account.Name;
-        AccountNumber = account.AccountNumber;
-        Balance = (float)account.Balance;
-        Provider = account.Provider;
-        Type = account.Type;
-        RoutingNumber = account.RoutingNumber ?? string.Empty;
+            AddAccount();
 
-        _db.accountModels.Update(account);
-        _db.SaveChanges();
-        Accounts.Add(account);
-        Constants.ConstAccounts.Add(account);
+            Name = account.Name;
+            AccountNumber = account.AccountNumber;
+            Balance = (float)account.Balance;
+            Provider = account.Provider;
+            RoutingNumber = account.RoutingNumber ?? string.Empty;
+            LastFour = account.AccountNumber.Substring(account.AccountNumber.Length > 0 ? account.AccountNumber.Length - 4 : 0);
+        }
+        catch (Exception ex)
+        {
+            // Handle exception
+            throw;
+        }
+
         return;
     }
+
     #endregion
 
     #region Methods
@@ -193,6 +226,11 @@ public partial class AccountViewModel : ObservableObject
         else if (Accounts.Count > 1)
             Message = Accounts.Sum(a => a.Balance) > 0 ? $"Your account has a balance of ${Accounts.Sum(a => a.Balance)}!" : $"Your accounts balances equal out to {Accounts.Sum(a => a.Balance)}";
         return;
+    }
+
+    partial void OnAccountNumberChanged(string value)
+    {
+        LastFour = value.Length >= 4 ? value[^4..] : value;
     }
     #endregion
 }

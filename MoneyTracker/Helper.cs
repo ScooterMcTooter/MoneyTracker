@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -119,5 +120,31 @@ public class Helper
         }
 
         return numberOfPaychecks;
+    }
+
+    /// <summary>
+    /// Checks if the input object has any changes compared to another object.
+    /// </summary>
+    /// <typeparam name="T">The type of the objects to compare.</typeparam>
+    /// <param name="obj1">The first object to compare.</param>
+    /// <param name="obj2">The second object to compare.</param>
+    /// <returns>True if the objects have any changes, otherwise false.</returns>
+    public bool IsChanged<T>(T obj1, T obj2)
+    {
+        Type type = typeof(T);
+        PropertyInfo[] properties = type.GetProperties();
+
+        foreach (PropertyInfo property in properties)
+        {
+            object value1 = property.GetValue(obj1) ?? null!;
+            object? value2 = property.GetValue(obj2);
+
+            if (value2 == null || !Equals(value1, value2))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
