@@ -178,7 +178,7 @@
                 <!--#endregion-->
                 <!--#region Accounts-->
                 <Frame Grid.Row="1">
-                    <Grid RowDefinitions="auto,auto,auto,auto">
+                    <Grid RowDefinitions="auto,auto,auto,auto" RowSpacing="10">
                         <Label Text="{Binding AccountHeader}"
                                FontSize="Medium"
                                HorizontalOptions="Center"
@@ -233,15 +233,15 @@
                     <Grid RowDefinitions="auto,*,auto,auto"
                           RowSpacing="10">
                         <Label Text="{Binding LoanHeader}"
-                            FontSize="Medium"
-                            HorizontalOptions="Center"
-                            VerticalOptions="Center"/>
+                                FontSize="Medium"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"/>
                         <ListView x:Name="LoanListView"
-                            ItemsSource="{Binding Loans}"
-                            SelectedItem="{Binding SelectedLoan}"
-                            ItemSelected="ListView_ItemSelected"
-                            Grid.Row="1"
-                            SelectionMode="Single">
+                                ItemsSource="{Binding Loans}"
+                                SelectedItem="{Binding SelectedLoan}"
+                                ItemSelected="ListView_LoanSelected"
+                                Grid.Row="1"
+                                SelectionMode="Single">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <ViewCell>
@@ -321,20 +321,19 @@
                 <!--#endregion-->
                 <!--#region Jobs-->
                 <Frame Grid.Row="4">
-                    <Grid RowDefinitions="auto,auto,auto,auto"
-                          RowSpacing="10">
+                    <Grid RowDefinitions="auto,auto,auto,auto" RowSpacing="10">
                         <Label Text="{Binding JobHeader}"
-                            FontSize="Medium"
-                            HorizontalOptions="Center"
-                            VerticalOptions="Center"/>
-                        <ListView Grid.Row="1"
-                            ItemsSource="{Binding Jobs}"
-                            SelectedItem="{Binding SelectedJob}"
-                            SelectionMode="None">
+                                FontSize="Medium"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"/>
+                        <ListView x:Name="JobListView"
+                                Grid.Row="1"
+                                ItemsSource="{Binding Jobs}"
+                                SelectedItem="{Binding SelectedJob}"
+                                ItemSelected="ListView_JobSelected">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <ViewCell>
-                                        <ScrollView>
                                             <Grid ColumnDefinitions=".5*,.5*,.5*"
                                               RowDefinitions="auto,auto">
                                                 <Label Grid.Column="0"
@@ -347,7 +346,6 @@
                                                 Text="{Binding PayCheckAmount, StringFormat='Paycheck: ${0}'}"
                                                 FontSize="Small"/>
                                             </Grid>
-                                        </ScrollView>
                                     </ViewCell>
                                 </DataTemplate>
                             </ListView.ItemTemplate>

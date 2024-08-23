@@ -76,11 +76,11 @@ public partial class JobViewModel : ObservableObject
     [ObservableProperty]
     double payCheckAmountBeforeTax;
     [ObservableProperty]
-    double? jobPay = null;
+    double? jobPay = null!;
     [ObservableProperty]
-    double? jobPayTaxes = null;
+    double? jobPayTaxes = null!;
     [ObservableProperty]
-    double? jobPayYearly = null;
+    double? jobPayYearly = null!;
     [ObservableProperty]
     double jobPayHourly;
     [ObservableProperty]
@@ -96,17 +96,19 @@ public partial class JobViewModel : ObservableObject
     [ObservableProperty]
     ObservableCollection<AccountModel>? accounts;
     [ObservableProperty]
-    AccountModel? selectedAccount = null;
+    AccountModel? selectedAccount;
+    [ObservableProperty]
+    string? selectedAccountName;
     [ObservableProperty]
     ObservableCollection<LocationModel>? locations;
     [ObservableProperty]
-    LocationModel? selectedLocation = null;
+    LocationModel? selectedLocation = null!;
     [ObservableProperty]
     DateTime jobStartDate;
     [ObservableProperty]
-    DateTime? jobFirstPay = null;
+    DateTime? jobFirstPay = null!;
     [ObservableProperty]
-    DateTime? jobEndDate = null;
+    DateTime? jobEndDate = null!;
     [ObservableProperty]
     JobType jobType;
     [ObservableProperty]
@@ -173,7 +175,7 @@ public partial class JobViewModel : ObservableObject
             Status = JobStatus.ToString(),
             Hours = hours,
             UserId = Constants.CurrentUser.Id,
-            AccountId = SelectedAccount?.Id ?? null
+            AccountId = SelectedAccount?.Id ?? GetAccountName(SelectedAccountName)
         };
 
         try
@@ -187,6 +189,8 @@ public partial class JobViewModel : ObservableObject
                         //Check to see if the job is already in the database without comparing the ID
                         bool jobExists = JobCompare(job);
                         job.User = Constants.CurrentUser;
+                        if (job.Account != null)
+                            _db.accountModels.Attach(job.Account);
 
                         if (Jobs == null)
                         {
@@ -306,6 +310,7 @@ public partial class JobViewModel : ObservableObject
                 return;
             }
 
+            job = _db.jobModels.Where(j => j.Id == job.Id).First();
             LocationModel location = _db.locationModels.Where(l => l.Id == job.LocationId).FirstOrDefault();
             string hours = JobHoursConversions(job.Hours);
 
@@ -333,7 +338,7 @@ public partial class JobViewModel : ObservableObject
             DirectDeposit = job.DirectDeposit;
             JobFirstPay = job.FirstPayDate >= DateTime.Now ? job.FirstPayDate : job.FirstPayDate.AddDays(job.PayFrequencyInWeeks * 7);
             SelectedAccount = job.Account;
-
+            SelectedAccountName = job.Account?.Name;
             AddJobVisible = true;
             //Accounts = new ObservableCollection<AccountModel>(_db.accountModels.Where(a => a.UserId == Constants.CurrentUser.Id).ToList() ?? new List<AccountModel>());
         }
@@ -539,6 +544,15 @@ public partial class JobViewModel : ObservableObject
         {
             Jobs.Add(job);
         }
+    }
+
+    private int? GetAccountName(string? name)
+    {
+        if (!string.IsNullOrEmpty(name))
+        {
+            SelectedAccount = _db.accountModels.Where(a => a.Name.Equals(name)).First();
+        }
+        return SelectedAccount?.Id;
     }
 
     // Make sure to unsubscribe from the event when the ViewModel is destroyed
