@@ -8,11 +8,11 @@
              Shell.FlyoutBehavior="Disabled">
 
     <Grid RowDefinitions="100, Auto, Auto, Auto"
-          ColumnDefinitions=".25*,.50*,.25*"
+          ColumnDefinitions="auto,*,auto"
           Padding="10"
           RowSpacing="10"
           ColumnSpacing="10"
-          HorizontalOptions="CenterAndExpand">
+          HorizontalOptions="Center">
 
         <Label Text="Welcome to Money Tracker!" 
                Grid.ColumnSpan="3"
@@ -53,16 +53,24 @@
                VerticalTextAlignment="Center"
                TextColor="{AppThemeBinding Dark=white, Light=black, Default=Grey}"/>
 
-        <Entry IsPassword="True"
+        <Entry IsPassword="{Binding HidePassword}"
                Placeholder="Password" 
                Keyboard="Text"
                Grid.Row="2" 
                Grid.Column="1"
-               Grid.ColumnSpan="2"
+               Grid.ColumnSpan="1"
                Text="{Binding Password}"
                TextColor="{AppThemeBinding Dark=white, Light=black, Default=Grey}"
                Completed="Password_Entered"
                />
+        
+        <Button x:Name="HidePasswordButton"
+                Grid.Row="2"
+                Grid.Column="3"
+                Text="{Binding PasswordVisibility}"
+                TextColor="{AppThemeBinding Dark=white, Light=black,Default=grey}"
+                Background="Transparent"
+                Command="{Binding PasswordVisibilityChangeCommand}"/>
 
         <Button x:Name="LoginButton"
                 Text="Login" 

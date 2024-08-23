@@ -38,7 +38,7 @@ public partial class LoanViewModel : ObservableObject
         RemainingInterest = (SelectedLoan.Amount - SelectedLoan.TotalInterest).ToString();
         Guarantor = SelectedLoan.Guarantor;
         DisbursementDate = SelectedLoan.DisbursementDate;
-        RepaymentPlan = Enum.Parse<LoanRepaymentPlans>(SelectedLoan.RepaymentPlan);
+        RepaymentPlan = Enum.Parse<LoanRepaymentPlans>(SelectedLoan.RepaymentPlan ?? "NA");
         IsAddLoanVisible = false;
     }
 

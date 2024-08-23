@@ -37,6 +37,14 @@ public partial class LoginViewModel : ObservableObject
         set => SetProperty(ref _password, value);
     }
 
+    [ObservableProperty]
+    string passwordVisibility = "show";
+
+    [ObservableProperty]
+    bool hidePassword = true;
+
+
+
     /// <summary>
     /// Navigates to the create user page.
     /// </summary>
@@ -117,5 +125,12 @@ public partial class LoginViewModel : ObservableObject
         {
             await Shell.Current.DisplayAlert("Error", $"Failed to login: {ex}", "OK");
         }
+    }
+
+    [RelayCommand]
+    private void PasswordVisibilityChange()
+    {
+        HidePassword = !HidePassword;
+        PasswordVisibility = HidePassword ? "show" : "hide";
     }
 }
