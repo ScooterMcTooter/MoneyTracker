@@ -27,16 +27,17 @@
                         <SwipeView>
                             <SwipeView.LeftItems>
                                 <SwipeItems>
-                                    <SwipeItem  Text="Delete" BackgroundColor="Red" 
-                                       Command="{Binding BindingContext.DeleteJobCommand, Source={x:Reference JobPageBind}}" 
-                                       CommandParameter="{Binding .}" />
+                                    <SwipeItem  Text="Edit" BackgroundColor="Green" 
+                                        Command="{Binding BindingContext.EditJobCommand, Source={x:Reference JobPageBind}}" 
+                                        CommandParameter="{Binding .}" />
+
                                 </SwipeItems>
                             </SwipeView.LeftItems>
                             <SwipeView.RightItems>
                                 <SwipeItems>
-                                    <SwipeItem  Text="Edit" BackgroundColor="Green" 
-                                       Command="{Binding BindingContext.EditJobCommand, Source={x:Reference JobPageBind}}" 
-                                       CommandParameter="{Binding .}" />
+                                    <SwipeItem  Text="Delete" BackgroundColor="Red" 
+                                        Command="{Binding BindingContext.DeleteJobCommand, Source={x:Reference JobPageBind}}" 
+                                        CommandParameter="{Binding .}" />
                                 </SwipeItems>
                             </SwipeView.RightItems>
                             <SwipeView.Content>
@@ -128,7 +129,7 @@
                   RowDefinitions="auto,auto">
                             <Label Grid.Column="1" Text="Direct Deposit" VerticalOptions="Center"/>
                             <CheckBox x:Name="DDCheckBox" Grid.Column="2" IsChecked="{Binding DirectDeposit}" CheckedChanged="DirectDeposit_Checked"/>
-                            <Picker x:Name="AccountPicker" Grid.Column="3" Title="Select the account" SelectedItem="{Binding SelectedAccount}" ItemsSource="{Binding Accounts}"/>
+                            <Picker x:Name="AccountPicker" Grid.Column="3" Title="Select the account" SelectedItem="{Binding SelectedAccountName}" ItemsSource="{Binding AccountNames}"/>
                             <HorizontalStackLayout Grid.Row="1" Grid.ColumnSpan="5">
                                 <Label Text="Pay Frequency in Weeks: " VerticalOptions="Center" />
                                 <Entry Keyboard="Numeric" Placeholder="2" Text="{Binding JobPayFrequencyInWeeks}" />

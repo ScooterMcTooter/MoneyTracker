@@ -148,7 +148,7 @@ public partial class HomeViewModel : ObservableValidator
     [ObservableProperty]
     AutoPayModel? addAutoM;
     [ObservableProperty]
-    ObservableCollection<JobModel> jobs;
+    ObservableCollection<JobModel>? jobs;
     [ObservableProperty]
     JobModel? selectedJob;
     [ObservableProperty]

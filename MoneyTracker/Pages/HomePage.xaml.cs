@@ -5,26 +5,39 @@ namespace MoneyTracker.Pages;
 
 public partial class HomePage : ContentPage
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceProvider _serviceProvider = null!;
+    private readonly AccountViewModel _AccountViewModel = null!;
+    private readonly LoanViewModel _LoanViewModel = null!;
+    private readonly JobViewModel _JobViewModel = null!;
 
     public HomePage(IServiceProvider serviceProvider)
     {
-        _serviceProvider = serviceProvider;
-
-        InitializeComponent();
-        BindingContext = _serviceProvider.GetService<HomeViewModel>() ?? throw new NotImplementedException("There is a failure when trying to access the HomeView service.");
-
-        Shell.Current.FlyoutBehavior = FlyoutBehavior.Flyout;
-
-        WeakReferenceMessenger.Default.Register<ScrollToMessage>(this, async (r, m) =>
+        try
         {
-            await HomeScroll.ScrollToAsync(QuickAddFrame, ScrollToPosition.Start, true);
-        });
+            _serviceProvider = serviceProvider;
 
-        WeakReferenceMessenger.Default.Register<ScrollToTop>(this, async (r, m) =>
+            InitializeComponent();
+            BindingContext = _serviceProvider.GetService<HomeViewModel>() ?? throw new NotImplementedException("There is a failure when trying to access the HomeView service.");
+            _AccountViewModel = _serviceProvider.GetService<AccountViewModel>() ?? throw new NotImplementedException("There is a failure when trying to access the AccountViewModel service.");
+            _LoanViewModel = _serviceProvider.GetService<LoanViewModel>() ?? throw new NotImplementedException("There is a failure when trying to access the LoanViewModel service.");
+            _JobViewModel = _serviceProvider.GetService<JobViewModel>() ?? throw new NotImplementedException("There is a failure when trying to access the JobViewModel service.");
+
+            Shell.Current.FlyoutBehavior = FlyoutBehavior.Flyout;
+
+            WeakReferenceMessenger.Default.Register<ScrollToMessage>(this, async (r, m) =>
+            {
+                await HomeScroll.ScrollToAsync(QuickAddFrame, ScrollToPosition.Start, true);
+            });
+
+            WeakReferenceMessenger.Default.Register<ScrollToTop>(this, async (r, m) =>
+            {
+                await HomeScroll.ScrollToAsync(0, 0, true);
+            });
+        }
+        catch (Exception ex)
         {
-            await HomeScroll.ScrollToAsync(0, 0, true);
-        });
+            Shell.Current.DisplayAlert("error", ex.ToString(), "OK");
+        }
     }
 
     protected override void OnAppearing()
@@ -36,6 +49,9 @@ public partial class HomePage : ContentPage
 
         // Clear selection for AccountListView
         AccountListView.SelectedItem = null;
+
+        // Clear selection for JobListView
+        JobListView.SelectedItem = null;
 
         // Add similar lines for any other ListView controls you have
         // Example:
@@ -54,7 +70,7 @@ public partial class HomePage : ContentPage
         }
     }
 
-    private async void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+    private async void ListView_LoanSelected(object sender, SelectedItemChangedEventArgs e)
     {
         try
         {
@@ -64,7 +80,7 @@ public partial class HomePage : ContentPage
                 LoanModel? selectedLoan = list.SelectedItem as LoanModel;
                 if (selectedLoan != null)
                 {
-                    _serviceProvider.GetService<LoanViewModel>().SelectedLoan = selectedLoan;
+                    _LoanViewModel.SelectedLoan = selectedLoan;
                     await Shell.Current.GoToAsync($"//{nameof(LoanPage)}");
                 }
             }
@@ -86,8 +102,30 @@ public partial class HomePage : ContentPage
                 AccountModel? selectedAccount = list.SelectedItem as AccountModel;
                 if (selectedAccount != null)
                 {
-                    _serviceProvider.GetService<AccountViewModel>().SelectedAccount = selectedAccount;
+                    _AccountViewModel.SelectedAccount = selectedAccount;
                     await Shell.Current.GoToAsync($"//{nameof(AccountPage)}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+            return;
+        }
+    }
+
+    private async void ListView_JobSelected(object sender, SelectedItemChangedEventArgs e)
+    {
+        try
+        {
+            var list = sender as ListView;
+            if (list != null)
+            {
+                JobModel? selectedJob = list.SelectedItem as JobModel;
+                if (selectedJob != null)
+                {
+                    _JobViewModel.SelectedJob = selectedJob;
+                    await Shell.Current.GoToAsync($"//{nameof(JobPage)}");
                 }
             }
         }
