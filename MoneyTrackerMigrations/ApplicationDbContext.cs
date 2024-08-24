@@ -23,7 +23,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<UserModel> userModels { get; set; }
     public DbSet<SettingsModel> settingsModels { get; set; }
     public DbSet<UserLocation> userLocations { get; set; }
-
+    public DbSet<VerificationModel> verificationModels { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -192,6 +192,11 @@ public class ApplicationDbContext : DbContext
             .HasOne(ul => ul.Location)
             .WithMany(l => l.userLocations)
             .HasForeignKey(ul => ul.LocationId);
+
+        modelBuilder.Entity<VerificationModel>()
+            .HasOne(l => l.User)
+            .WithMany(ul => ul.Verifications)
+            .HasForeignKey(l => l.Id);
         #endregion
 
         #region SeedData

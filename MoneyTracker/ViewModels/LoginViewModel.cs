@@ -133,4 +133,19 @@ public partial class LoginViewModel : ObservableObject
         HidePassword = !HidePassword;
         PasswordVisibility = HidePassword ? "show" : "hide";
     }
+
+    [RelayCommand]
+    private async Task Forgot()
+    {
+        // Navigate to the forgot password page
+        try
+        {
+            await Shell.Current.GoToAsync($"{nameof(PasswordResetPage)}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+            throw;
+        }
+    }
 }

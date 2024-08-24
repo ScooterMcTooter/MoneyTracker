@@ -126,5 +126,14 @@ public static class Constants
     public static List<TransactionModel> ConstTransactions = new List<TransactionModel>();
     #endregion
 
+
+    public static List<string> emails = new List<string>() 
+    {
+        "verizon@vtext.com",
+        "ATT@txt.att.net",
+        "tmobile@tmomail.net",
+        "boost@sms.myboostmobile.com"
+    };
+    public const string SentFromEmail = "MoneyTrackerScoot@gmail.com";
     public static DateTime MaxDate = DateTime.Now.AddYears(-18).Date;
 }

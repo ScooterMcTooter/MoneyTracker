@@ -4,9 +4,11 @@ namespace MoneyTracker.Pages;
 
 public partial class PasswordResetPage : ContentPage
 {
-	public PasswordResetPage(PasswordResetViewModel vm)
-	{
-		InitializeComponent();
-		BindingContext = vm;
-	}
+    private readonly IServiceProvider _serviceProvider;
+    public PasswordResetPage(IServiceProvider serviceProvider)
+    {
+        InitializeComponent();
+        _serviceProvider = serviceProvider;
+        BindingContext = new PasswordResetViewModel(_serviceProvider.GetService<ApplicationDbContext>());
+    }
 }

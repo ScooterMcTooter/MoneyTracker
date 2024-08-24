@@ -28,6 +28,8 @@ public class UserModel
     public virtual ICollection<JobModel>? Jobs { get; set; } = null;
     public virtual SettingsModel? Settings { get; set; } = null;
     public virtual ICollection<UserLocation>? UserLocations { get; set; } = null;
+    public CellProvider CellProvider { get; set; } = CellProvider.Other;
+    public virtual ICollection<VerificationModel>? Verifications { get; set; } = null;
 }
 
 public class UserLocation
@@ -37,4 +39,13 @@ public class UserLocation
 
     public int LocationId { get; set; }
     public LocationModel? Location { get; set; }
+}
+
+public enum CellProvider
+{
+    ATT,
+    Verizon,
+    BoostMobile,
+    TMobile,
+    Other
 }

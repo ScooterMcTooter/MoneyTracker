@@ -27,8 +27,6 @@ namespace MoneyTrackerMigrations.Models
                 _AccountNumber = new Helper().HashAccountNumber(value);
             }
         }
-
-        [NotMapped]
         public string? LastFour { get; set; } = null;
         public string? RoutingNumber { get; set; } = null;
         public virtual ICollection<BucketModel> Buckets { get; set; } = new List<BucketModel>();

@@ -88,10 +88,8 @@
                 HorizontalOptions="StartAndExpand"
                 VerticalOptions="EndAndExpand"
                 Command="{Binding ForgotCommand}"
-                CommandParameter="{Binding Username}"
                 TextColor="{AppThemeBinding Dark=white, Light=black, Default=Grey}"
                 />
-
     </Grid>
 
 </ContentPage>

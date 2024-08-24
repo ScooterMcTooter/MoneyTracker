@@ -29,6 +29,8 @@ namespace MoneyTracker
             var SettingsViewModel = _serviceProvider.GetService<SettingsViewModel>() ?? null!;
             var TransactionsViewModel = _serviceProvider.GetService<TransactionsViewModel>() ?? null!;
             var UserViewModel = _serviceProvider.GetService<UserViewModel>() ?? null!;
+            var LoginViewModel = _serviceProvider.GetService<LoginViewModel>() ?? null!;
+            var PasswordResetViewModel = _serviceProvider.GetService<PasswordResetViewModel>() ?? null!;
 
             using (var scope = _serviceProvider.CreateScope())
             {
@@ -50,6 +52,7 @@ namespace MoneyTracker
                 serviceCollection.AddSingleton(provider => new TransactionsViewModel(dbContext, UserViewModel));
                 serviceCollection.AddSingleton(provider => new UserViewModel(dbContext));
                 serviceCollection.AddSingleton(provider => new CreateUserViewModel(dbContext));
+                serviceCollection.AddSingleton(provider => new PasswordResetViewModel(dbContext));
                 //serviceCollection.AddTransient(provider => new AutoPayViewModel(dbContext));
                 //serviceCollection.AddTransient(provider => new ViewModels.SavingsBucketsViewModel(dbContext));
                 //serviceCollection.AddTransient(provider => new ViewModels.SettingsViewModel(dbContext));
@@ -59,7 +62,7 @@ namespace MoneyTracker
         protected override void OnStart()
         {
             base.OnStart();
-#if DEBUG
+#if !DEBUG
             try
             {
                 _serviceProvider.GetService<LoginViewModel>().Password = "AcerAspireR7!1995";
